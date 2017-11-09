@@ -1,17 +1,43 @@
+import { LearningObject } from './../entities/LearningObject';
 import { DataStore } from '../interfaces/DataStore';
 
+
 export class MongoConnector implements DataStore {
-  updateLearningObject(learningObject: any) {
-    // throw new Error('Method not implemented.');
-    console.log('No Driver Implementation for updateLearningObject');
+  _db: Array<any>;
+  _lo: any;
+
+  _Cid: number;
+  constructor () {
+    this._db = [ ];
+    this._Cid = 0;
   }
-  deleteLearningObject(learningObject: any) {
-    // throw new Error('Method not implemented.');
-    console.log('No Driver Implementation for deleteLearningObject');
+
+  updateLearningObject(learningObjectID: number, learningObject: any) {
+    console.log(learningObjectID);
+    const index: number = learningObjectID;
+    for (let i = 0; i < this._db.length; i++) {
+      if (this._db[i].id == index) {
+        this._db[i].content = learningObject;
+        this._db[i].name = learningObject.mName;
+      }
+    }
+  }
+
+  deleteLearningObject(learningObjectID: any) {
+    const index: number = learningObjectID.substring(1, learningObjectID.length);
+    for (let i = 0; i < this._db.length; i++) {
+      if (this._db[i].id == index) {
+        this._db.splice(i, 1);
+      }
+    }
   }
   createLearningObject(userid: any, learningObject: any) {
-    // throw new Error('Method not implemented.');
-    console.log('No Driver Implementation for createLearningObject');
+    this._lo = { };
+    this._lo.id = this._Cid;
+    this._lo.name = learningObject.mName;
+    this._lo.content = learningObject;
+    this._db.push(this._lo);
+    this._Cid = this._Cid + 1;
   }
   connectToDB(): Promise<{}> {
     throw new Error('Method not implemented.');
@@ -31,15 +57,6 @@ export class MongoConnector implements DataStore {
     throw new Error('Method not implemented.');
   }
   getMyLearningObjects(userid) {
-   return [ {
-     id: 0,
-     name: 'An Example',
-     content: {
-      mName: 'An example',
-      mClass: 'Course (15 weeks)',
-      // tslint:disable-next-line:max-line-length
-      goals: [{'text': 'Teach Secure Coding Practices'}, {'text': 'sflj sdlakf sdlafjlj sadlfj dslafkjasdkljf af lsadjflsajf  asldjfksdjaf asldf sdlkfj asdlfkj aslfj aslfdj ladskfjl aldskjf alsdkfj alsjdf lasdfla s.'}],
-    },
-   }];
+    return this._db;
   }
 }

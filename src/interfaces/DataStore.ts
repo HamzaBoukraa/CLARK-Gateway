@@ -3,7 +3,7 @@ export interface DataStore {
     login();
     register();
     getMyLearningObjects(userid);
-    updateLearningObject(learningObject);
+    updateLearningObject(id, learningObject);
     deleteLearningObject(learningObject);
     createLearningObject(userid, learningObject);
 }

@@ -16,11 +16,11 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
     });
 }
 
-export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject) {
+export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, learningObject) {
   findAccessStatus(accessValidator)
     .then(userid => {
       // Patch data_as_json via dataStore call (else send error ->)
-      dataStore.updateLearningObject(learningObject);
+      dataStore.updateLearningObject(learningObjectID, learningObject);
       responder.sendOperationSuccess();
     })
     .catch((error) => {
