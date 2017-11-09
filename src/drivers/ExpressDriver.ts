@@ -6,7 +6,6 @@ import * as path from 'path';
 import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
 
-
 import { router as log } from '../routes/log';
 import { enforceTokenAccess as jwtValidator } from '../middleware/jwt.config';
 import * as http from 'http';
@@ -22,8 +21,10 @@ export class ExpressDriver {
     helmetConfig.setup(this.app);
 
     // configure app to use bodyParser()
-    this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({limit: '50mb' ,extended: true }));
+    this.app.use(bodyParser.json({limit: '50mb'}));
+
+    
 
     // set header to allow connection by given url
     this.app.use(function (req, res, next) {
@@ -35,7 +36,7 @@ export class ExpressDriver {
       res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
       // Request headers you wish to allow
-      res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+      res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type,enctype,Cache-Control');
 
       // Set to true if you need the website to include cookies in the requests sent
       // to the API (e.g. in case you use sessions)

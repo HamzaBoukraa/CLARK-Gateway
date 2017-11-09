@@ -6,4 +6,9 @@ export interface DataStore {
     updateLearningObject(learningObject);
     deleteLearningObject(learningObject);
     createLearningObject(userid, learningObject);
+    createLearningObjectTempFiles(learningObjectFiles: File[]): Promise<string>;
+    getLearningObjectTempFiles(learningObjectFilesID: string);
+    updateLearningObjectTempFiles(learningObjectFilesID: string, learningObjectFiles: File[]);
+    deleteLearningObjectTempFiles(learningObjectFilesID: string);
+    permStoreLearningObjectTempFiles(learningObjectFilesID: string);
 }

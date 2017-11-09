@@ -1,11 +1,15 @@
+import { Responder } from './../interfaces/Responder';
 import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
+import * as multer from 'multer';
 import { login, register } from '../interactors/AuthenticationInteractor';
 import { create, destroy, read, update } from '../interactors/LearningObjectInteractor';
+import { LearningObjectRepoFileInteractor } from './../interactors/LearningObjectRepoFileInteractor';
 import { ExpressResponder } from '../drivers/ExpressResponder';
 import { TokenManager } from './TokenManager';
 import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
+
 
 /**
  * Serves as a factory for producing a router for the express app.
@@ -13,6 +17,8 @@ import { Router } from 'express';
  * @author Sean Donnelly
  */
 export default class ExpressRouteDriver {
+
+  upload = multer({ dest: 'tmp/' });
 
   /**
    * Produces a configured express router
@@ -90,6 +96,47 @@ export default class ExpressRouteDriver {
         console.log(e);
       }
     });
+    router.post('/neutrino/temp-files', this.upload.any(), async (req, res) => {
+      try {
+        let responder = this.getResponder(res);
+        await new LearningObjectRepoFileInteractor().tempStoreFiles(this.dataStore, responder, req.files);
+      } catch (e) {
+        console.log(e);
+      }
+    });
+    router.route('/neutrino/temp-files:id')
+      .get(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          await new LearningObjectRepoFileInteractor().read(this.dataStore, responder, req.params.id);
+        } catch (e) {
+          console.log(e);
+        }
+      })
+      .patch(this.upload.any() , async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          await new LearningObjectRepoFileInteractor().update(this.dataStore, responder, req.params.id, req.files);
+        } catch (e) {
+          console.log(e);
+        }
+      })
+      .delete(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          await new LearningObjectRepoFileInteractor().delete(this.dataStore, responder, req.params.id);
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    router.get('/neutrino/temp-files:id/store', async (req, res) => {
+      try {
+        let responder = this.getResponder(res);
+        await new LearningObjectRepoFileInteractor().storeFiles(this.dataStore, responder, req.params.id);
+      } catch (e) {
+        console.log(e);
+      }
+    })
   }
   /*
   router.patch('/learning-objects', (req, res) => {
