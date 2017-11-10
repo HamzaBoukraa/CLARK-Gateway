@@ -53,6 +53,12 @@ export async function read(accessValidator: AccessValidator, dataStore: DataStor
     });
 }
 
+export async function readOne(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID) {
+  responder.sendLearningObject(
+    dataStore.getLearningObject(learningObjectID)
+  );
+}
+
 function findAccessStatus(accessValidator: AccessValidator) {
   return new Promise((resolve, reject) => {
     let accessStatus = accessValidator.authenticate();

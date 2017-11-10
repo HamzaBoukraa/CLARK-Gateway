@@ -3,7 +3,7 @@ import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
 import * as multer from 'multer';
 import { login, register } from '../interactors/AuthenticationInteractor';
-import { create, destroy, read, update } from '../interactors/LearningObjectInteractor';
+import { create, destroy, read, readOne, update } from '../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from './../interactors/LearningObjectRepoFileInteractor';
 import { ExpressResponder } from '../drivers/ExpressResponder';
 import { TokenManager } from './TokenManager';
@@ -88,7 +88,16 @@ export default class ExpressRouteDriver {
           console.log(e);
         }
       });
-    router.delete('/learning-objects:id', async (req, res) => {
+    router.route('/learning-objects:id')
+      .get(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          await readOne(this.accessValidator, this.dataStore, responder, req.params.id);
+        } catch (e) {
+          console.log(e);
+        }
+      })
+    .delete (async (req, res) => {
       try {
         let responder = this.getResponder(res);
         await destroy(this.accessValidator, this.dataStore, responder, req.params.id);
@@ -96,43 +105,10 @@ export default class ExpressRouteDriver {
         console.log(e);
       }
     });
-    router.post('/neutrino/temp-files', this.upload.any(), async (req, res) => {
+    router.post('/neutrino/upload', this.upload.any(),async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await new LearningObjectRepoFileInteractor().tempStoreFiles(this.dataStore, responder, req.files);
-      } catch (e) {
-        console.log(e);
-      }
-    });
-    router.route('/neutrino/temp-files:id')
-      .get(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          await new LearningObjectRepoFileInteractor().read(this.dataStore, responder, req.params.id);
-        } catch (e) {
-          console.log(e);
-        }
-      })
-      .patch(this.upload.any() , async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          await new LearningObjectRepoFileInteractor().update(this.dataStore, responder, req.params.id, req.files);
-        } catch (e) {
-          console.log(e);
-        }
-      })
-      .delete(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          await new LearningObjectRepoFileInteractor().delete(this.dataStore, responder, req.params.id);
-        } catch (e) {
-          console.log(e);
-        }
-      });
-    router.get('/neutrino/temp-files:id/store', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        await new LearningObjectRepoFileInteractor().storeFiles(this.dataStore, responder, req.params.id);
+        await new LearningObjectRepoFileInteractor().storeFiles(this.dataStore, responder, req.files);
       } catch (e) {
         console.log(e);
       }

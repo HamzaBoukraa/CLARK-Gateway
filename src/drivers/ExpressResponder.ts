@@ -8,6 +8,9 @@ export class ExpressResponder implements Responder {
   sendUser(user: any) {
     this.res.status(200).json(user);
   }
+  sendLearningObject(learningObject) {
+    this.res.status(200).json(learningObject)
+  }
   sendLearningObjects(learningObjects) {
     this.res.status(200).json(learningObjects);
   }

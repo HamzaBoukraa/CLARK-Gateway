@@ -31,6 +31,19 @@ export class MongoConnector implements DataStore {
       },
     }];
   }
+  getLearningObject(learningObjectID){
+    console.log('No Driver Implementation for getLearningObject');
+    return {
+      id: '0',
+      author: null,
+      name: 'An Example',
+      date: Date.now().toString(),
+      length: null,
+      type: 'module',
+      notes: 'My Notess',
+      files: null,
+    }
+  }
   updateLearningObject(learningObject: any) {
     // throw new Error('Method not implemented.');
     console.log('No Driver Implementation for updateLearningObject');
@@ -43,29 +56,9 @@ export class MongoConnector implements DataStore {
     // throw new Error('Method not implemented.');
     console.log('No Driver Implementation for createLearningObject');
   }
-  createLearningObjectTempFiles(learningObjectFiles: File[]): Promise<string> {
+  createLearningObjectFiles(learningObjectFiles: any) {
     //throw new Error("Method not implemented.");
-    console.log("No Driver Implementation for createLearningObjectTempFiles")
-    return new Promise((resolve, reject) => {
-      resolve('No Driver Implementation for createLearningObjectTempFiles');
-      //reject('No Driver Implementation for createLearningObjectTempFiles');
-    });
-  }
-  getLearningObjectTempFiles(learningObjectFilesID: string) {
-    //throw new Error("Method not implemented.");
-    console.log("No Driver Implementation for getLearningObjectTempFiles");
-    return { message: "No Driver Implementation for getLearningObjectTempFiles", id: 'No-Driver-Implementation-for-getLearningObjectTempFiles' };
-  }
-  updateLearningObjectTempFiles(learningObjectFilesID: string, learningObjectFiles: File[]) {
-    //throw new Error("Method not implemented.");
-    console.log("No Driver Implementation for updateLearningObjectTempFiles")
-  }
-  deleteLearningObjectTempFiles(learningObjectFilesID: string) {
-    //throw new Error("Method not implemented.");
-    console.log("No Driver Implementation for deleteLearningObjectTempFiles")
-  }
-  permStoreLearningObjectTempFiles(learningObjectFilesID: string) {
-    //throw new Error("Method not implemented.");
-    console.log("No Driver Implementation for permStoreLearningObjectTempFiles")
+    console.log("No Driver Implementation for storeLearningObjectFiles");
+    return learningObjectFiles;
   }
 }

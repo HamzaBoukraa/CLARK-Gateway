@@ -1,41 +1,76 @@
 import { AccessValidator, DataStore, Responder } from './../interfaces/interfaces';
 import * as AWS from 'aws-sdk';
+import * as fs from 'fs';
 
 export class LearningObjectRepoFileInteractor {
-    private _aws;
+    private _s3;
     constructor() {
         //Init aws with keys to access S3;
-        //this._aws = AWS.config.loadFromPath('');
+        AWS.config.credentials = {
+            "accessKeyId": "PUT IN ENV VAR",
+            "secretAccessKey": "PUT IN ENV VAR",
+        };
+        this._s3 = new AWS.S3({ region: 'us-east-2' })
     }
-    async tempStoreFiles(dataStore: DataStore, responder: Responder, learningObjectFiles: File[]) {
-        dataStore.createLearningObjectTempFiles(learningObjectFiles).then(
-            (learningObjectFilesID) => {
+    async storeFiles(dataStore: DataStore, responder: Responder, files) {
+        this.uploadToS3(files).then(
+            (learningObjectFiles) => {
                 responder.sendLearningObjectFiles(
-                    dataStore.getLearningObjectTempFiles(learningObjectFilesID)
+                    dataStore.createLearningObjectFiles(learningObjectFiles)
                 );
-            }).catch(
+            }
+        ).catch(
             (error) => {
-                responder.sendOperationError();
+                responder.sendOperationError({ message: "There was an error uploading your files. Please try again.", status: 400 });
             }
             );
     }
-    async read(dataStore: DataStore, responder: Responder, learningObjectFilesID: string) {
-        responder.sendLearningObjectFiles(
-            dataStore.getLearningObjectTempFiles(learningObjectFilesID)
-        );
-    }
-    async update(dataStore: DataStore, responder: Responder, learningObjectFilesID: string, learningObjectFiles: File[]){
-        responder.sendLearningObjectFiles(
-            dataStore.updateLearningObjectTempFiles(learningObjectFilesID, learningObjectFiles)
-        );
-    }
-    async storeFiles(dataStore: DataStore, responder: Responder, learningObjectFilesID: string){
-        // TODO
-        // Grab Files from temp storage; Upload to S3 bucket; Update files with S3 url; Add files to LearningObject;
-        // Delete temp files;
-    }
-    async delete(dataStore: DataStore, responder: Responder, learningObjectFilesID: string){
-        dataStore.deleteLearningObjectTempFiles(learningObjectFilesID);
-        responder.sendOperationSuccess();
+
+    private uploadToS3(files: any[]): Promise<any[]> {
+        return new Promise((resolve, reject) => {
+            var learningObjectFiles = [];
+            files.forEach(file => {
+                var tmp_path = file.path;
+                var tmp_file_name = file.filename;
+
+                var name = file.originalname;
+                var fileType = file.mimetype;
+                var date = Date.now().toString();
+
+                var fs_file = fs.createReadStream(tmp_path);
+
+                var params = {
+                    Bucket: 'neutrino-file-uploads',
+                    Key: `${tmp_file_name}`,
+                    ACL: 'public-read',
+                    Body: fs_file
+                };
+
+                this._s3.putObject(params, (error, data) => {
+                    if (error) {
+                        reject(null);
+                    } else {
+                        var params = {
+                            Bucket: 'neutrino-file-uploads',
+                            Key: `${tmp_file_name}`,
+                        };
+
+                        var url = this._s3.getSignedUrl('getObject', params);
+
+                        var newLearningObjectFile = {
+                            name: name,
+                            fileType: fileType,
+                            url: url,
+                            date: date,
+                        };
+
+                        learningObjectFiles.push(newLearningObjectFile);
+                        if (learningObjectFiles.length === files.length) {
+                            resolve(learningObjectFiles);
+                        }
+                    }
+                });
+            });
+        });
     }
 }
