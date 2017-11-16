@@ -83,7 +83,7 @@ export default class ExpressRouteDriver {
       .patch(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await update(this.accessValidator, this.dataStore, responder, req.body.content);
+          await update(this.accessValidator, this.dataStore, responder, req.body);
         } catch (e) {
           console.log(e);
         }
@@ -105,7 +105,7 @@ export default class ExpressRouteDriver {
         console.log(e);
       }
     });
-    router.post('/neutrino/upload', this.upload.any(),async (req, res) => {
+    router.post('/upload', this.upload.any(),async (req, res) => {
       try {
         let responder = this.getResponder(res);
         await new LearningObjectRepoFileInteractor().storeFiles(this.dataStore, responder, req.files);

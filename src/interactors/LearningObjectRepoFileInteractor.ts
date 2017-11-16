@@ -7,17 +7,15 @@ export class LearningObjectRepoFileInteractor {
     constructor() {
         //Init aws with keys to access S3;
         AWS.config.credentials = {
-            "accessKeyId": "PUT IN ENV VAR",
-            "secretAccessKey": "PUT IN ENV VAR",
+            "accessKeyId": "AKIAJFEVSEQMGZDV27SA",
+            "secretAccessKey": "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",
         };
         this._s3 = new AWS.S3({ region: 'us-east-2' })
     }
     async storeFiles(dataStore: DataStore, responder: Responder, files) {
         this.uploadToS3(files).then(
             (learningObjectFiles) => {
-                responder.sendLearningObjectFiles(
-                    dataStore.createLearningObjectFiles(learningObjectFiles)
-                );
+                responder.sendLearningObjectFiles(learningObjectFiles);
             }
         ).catch(
             (error) => {
