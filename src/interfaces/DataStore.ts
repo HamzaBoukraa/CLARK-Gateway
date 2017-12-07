@@ -1,9 +1,11 @@
 export interface DataStore {
     connectToDB(): Promise<{}>;
-    login();
-    register();
+    login(username: string, password: string);
+    register(newUser);
     getMyLearningObjects(userid);
-    updateLearningObject(id, learningObject);
+    getLearningObject(learningObjectID: string);
+    updateLearningObject(learningObject);
     deleteLearningObject(learningObject);
     createLearningObject(userid, learningObject);
+    createLearningObjectFiles(learningObjectFiles);
 }

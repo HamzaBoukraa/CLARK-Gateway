@@ -1,31 +1,34 @@
 import { AccessValidator, AccessResponse } from './../interfaces/AccessValidator';
 import * as jwt from 'jsonwebtoken';
-import { key } from '../config/config';
+import { key, issuer } from '../config/config';
 
 export class TokenManager implements AccessValidator {
-  authenticate(): AccessResponse {
+  authorize(user): AccessResponse {
     return {
-      userid: 0,
+      userid: user.id,
       isAccessable: true,
     };
   }
-
 }
 
 /**
  * Takes a user object and generates a JWT for the user
- * @param user contains the userid, username, firstname, lastname, and email
+ * @param user contains the user's id, username, firstname, lastname, and email
  */
-export function generateToken(userid) {
-  /*let payload = {
-      userid: user.userid
+export function generateToken(user) {
+  let payload = {
+    id: user.id,
+    username: user.username,
+    firstname: user.firstname,
+    lastname: user.lastname,
+    email: user.email
   };
   let options = {
-      expiresIn: "2d",
-      issuer: "bloomin_onion",
-      audience: user.username
-  };*/
-  let token = jwt.sign({ userid: userid }, key);
+    expiresIn: 3600,
+    issuer: issuer,
+    audience: user.username
+  };
+  let token = jwt.sign(payload, key, options);
   return token;
 }
 
@@ -36,17 +39,16 @@ export function generateToken(userid) {
  * @param callback the function to execute after verification
  */
 export function verifyJWT(token, res, callback) {
-  jwt.verify(token, key, { issuer: 'bloomin_onion' }, function (err, decoded) {
-      let status;
-      if (err) {
-        // invalid issuer
-        status = false;
-      } else {
-        status = true;
-      }
-
-      if (typeof callback === 'function') {
-        callback(status, jwt.decode(token));
-      }
-    });
+  jwt.verify(token, key, { issuer: issuer }, function (err, decoded) {
+    let status;
+    if (err) {
+      // invalid issuer
+      status = false;
+    } else {
+      status = true;
+    }
+    if (typeof callback === 'function') {
+      callback(status, jwt.decode(token));
+    }
+  });
 }

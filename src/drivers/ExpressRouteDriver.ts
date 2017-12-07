@@ -1,11 +1,13 @@
 import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
+import * as multer from 'multer';
 import { login, register } from '../interactors/AuthenticationInteractor';
-import { create, destroy, read, update } from '../interactors/LearningObjectInteractor';
+import { create, destroy, read, readOne, update } from '../interactors/LearningObjectInteractor';
 import { ExpressResponder } from '../drivers/ExpressResponder';
 import { TokenManager } from './TokenManager';
 import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
+
 
 /**
  * Serves as a factory for producing a router for the express app.
@@ -13,6 +15,8 @@ import { Router } from 'express';
  * @author Sean Donnelly
  */
 export default class ExpressRouteDriver {
+
+  upload = multer({ dest: 'tmp/' });
 
   /**
    * Produces a configured express router
@@ -39,12 +43,13 @@ export default class ExpressRouteDriver {
 
   setRoutes(router: Router) {
     router.get('/', function (req, res) {
+      console.log('here')
       res.json({ message: 'Welcome to the Bloomin Onion API' });
     });
     router.post('/authenticate', async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await login(this.dataStore, responder);
+        await login(this.dataStore, responder, req.body.username, req.body.password);
       } catch (e) {
         console.log(e);
       }
@@ -52,7 +57,7 @@ export default class ExpressRouteDriver {
     router.post('/register', async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await register(this.dataStore, responder);
+        await register(this.dataStore, responder, req.body);
       } catch (e) {
         console.log(e);
       }
@@ -61,7 +66,8 @@ export default class ExpressRouteDriver {
       .get(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await read(this.accessValidator, this.dataStore, responder);
+          let user = req['user'];
+          await read(this.accessValidator, this.dataStore, responder, user);
         } catch (e) {
           console.log(e);
         }
@@ -69,7 +75,8 @@ export default class ExpressRouteDriver {
       .post(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await create(this.accessValidator, this.dataStore, responder, req.body.content);
+          let user = req['user'];
+          await create(this.accessValidator, this.dataStore, responder, req.body.content, user);
         } catch (e) {
           console.log(e);
         }
@@ -77,19 +84,38 @@ export default class ExpressRouteDriver {
       .patch(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await update(this.accessValidator, this.dataStore, responder, req.body.learning_object_id, req.body.content);
+          let user = req['user'];
+          await update(this.accessValidator, this.dataStore, responder, req.body, user);
         } catch (e) {
           console.log(e);
         }
       });
-    router.delete('/learning-objects:id', async (req, res) => {
+    router.route('/learning-objects:id')
+      .get(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          await readOne(this.accessValidator, this.dataStore, responder, req.params.id);
+        } catch (e) {
+          console.log(e);
+        }
+      })
+      .delete(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await destroy(this.accessValidator, this.dataStore, responder, req.params.id, user);
+        } catch (e) {
+          console.log(e);
+        }
+      });
+    router.post('/upload', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await destroy(this.accessValidator, this.dataStore, responder, req.params.id);
+        await new LearningObjectRepoFileInteractor().storeFiles(this.dataStore, responder, req['files']);
       } catch (e) {
         console.log(e);
       }
-    });
+    })
   }
   /*
   router.patch('/learning-objects', (req, res) => {

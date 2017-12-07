@@ -54,7 +54,7 @@ export class MongoConnector implements DataStore {
     };
   }
   register() {
-    throw new Error('Method not implemented.');
+    throw new Error('register not implemented.');
   }
   getMyLearningObjects(userid) {
     return this._db;
