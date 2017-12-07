@@ -1,14 +1,8 @@
 import { DataStore } from '../interfaces/DataStore';
 
-import * as loki from 'lokijs';
-
 export class MongoConnector implements DataStore {
 
-  private db: loki = new loki('loki.json');
-  private learningObjects: any;
-
-  constructor(){
-    this.learningObjects = this.db.addCollection('learningObjects');
+  constructor() {
   }
   connectToDB(): Promise<{}> {
     throw new Error('Method not implemented.');
@@ -25,25 +19,24 @@ export class MongoConnector implements DataStore {
     };
   }
   register() {
-    throw new Error('Method not implemented.');
+    throw new Error('register not implemented.');
   }
   getMyLearningObjects(userid) {
-    return this.learningObjects.data;
+    throw new Error('getMyLearningObjects not implemented.');
   }
-  getLearningObject(learningObjectID){
-    return this.learningObjects.findOne({id: learningObjectID});
+  getLearningObject(learningObjectID) {
+    throw new Error('getLearningObject not implemented.');
   }
   updateLearningObject(learningObject: any) {
-    // throw new Error('Method not implemented.');
-    this.learningObjects.update(learningObject);
-    return learningObject;
+    throw new Error('updateLearningObject not implemented.');
   }
   deleteLearningObject(learningObject: any) {
-   this.learningObjects.findAndRemove(learningObject);
+    throw new Error('deleteLearningObject not implemented.');
   }
   createLearningObject(userid: any, learningObject: any) {
-    learningObject['id'] = learningObject.date + learningObject.name.replace(/\s/g, '').toLowerCase();
-    this.learningObjects.insert(learningObject)
-    return learningObject;
+    throw new Error('createLearningObject not implemented.');
+  }
+  createLearningObjectFiles(learningObjectFiles: any) {
+    throw new Error("createLearningObjectFiles not implemented.");
   }
 }

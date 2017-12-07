@@ -1,5 +1,5 @@
 export interface AccessValidator {
-  authenticate(): AccessResponse;
+  authorize(user: any): AccessResponse;
 }
 
 export interface AccessResponse {

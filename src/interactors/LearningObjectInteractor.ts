@@ -2,8 +2,8 @@ import { AccessValidator, DataStore, Responder } from './../interfaces/interface
 
 // FIXME: DRY violated by accessStatus repitition (promise structure maybe?)
 
-export async function create(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject) {
-  findAccessStatus(accessValidator)
+export async function create(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject, user: any) {
+  findAccessStatus(accessValidator, user)
     .then(userid => {
       // create new LearningObject(userid, data_as_json)
       dataStore.createLearningObject(userid, learningObject);
@@ -16,8 +16,8 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
     });
 }
 
-export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject) {
-  findAccessStatus(accessValidator)
+export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject, user) {
+  findAccessStatus(accessValidator, user)
     .then(userid => {
       // Patch data_as_json via dataStore call (else send error ->)
       dataStore.updateLearningObject(learningObject);
@@ -28,8 +28,8 @@ export async function update(accessValidator: AccessValidator, dataStore: DataSt
     });
 }
 
-export async function destroy(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID) {
-  findAccessStatus(accessValidator)
+export async function destroy(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, user) {
+  findAccessStatus(accessValidator, user)
     .then(userid => {
       // Delete LO from data store (else send error ->)
       dataStore.deleteLearningObject(learningObjectID);
@@ -40,8 +40,8 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
     });
 }
 
-export async function read(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder) {
-  findAccessStatus(accessValidator)
+export async function read(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, user) {
+  findAccessStatus(accessValidator, user)
     .then(userid => {
       // Fetch all Learning Objects associated with the userid
       responder.sendLearningObjects(
@@ -59,9 +59,9 @@ export async function readOne(accessValidator: AccessValidator, dataStore: DataS
   );
 }
 
-function findAccessStatus(accessValidator: AccessValidator) {
+function findAccessStatus(accessValidator: AccessValidator, user) {
   return new Promise((resolve, reject) => {
-    let accessStatus = accessValidator.authenticate();
+    let accessStatus = accessValidator.authorize(user);
     if (accessStatus.isAccessable) {
       resolve(accessStatus.userid);
     } else reject(new Error('Invalid Access'));

@@ -1,4 +1,4 @@
-import { AccessValidator, DataStore, Responder } from './../interfaces/interfaces';
+import { DataStore, Responder } from './../interfaces/interfaces';
 import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 
@@ -7,8 +7,8 @@ export class LearningObjectRepoFileInteractor {
     constructor() {
         //Init aws with keys to access S3;
         AWS.config.credentials = {
-            "accessKeyId": "AKIAJFEVSEQMGZDV27SA",
-            "secretAccessKey": "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",
+            "accessKeyId": "KEYKEYKEY",
+            "secretAccessKey": "KEYKEYKEY",
         };
         this._s3 = new AWS.S3({ region: 'us-east-2' })
     }

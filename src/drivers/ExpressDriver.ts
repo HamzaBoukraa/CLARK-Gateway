@@ -1,13 +1,13 @@
 import { DataStore } from './../interfaces/DataStore';
-
 import { ExpressRouteDriver } from './drivers';
 import * as express from 'express';
 import * as path from 'path';
 import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
+import * as logger from 'morgan';
 
 import { router as log } from '../routes/log';
-import { enforceTokenAccess as jwtValidator } from '../middleware/jwt.config';
+import { enforceTokenAccess } from '../middleware/jwt.config';
 import * as http from 'http';
 
 /**
@@ -20,11 +20,12 @@ export class ExpressDriver {
     // Configure Helmet Security
     helmetConfig.setup(this.app);
 
-    // configure app to use bodyParser()
-    this.app.use(bodyParser.urlencoded({limit: '50mb' ,extended: true }));
-    this.app.use(bodyParser.json({limit: '50mb'}));
+    // Configure app to log requests
+    this.app.use(logger('dev'));
 
-    
+    // configure app to use bodyParser()
+    this.app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+    this.app.use(bodyParser.json({ limit: '50mb' }));
 
     // set header to allow connection by given url
     this.app.use(function (req, res, next) {
@@ -46,10 +47,12 @@ export class ExpressDriver {
       next();
     });
 
-
+    //Set Validation Middleware
+    this.app.use(enforceTokenAccess);
 
     // Set our api routes
     this.app.use('/api', ExpressRouteDriver.buildRouter(dataStore), log);
+
 
     this.linkClient();
     /**
