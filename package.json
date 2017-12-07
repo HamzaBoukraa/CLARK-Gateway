@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run gulp-tsc",
     "gulp-tsc": "node_modules/.bin/gulp start",
-    "lint": "node_modules/.bin/tslint --type-check --project ./src/**"
+    "lint": "node_modules/.bin/tslint --project ./src/**"
   },
   "author": "",
   "license": "ISC",
