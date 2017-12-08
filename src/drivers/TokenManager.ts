@@ -3,9 +3,16 @@ import * as jwt from 'jsonwebtoken';
 import { key, issuer } from '../config/config';
 
 export class TokenManager implements AccessValidator {
+  /**
+   * Authorizes user to access resource
+   * 
+   * @param {any} user 
+   * @returns {AccessResponse} 
+   * @memberof TokenManager
+   */
   authorize(user): AccessResponse {
     return {
-      userid: user.id,
+      userid: user.userid,
       isAccessable: true,
     };
   }
@@ -17,7 +24,7 @@ export class TokenManager implements AccessValidator {
  */
 export function generateToken(user) {
   let payload = {
-    id: user.id,
+    userid: user.userid,
     username: user.username,
     firstname: user.firstname,
     lastname: user.lastname,

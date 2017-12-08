@@ -7,6 +7,7 @@ import { ExpressResponder } from '../drivers/ExpressResponder';
 import { TokenManager } from './TokenManager';
 import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
+import { LearningObjectRepoFileInteractor } from '../interactors/LearningObjectRepoFileInteractor';
 
 
 /**
@@ -111,7 +112,8 @@ export default class ExpressRouteDriver {
     router.post('/upload', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await new LearningObjectRepoFileInteractor().storeFiles(this.dataStore, responder, req['files']);
+        let learningObjectFile = new LearningObjectRepoFileInteractor();
+        await learningObjectFile.storeFiles(this.dataStore, responder, req['files']);
       } catch (e) {
         console.log(e);
       }

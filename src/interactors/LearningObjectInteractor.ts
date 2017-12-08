@@ -59,7 +59,7 @@ export async function readOne(accessValidator: AccessValidator, dataStore: DataS
   // );
 }
 
-function findAccessStatus(accessValidator: AccessValidator, user) {
+function findAccessStatus(accessValidator: AccessValidator, user): Promise<string> {
   return new Promise((resolve, reject) => {
     let accessStatus = accessValidator.authorize(user);
     if (accessStatus.isAccessable) {

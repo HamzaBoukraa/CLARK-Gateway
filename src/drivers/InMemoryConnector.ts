@@ -16,7 +16,7 @@ export class InMemoryConnector implements DataStore {
         this.learningObjects.insert({ name: 'testLO' });
         this.users = this.db.addCollection('users');
         this.users.insert({
-            id: '1',
+            userid: '1',
             username: 'test',
             firstname: 'Test',
             lastname: 'Er',
@@ -78,8 +78,5 @@ export class InMemoryConnector implements DataStore {
         learningObject['id'] = learningObject.date + learningObject.name.replace(/\s/g, '').toLowerCase();
         this.learningObjects.insert(learningObject)
         return learningObject;
-    }
-    createLearningObjectFiles(learningObjectFiles: any) {
-        throw new Error("Method not implemented.");
     }
 }

@@ -3,6 +3,6 @@ export interface AccessValidator {
 }
 
 export interface AccessResponse {
-  userid: number;
+  userid: string;
   isAccessable: boolean;
 }
