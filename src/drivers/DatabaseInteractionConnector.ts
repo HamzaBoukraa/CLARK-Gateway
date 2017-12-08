@@ -20,7 +20,7 @@ export class DatabaseInteractionConnector implements DataStore {
 
     /**
      * Authenticates user via credentials
-     * If credentials valid and user exists User Object is returned
+     * If credentials valid and user exists; Unserialized User Object is returned
      * Else null is returned
      * Request errors return null
      * 
@@ -36,7 +36,7 @@ export class DatabaseInteractionConnector implements DataStore {
             if (userid && !userid.error) {
                 let user = await this.request(EVENT.LOAD_USER, { id: userid });
                 if (user && !user.error) {
-                    return user;
+                    return User.unserialize(user);
                 }
                 return null;
             }
@@ -47,7 +47,7 @@ export class DatabaseInteractionConnector implements DataStore {
 
     /**
      * Registers new user
-     * If username unique new user is created and User Object is returned
+     * If username unique new user is created; Unserialized User Object is returned
      * Else null is returned
      * Request errors return null
      * 
@@ -62,11 +62,11 @@ export class DatabaseInteractionConnector implements DataStore {
             user.email,
             user.password
         );
-        let userid = await this.request(EVENT.ADD_USER, { user: newUser });
+        let userid = await this.request(EVENT.ADD_USER, { user: User.serialize(newUser) });
         if (userid && !userid.error) {
             let user = await this.request(EVENT.LOAD_USER, { id: userid });
             if (user && !user.error) {
-                return user;
+                return User.unserialize(user);
             }
             return null;
         }
