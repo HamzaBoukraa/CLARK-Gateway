@@ -24,14 +24,13 @@ export class TokenManager implements AccessValidator {
  */
 export function generateToken(user) {
   let payload = {
-    userid: user.userid,
-    username: user.username,
-    firstname: user.firstname,
-    lastname: user.lastname,
+    userid: user.id,
+    firstname: user.name.split(' ')[0],
+    lastname: user.name.split(' ')[1],
     email: user.email
   };
   let options = {
-    expiresIn: 3600,
+    expiresIn: 86400,
     issuer: issuer,
     audience: user.username
   };

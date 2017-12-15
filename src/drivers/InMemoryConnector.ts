@@ -3,6 +3,8 @@ import { DataStore } from '../interfaces/DataStore';
 import * as loki from 'lokijs';
 
 import * as bcrypt from 'bcrypt-nodejs';
+import { User } from '../entity/user';
+import { LearningObject } from '../entity/entities';
 
 export class InMemoryConnector implements DataStore {
 
@@ -12,20 +14,33 @@ export class InMemoryConnector implements DataStore {
     private users: any;
 
     constructor() {
-        this.learningObjects = this.db.addCollection('learningObjects');
-        this.learningObjects.insert({ name: 'testLO' });
         this.users = this.db.addCollection('users');
-        this.users.insert({
-            userid: '1',
-            username: 'test',
-            firstname: 'Test',
-            lastname: 'Er',
-            email: 'tester@test.com',
-            password: 'password'
-        });
+        this.learningObjects = this.db.addCollection('learningObjects');
+
+        let defaultUser: User = this.createDefaultUser();
+        this.createDefaultLO(defaultUser);
+
     }
-    connectToDB(): Promise<{}> {
-        throw new Error('Method not implemented.');
+
+    private createDefaultUser(): User {
+        let newUser = new User(
+            'test',
+            'Tester Test',
+            'test@test.com',
+            'password'
+        );
+        this.users.insert({ user: User.serialize(newUser) });
+        return newUser;
+    }
+    private createDefaultLO(user: User): void {
+        let newLearningObject = new LearningObject(
+            user,
+            'Test Learning Object'
+        );
+        newLearningObject.date = Date.now().toString();
+        for (let i = 0; i < 5; i++) {
+
+        }
     }
     async login(username: string, password: string) {
         let possibleUser = this.users.findOne({ username: username });

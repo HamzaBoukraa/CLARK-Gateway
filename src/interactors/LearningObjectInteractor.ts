@@ -6,10 +6,13 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // create new LearningObject(userid, data_as_json)
-      dataStore.createLearningObject(userid, learningObject);
-      // if success,
-      // else send failure  ->
-      responder.sendOperationSuccess();
+      dataStore.createLearningObject(userid, learningObject)
+        .then((learningObjectID) => {
+          responder.sendOperationSuccess();
+        })
+        .catch((error) => {
+          responder.sendOperationError({ message: `There was an error creating new learning object. ${error}`, status: 400 });
+        });
     })
     .catch((error) => {
       responder.invalidAccess();
@@ -20,8 +23,13 @@ export async function update(accessValidator: AccessValidator, dataStore: DataSt
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // Patch data_as_json via dataStore call (else send error ->)
-      // dataStore.updateLearningObject(learningObject.id, learningObject);
-      responder.sendOperationSuccess();
+      dataStore.updateLearningObject(learningObject)
+        .then(() => {
+          responder.sendOperationSuccess();
+        })
+        .catch((error) => {
+          responder.sendOperationError({ message: `There was an error updating learning object. ${error}`, status: 400 });
+        });
     })
     .catch((error) => {
       responder.invalidAccess();
@@ -32,7 +40,13 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // Delete LO from data store (else send error ->)
-      dataStore.deleteLearningObject(learningObjectID);
+      dataStore.deleteLearningObject(learningObjectID)
+        .then(() => {
+          responder.sendOperationSuccess();
+        })
+        .catch((error) => {
+          responder.sendOperationError({ message: `There was an error deleting learning object. ${error}`, status: 400 });
+        });
       // Send verification ->
     })
     .catch((error) => {
@@ -44,19 +58,39 @@ export async function read(accessValidator: AccessValidator, dataStore: DataStor
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // Fetch all Learning Objects associated with the userid
-      responder.sendLearningObjects(
-        dataStore.getMyLearningObjects(userid),
-      );
+      dataStore.getMyLearningObjects(userid)
+        .then((learningObjects) => {
+          responder.sendLearningObjects(
+            learningObjects
+          );
+        })
+        .catch((error) => {
+          responder.sendOperationError({ message: `There was an error fetching user's learning objects. ${error}`, status: 400 });
+        });
+
     })
     .catch((error) => {
       responder.invalidAccess();
     });
 }
 
-export async function readOne(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID) {
-  // responder.sendLearningObject(
-  //   dataStore.getLearningObject(learningObjectID)
-  // );
+export async function readOne(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, user) {
+  findAccessStatus(accessValidator, user)
+    .then((userid) => {
+      dataStore.getLearningObject(user.userid, learningObjectID)
+        .then((learningObject) => {
+          responder.sendLearningObject(
+            learningObject
+          );
+        })
+        .catch((error) => {
+          responder.sendOperationError({ message: `There was an error fetching user's learning object. ${error}`, status: 400 });
+        });
+    })
+    .catch((error) => {
+      responder.invalidAccess();
+    })
+
 }
 
 function findAccessStatus(accessValidator: AccessValidator, user): Promise<string> {

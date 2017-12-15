@@ -95,7 +95,8 @@ export default class ExpressRouteDriver {
       .get(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await readOne(this.accessValidator, this.dataStore, responder, req.params.id);
+          let user = req['user'];
+          await readOne(this.accessValidator, this.dataStore, responder, req.params.id, user);
         } catch (e) {
           console.log(e);
         }

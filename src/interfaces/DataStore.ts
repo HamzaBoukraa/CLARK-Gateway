@@ -1,12 +1,11 @@
 import { User } from "../entity/user";
 
 export interface DataStore {
-    connectToDB(): Promise<{}>;
-    login(username: string, password: string): Promise<User>;
     register(user: { username: string, firstname: string, lastname: string, email: string, password: string }): Promise<User>;
-    getMyLearningObjects(userid: string);
-    getLearningObject(learningObjectID: string);
+    login(username: string, password: string): Promise<User>;
+    createLearningObject(username: string, learningObject);
+    getMyLearningObjects(username: string);
+    getLearningObject(username: string, learningObjectID: string);
     updateLearningObject(learningObject);
-    deleteLearningObject(learningObject);
-    createLearningObject(userid: string, learningObject);
+    deleteLearningObject(learningObjectID: string);
 }
