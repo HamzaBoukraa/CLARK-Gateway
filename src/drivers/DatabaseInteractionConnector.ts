@@ -2,7 +2,7 @@ import { DataStore } from '../interfaces/DataStore';
 import { DB_INTERACTION_URI } from '../config/config'
 import * as EVENT from './DatabaseInteractionActions';
 import * as rp from 'request-promise';
-import { User } from '../entity/entities';
+import { User } from '../entity/user';
 import { LearningObject } from '../entity/learning-object';
 
 export class DatabaseInteractionConnector implements DataStore {
