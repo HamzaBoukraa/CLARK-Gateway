@@ -77,7 +77,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await create(this.accessValidator, this.dataStore, responder, req.body.content, user);
+          await create(this.accessValidator, this.dataStore, responder, req.body, user);
         } catch (e) {
           console.log(e);
         }
