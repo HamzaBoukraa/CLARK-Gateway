@@ -6,6 +6,6 @@ export interface DataStore {
     createLearningObject(username: string, learningObject);
     getMyLearningObjects(username: string);
     getLearningObject(username: string, learningObjectID: string);
-    updateLearningObject(learningObject);
+    updateLearningObject(username: string, learningObject);
     deleteLearningObject(learningObjectID: string);
 }

@@ -81,10 +81,10 @@ export class DatabaseInteractionConnector implements DataStore {
      */
     async createLearningObject(username: string, learningObject: any): Promise<string> {
         let userid = await this.request(EVENT.FIND_USER, { userid: username });
-        if (!userid || userid.error) return null;
+        if (!userid || userid.error) return Promise.reject(userid.error);
 
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return null;
+        if (!user || user.error) return Promise.reject(user.error);
 
         let newLearningObject = new LearningObject(user, learningObject._name);
         newLearningObject.date = learningObject._date;
@@ -114,7 +114,7 @@ export class DatabaseInteractionConnector implements DataStore {
             });
         });
         let learningObjectID = await this.request(EVENT.ADD_LEARNING_OBJECT, { author: userid, object: LearningObject.serialize(newLearningObject) });
-        if (!learningObjectID || learningObjectID.error) return null;
+        if (!learningObjectID || learningObjectID.error) return Promise.reject(learningObjectID.error);
 
         return learningObjectID;
     }
@@ -128,12 +128,12 @@ export class DatabaseInteractionConnector implements DataStore {
      */
     async getMyLearningObjects(username: string): Promise<any> {
         let userid = await this.request(EVENT.FIND_USER, { userid: username });
-        if (!userid || userid.error) return null;
+        if (!userid || userid.error) return Promise.reject(userid.error);
 
         let LOs = await this.request(EVENT.LOAD_LEARNING_OBJECT_SUMARY, { id: userid });
 
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return null;
+        if (!user || user.error) return Promise.reject(user.error);
         user = User.unserialize(user);
 
         // Attach id's to learning objects and return array of Learning Objects
@@ -163,14 +163,14 @@ export class DatabaseInteractionConnector implements DataStore {
      */
     async getLearningObject(username: string, learningObjectID: string): Promise<LearningObject> {
         let userid = await this.request(EVENT.FIND_USER, { userid: username });
-        if (!userid || userid.error) return null;
+        if (!userid || userid.error) return Promise.reject(userid.error);
 
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return null;
+        if (!user || user.error) return Promise.reject(user.error);
         user = User.unserialize(user);
 
         let learningObject = await this.request(EVENT.LOAD_LEARNING_OBJECT, { id: learningObjectID });
-        if (!learningObject || learningObject.error) return null;
+        if (!learningObject || learningObject.error) return Promise.reject(learningObject.error);
 
         learningObject = LearningObject.unserialize(learningObject, user);
 
@@ -198,12 +198,12 @@ export class DatabaseInteractionConnector implements DataStore {
      * @returns 
      * @memberof DatabaseInteractionConnector
      */
-    async updateLearningObject(learningObject: any): Promise<any> {
-        let userid = await this.request(EVENT.FIND_USER, { userid: learningObject['_author']['_id'] });
-        if (!userid || userid.error) return null;
+    async updateLearningObject(username: string, learningObject: any): Promise<any> {
+        let userid = await this.request(EVENT.FIND_USER, { userid: username });
+        if (!userid || userid.error) return Promise.reject(userid.error);
 
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return null;
+        if (!user || user.error) return Promise.reject(user.error);
 
         let newLearningObject = new LearningObject(user, learningObject._name);
         newLearningObject.date = learningObject._date;

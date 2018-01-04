@@ -23,7 +23,7 @@ export async function update(accessValidator: AccessValidator, dataStore: DataSt
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // Patch data_as_json via dataStore call (else send error ->)
-      dataStore.updateLearningObject(learningObject)
+      dataStore.updateLearningObject(userid, learningObject)
         .then(() => {
           responder.sendOperationSuccess();
         })
