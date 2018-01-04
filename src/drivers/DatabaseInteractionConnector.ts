@@ -32,7 +32,8 @@ export class DatabaseInteractionConnector implements DataStore {
             user.password
         );
         let emailRegistered = await this.request(EVENT.CHECK_EMAIL_REGISTERED, { email: user.email });
-        if (emailRegistered) return Promise.reject('email registered');
+        console.log(emailRegistered)
+        if (emailRegistered) return Promise.reject('email');
 
         let userid = await this.request(EVENT.ADD_USER, { user: User.serialize(newUser) });
         if (userid && !userid.error) {
