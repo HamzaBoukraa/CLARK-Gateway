@@ -87,7 +87,7 @@ export class DatabaseInteractionConnector implements DataStore {
         if (!user || user.error) return Promise.reject(user.error);
 
         let newLearningObject = new LearningObject(user, learningObject._name);
-        newLearningObject.date = learningObject._date;
+        newLearningObject.date = learningObject.date;
         newLearningObject.length = learningObject._length;
 
         learningObject._goals.forEach(goal => {
@@ -97,7 +97,7 @@ export class DatabaseInteractionConnector implements DataStore {
 
         learningObject._outcomes.forEach(outcome => {
             let newOutcome = newLearningObject.addOutcome();
-            newOutcome.bloom = outcome._class;
+            newOutcome.bloom = outcome._bloom;
             newOutcome.verb = outcome._verb;
             newOutcome.text = outcome._text;
 
