@@ -19,8 +19,6 @@ export class DatabaseInteractionConnector implements DataStore {
     /**
      * Registers new user
      * If username unique new user is created; Unserialized User Object is returned
-     * Else null is returned
-     * Request errors return null
      * 
      * @param {username: string, firstname: string, lastname: string, email: string, password: string} user 
      * @returns {Promise<User>} 
@@ -42,16 +40,14 @@ export class DatabaseInteractionConnector implements DataStore {
             if (user && !user.error) {
                 return User.unserialize(user);
             }
-            return null;
+            return Promise.reject(user.error);
         }
-        return null;
+        return Promise.reject(userid.error);
     }
 
     /**
      * Authenticates user via credentials
      * If credentials valid and user exists; Unserialized User Object is returned
-     * Else null is returned
-     * Request errors return null
      * 
      * @param {string} username user's username
      * @param {string} password user's password

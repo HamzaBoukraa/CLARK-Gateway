@@ -16,19 +16,17 @@ import { generateToken } from '../drivers/TokenManager';
 export async function login(dataStore: DataStore, responder: Responder, username: string, password: string) {
   // Try to login with the datastore
   // response should be the user object
-  let user = await dataStore.login(username, password);
-  //If user; Login credentials were valid
-  if (user) {
-    //Get access token and add to user object
-    user['token'] = generateToken(user);
-    // Clean user object for safe local storage in the client
-    delete user.id;
-    responder.sendUser(user);
-  } else {
-    // Else login credentials were invalid
-    // respond with invalid credential message as failure
-    responder.invalidLogin();
-  }
+  dataStore.login(username, password)
+    .then((user) => {
+      //Get access token and add to user object
+      user['token'] = generateToken(user);
+      // Clean user object for safe local storage in the client
+      delete user.id;
+      responder.sendUser(user);
+    })
+    .catch((error) => {
+      responder.invalidLogin();
+    });
 }
 
 /**
@@ -53,8 +51,12 @@ export async function register(datastore: DataStore, responder: Responder, user)
     })
     .catch((error) => {
       // Clean user object for safe local storage in the client
-      if (error === 'email') responder.sendOperationError({ message: "Email is already in use.", status: 420 })
-      responder.invalidRegistration();
+      if (error === 'email') {
+        responder.sendOperationError({ message: "Email is already in use.", status: 420 });
+      } else {
+        responder.invalidRegistration();
+
+      }
     });
 
 }
