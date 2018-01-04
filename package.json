@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "npm run gulp-tsc",
-    "build": "node_modules/.bin/gulp",
+    "build": "node_modules/.bin/gulp tsc",
     "gulp-tsc": "node_modules/.bin/gulp start",
     "lint": "node_modules/.bin/tslint --project ./src/**"
   },

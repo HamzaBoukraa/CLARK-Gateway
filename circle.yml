@@ -13,6 +13,6 @@ deployment:
     branch: production
     commands:
       - npm run build
-      - mv ./package.json ./dist
+      - cp ./package.json ./dist
       - zip -r ./dist.zip ./dist
       - eb deploy --profile default
