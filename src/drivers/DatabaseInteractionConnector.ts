@@ -33,6 +33,9 @@ export class DatabaseInteractionConnector implements DataStore {
             user.email,
             user.password
         );
+        let emailRegistered = await this.request(EVENT.CHECK_EMAIL_REGISTERED, { email: user.email });
+        if (emailRegistered) return Promise.reject('email registered');
+
         let userid = await this.request(EVENT.ADD_USER, { user: User.serialize(newUser) });
         if (userid && !userid.error) {
             let user = await this.request(EVENT.LOAD_USER, { id: userid });
@@ -86,34 +89,10 @@ export class DatabaseInteractionConnector implements DataStore {
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
         if (!user || user.error) return Promise.reject(user.error);
 
-        let newLearningObject = new LearningObject(user, learningObject._name);
-        newLearningObject.date = learningObject.date;
-        newLearningObject.length = learningObject._length;
+        learningObject = LearningObject.unserialize(JSON.stringify(learningObject), user);
+        learningObject = LearningObject.serialize(learningObject);
 
-        learningObject._goals.forEach(goal => {
-            let newGoal = newLearningObject.addGoal();
-            newGoal.text = goal._text;
-        });
-
-        learningObject._outcomes.forEach(outcome => {
-            let newOutcome = newLearningObject.addOutcome();
-            newOutcome.bloom = outcome._bloom;
-            newOutcome.verb = outcome._verb;
-            newOutcome.text = outcome._text;
-
-            outcome._assessments.forEach(question => {
-                let newQuestion = newOutcome.addAssessment();
-                newQuestion.plan = question._plan;
-                newQuestion.text = question._text;
-            });
-
-            outcome._strategies.forEach(strategy => {
-                let newStrategy = newOutcome.addStrategy();
-                newStrategy.instruction = strategy._instruction;
-                newStrategy.text = strategy._text;
-            });
-        });
-        let learningObjectID = await this.request(EVENT.ADD_LEARNING_OBJECT, { author: userid, object: LearningObject.serialize(newLearningObject) });
+        let learningObjectID = await this.request(EVENT.ADD_LEARNING_OBJECT, { author: userid, object: learningObject });
         if (!learningObjectID || learningObjectID.error) return Promise.reject(learningObjectID.error);
 
         return learningObjectID;
@@ -172,22 +151,10 @@ export class DatabaseInteractionConnector implements DataStore {
         let learningObject = await this.request(EVENT.LOAD_LEARNING_OBJECT, { id: learningObjectID });
         if (!learningObject || learningObject.error) return Promise.reject(learningObject.error);
 
-        learningObject = LearningObject.unserialize(learningObject, user);
+        learningObject = JSON.parse(learningObject);
+        learningObject['author'] = user;
+        learningObject = JSON.stringify(learningObject);
 
-        // Remove source property causing Type Error
-        learningObject.goals.forEach(goal => {
-            delete goal._source;
-        });
-        learningObject.outcomes.forEach(outcome => {
-            delete outcome._source;
-
-            outcome._assessments.forEach(assessment => {
-                delete assessment._source;
-            });
-            outcome._strategies.forEach(strategy => {
-                delete strategy._source;
-            });
-        });
         return learningObject;
     }
 
@@ -205,34 +172,11 @@ export class DatabaseInteractionConnector implements DataStore {
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
         if (!user || user.error) return Promise.reject(user.error);
 
-        let newLearningObject = new LearningObject(user, learningObject._name);
-        newLearningObject.date = learningObject._date;
-        newLearningObject.length = learningObject._length;
+        let id = learningObject.id;
+        learningObject = LearningObject.unserialize(JSON.stringify(learningObject), user);
+        learningObject = LearningObject.serialize(learningObject);
 
-        learningObject._goals.forEach(goal => {
-            let newGoal = newLearningObject.addGoal();
-            newGoal.text = goal._text;
-        });
-
-        learningObject._outcomes.forEach(outcome => {
-            let newOutcome = newLearningObject.addOutcome();
-            newOutcome.bloom = outcome._bloom;
-            newOutcome.verb = outcome._verb;
-            newOutcome.text = outcome._text;
-
-            outcome._assessments.forEach(question => {
-                let newQuestion = newOutcome.addAssessment();
-                newQuestion.plan = question._plan;
-                newQuestion.text = question._text;
-            });
-
-            outcome._strategies.forEach(strategy => {
-                let newStrategy = newOutcome.addStrategy();
-                newStrategy.instruction = strategy._instruction;
-                newStrategy.text = strategy._text;
-            });
-        });
-        return this.request(EVENT.UPDATE_LEARNING_OBJECT, { id: learningObject['id'], object: LearningObject.serialize(newLearningObject) });
+        return this.request(EVENT.UPDATE_LEARNING_OBJECT, { id: id, object: learningObject });
     }
 
     /**

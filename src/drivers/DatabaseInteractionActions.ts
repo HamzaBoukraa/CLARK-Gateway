@@ -1,5 +1,6 @@
 export const AUTHENTICATE = '/authenticate';
 export const ADD_USER = '/addUser';
+export const CHECK_EMAIL_REGISTERED = '/emailRegistered';
 export const FIND_USER = '/findUser';
 export const LOAD_USER = '/loadUser';
 export const EDIT_USER = '/editUser';

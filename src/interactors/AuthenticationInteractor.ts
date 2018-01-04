@@ -44,19 +44,18 @@ export async function login(dataStore: DataStore, responder: Responder, username
 export async function register(datastore: DataStore, responder: Responder, user) {
   //Try register with datastore
   // response should be the user object
-  let newUser = await datastore.register(user);
+  datastore.register(user)
+    .then((newUser) => {
+      //Get access token and add to user object
+      newUser['token'] = generateToken(newUser);
+      delete newUser.id;
+      responder.sendUser(newUser);
+    })
+    .catch((error) => {
+      // Clean user object for safe local storage in the client
+      if (error === 'email') responder.sendOperationError({ message: "Email is already in use.", status: 420 })
+      responder.invalidRegistration();
+    });
 
-  //If newUser; username was available;
-  if (newUser) {
-    //Get access token and add to user object
-    newUser['token'] = generateToken(newUser);
-    // Clean user object for safe local storage in the client
-    delete newUser.id;
-    responder.sendUser(newUser);
-  } else {
-    //Else username was not available;
-    // respond with invalid registration credentials
-    responder.invalidRegistration();
-  }
 }
 
