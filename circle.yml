@@ -2,7 +2,8 @@ node:
   verson: 7.9.0
 dependencies:
   pre:
-    - sudo pip install 'awsebcli==3.7.4' --force-reinstall
+    - eb --version
+    - pip install awsebcli --upgrade --user
     - npm install
 test:
   override:
