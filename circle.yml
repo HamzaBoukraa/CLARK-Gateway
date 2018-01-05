@@ -13,5 +13,5 @@ deployment:
     commands:
       - npm run build
       - cp ./package.json ./dist
-      - zip -r ./dist.zip ./dist
-      - eb deploy --profile default
+      - cd ./dist && zip -r ../dist.zip  ./* & cd ..
+      - eb deploy LearningObjectSubmission-env --profile default
