@@ -86,7 +86,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await update(this.accessValidator, this.dataStore, responder, req.body, user);
+          await update(this.accessValidator, this.dataStore, responder, req.body.id, req.body.learningObject, user);
         } catch (e) {
           console.log(e);
         }

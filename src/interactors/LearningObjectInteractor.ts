@@ -19,11 +19,11 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
     });
 }
 
-export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject, user) {
+export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, learningObject, user) {
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // Patch data_as_json via dataStore call (else send error ->)
-      dataStore.updateLearningObject(userid, learningObject)
+      dataStore.updateLearningObject(userid, learningObjectID, learningObject)
         .then(() => {
           responder.sendOperationSuccess();
         })

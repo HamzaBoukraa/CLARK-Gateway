@@ -2,7 +2,6 @@ node:
   verson: 7.9.0
 dependencies:
   pre:
-    - sudo apt-get install python-dev
     - sudo pip install 'awsebcli==3.7.4' --force-reinstall
     - npm install
 test:

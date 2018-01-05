@@ -161,18 +161,22 @@ export class DBInteractionConnector implements DataStore {
      * @returns 
      * @memberof DatabaseInteractionConnector
      */
-    async updateLearningObject(username: string, learningObject: any): Promise<any> {
+    async updateLearningObject(username: string, learningObjectID: string, learningObject: any): Promise<any> {
+
         let userid = await this.request(EVENT.FIND_USER, { userid: username });
         if (!userid || userid.error) return Promise.reject(userid.error);
 
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
         if (!user || user.error) return Promise.reject(user.error);
 
-        let id = learningObject.id;
-        learningObject = LearningObject.unserialize(JSON.stringify(learningObject), user);
+
+
+        learningObject = LearningObject.unserialize(learningObject, user);
         learningObject = LearningObject.serialize(learningObject);
 
-        return this.request(EVENT.UPDATE_LEARNING_OBJECT, { id: id, object: learningObject });
+
+
+        return this.request(EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject });
     }
 
     /**
