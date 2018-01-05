@@ -2,6 +2,7 @@ node:
   verson: 7.9.0
 dependencies:
   pre:
+    - pip install awsebcli
     - npm install
 test:
   override:
