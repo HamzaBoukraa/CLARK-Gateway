@@ -1,11 +1,10 @@
 import { DataStore } from '../interfaces/DataStore';
 import { DB_INTERACTION_URI } from '../config/config'
-import * as EVENT from './DatabaseInteractionActions';
+import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
-import { User } from '../entity/user';
-import { LearningObject } from '../entity/learning-object';
+import { LearningObject, User } from 'clark-entity';
 
-export class DatabaseInteractionConnector implements DataStore {
+export class DBInteractionConnector implements DataStore {
     constructor() { }
     private async request(event: string, params: {}): Promise<any> {
         return rp({

@@ -3,8 +3,7 @@ import { DataStore } from '../interfaces/DataStore';
 import * as loki from 'lokijs';
 
 import * as bcrypt from 'bcrypt-nodejs';
-import { User } from '../entity/user';
-import { LearningObject } from '../entity/entities';
+import { LearningObject, User } from 'clark-entity';
 
 export class InMemoryConnector implements DataStore {
 

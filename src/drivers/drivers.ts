@@ -1,4 +1,4 @@
-import { DatabaseInteractionConnector } from './DatabaseInteractionConnector';
+import { DBInteractionConnector } from './DBInteractionConnector';
 import { InMemoryConnector } from './InMemoryConnector';
 import { ExpressResponder } from './ExpressResponder';
 import { ExpressDriver } from './ExpressDriver';
@@ -8,6 +8,6 @@ export {
   ExpressDriver,
   ExpressResponder,
   ExpressRouteDriver,
-  DatabaseInteractionConnector,
+  DBInteractionConnector,
   InMemoryConnector,
 };
