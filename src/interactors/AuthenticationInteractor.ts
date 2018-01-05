@@ -52,7 +52,7 @@ export async function register(datastore: DataStore, responder: Responder, user)
     .catch((error) => {
       // Clean user object for safe local storage in the client
       if (error === 'email') {
-        responder.sendOperationError({ message: "Email is already in use.", status: 420 });
+        responder.sendOperationError({ message: 'Email is already in use.', status: 420 });
       } else {
         responder.invalidRegistration();
 
