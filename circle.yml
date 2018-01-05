@@ -2,7 +2,6 @@ node:
   verson: 7.9.0
 dependencies:
   pre:
-    - eb --version
     - pip install awsebcli --upgrade --user
     - npm install
 test:
