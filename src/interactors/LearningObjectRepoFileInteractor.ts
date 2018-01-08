@@ -1,16 +1,14 @@
 import { DataStore, Responder } from './../interfaces/interfaces';
 import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
+import { AWS_SDK_CONFIG } from '../config/aws-sdk/config';
 
 export class LearningObjectRepoFileInteractor {
     private _s3;
     constructor() {
         //Init aws with keys to access S3;
-        AWS.config.credentials = {
-            "accessKeyId": "KEYKEYKEY",
-            "secretAccessKey": "KEYKEYKEY",
-        };
-        this._s3 = new AWS.S3({ region: 'us-east-2' })
+        AWS.config.credentials = AWS_SDK_CONFIG.credentials;
+        this._s3 = new AWS.S3({ region: AWS_SDK_CONFIG.region });
     }
     async storeFiles(dataStore: DataStore, responder: Responder, files) {
         this.uploadToS3(files).then(

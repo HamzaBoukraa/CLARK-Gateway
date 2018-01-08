@@ -8,7 +8,7 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
       // create new LearningObject(userid, data_as_json)
       dataStore.createLearningObject(userid, learningObject)
         .then((learningObjectID) => {
-          responder.sendOperationSuccess();
+          responder.sendLearningObject(learningObjectID);
         })
         .catch((error) => {
           responder.sendOperationError({ message: `There was an error creating new learning object. ${error}`, status: 400 });
