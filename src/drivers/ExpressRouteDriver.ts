@@ -114,7 +114,8 @@ export default class ExpressRouteDriver {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
-        await learningObjectFile.storeFiles(this.dataStore, responder, req['files']);
+        let user = req['user'];
+        await learningObjectFile.storeFiles(this.dataStore, responder, req['files'], user);
       } catch (e) {
         console.log(e);
       }

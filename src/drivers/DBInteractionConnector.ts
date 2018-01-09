@@ -31,7 +31,6 @@ export class DBInteractionConnector implements DataStore {
             user.password
         );
         let emailRegistered = await this.request(EVENT.CHECK_EMAIL_REGISTERED, { email: user.email });
-        console.log(emailRegistered)
         if (emailRegistered) return Promise.reject('email');
 
         let userid = await this.request(EVENT.ADD_USER, { user: User.serialize(newUser) });
@@ -118,7 +117,7 @@ export class DBInteractionConnector implements DataStore {
                 this.request(EVENT.FIND_LEARNING_OBJECT, { author: userid, name: learningObject['_name'] })
                     .then((learningObjectID) => {
                         if (!learningObjectID || learningObjectID.error) {
-                            reject(learningObjectID);
+                            reject(learningObjectID.error);
                         } else {
                             learningObject['id'] = learningObjectID;
                             resolve(learningObject);

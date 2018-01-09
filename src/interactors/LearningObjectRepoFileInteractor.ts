@@ -10,8 +10,8 @@ export class LearningObjectRepoFileInteractor {
         AWS.config.credentials = AWS_SDK_CONFIG.credentials;
         this._s3 = new AWS.S3({ region: AWS_SDK_CONFIG.region });
     }
-    async storeFiles(dataStore: DataStore, responder: Responder, files) {
-        this.uploadToS3(files).then(
+    async storeFiles(dataStore: DataStore, responder: Responder, files, user) {
+        this.uploadToS3(user.userid, files).then(
             (learningObjectFiles) => {
                 responder.sendLearningObjectFiles(learningObjectFiles);
             }
@@ -21,52 +21,49 @@ export class LearningObjectRepoFileInteractor {
             }
             );
     }
+    /**
+     * Uploads files to S3 bucket and returns array of LearningObjectFiles
+     * 
+     * @private
+     * @param {any[]} files 
+     * @returns {Promise<any[]>} 
+     * @memberof LearningObjectRepoFileInteractor
+     */
+    private uploadToS3(author: string, files: any[]): Promise<any[]> {
 
-    private uploadToS3(files: any[]): Promise<any[]> {
-        return new Promise((resolve, reject) => {
-            var learningObjectFiles = [];
-            files.forEach(file => {
-                var tmp_path = file.path;
-                var tmp_file_name = file.filename;
+        return Promise.all(files.map((file) => {
+            return new Promise((resolve, reject) => {
+                let tmp_path = file.path;
+                // let tmp_file_name = file.filename;
+                let originalname = file.originalname;
+                let fileType = file.mimetype;
+                let extension = originalname.match(/([A-Za-z]{1,})$/)[0];
+                let date = Date.now().toString();
 
-                var name = file.originalname;
-                var fileType = file.mimetype;
-                var date = Date.now().toString();
+                let fs_file = fs.createReadStream(tmp_path);
 
-                var fs_file = fs.createReadStream(tmp_path);
-
-                var params = {
+                let params = {
                     Bucket: 'neutrino-file-uploads',
-                    Key: `${tmp_file_name}`,
+                    Key: `${author}/${originalname}`,
                     ACL: 'public-read',
                     Body: fs_file
                 };
-
-                this._s3.putObject(params, (error, data) => {
+                this._s3.upload(params, (error, data) => {
                     if (error) {
-                        reject(null);
+                        reject(error);
                     } else {
-                        var params = {
-                            Bucket: 'neutrino-file-uploads',
-                            Key: `${tmp_file_name}`,
-                        };
-
-                        var url = this._s3.getSignedUrl('getObject', params);
-
-                        var newLearningObjectFile = {
-                            name: name,
+                        let newLearningObjectFile = {
+                            name: originalname,
                             fileType: fileType,
-                            url: url,
+                            extension: extension,
+                            url: data.Location,
                             date: date,
-                        };
-
-                        learningObjectFiles.push(newLearningObjectFile);
-                        if (learningObjectFiles.length === files.length) {
-                            resolve(learningObjectFiles);
                         }
+                        resolve(newLearningObjectFile);
                     }
                 });
             });
-        });
+        }));
+
     }
 }
