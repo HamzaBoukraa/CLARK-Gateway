@@ -168,14 +168,17 @@ export class DBInteractionConnector implements DataStore {
         let user = await this.request(EVENT.LOAD_USER, { id: userid });
         if (!user || user.error) return Promise.reject(user.error);
 
-
-
         learningObject = LearningObject.unserialize(learningObject, user);
         learningObject = LearningObject.serialize(learningObject);
 
+        //If object then there is an error
+        let object = await this.request(EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject });
 
+        if (object) {
+            return Promise.reject(object.error)
+        }
 
-        return this.request(EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject });
+        return null;
     }
 
     /**
