@@ -1,4 +1,5 @@
 import { AccessValidator, DataStore, Responder } from './../interfaces/interfaces';
+import { LearningObjectRepoFileInteractor } from './LearningObjectRepoFileInteractor';
 
 // FIXME: DRY violated by accessStatus repitition (promise structure maybe?)
 
@@ -45,7 +46,8 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
       // Delete LO from data store (else send error ->)
       dataStore.deleteLearningObject(learningObjectID)
         .then(() => {
-          responder.sendOperationSuccess();
+          let learningObjectFile = new LearningObjectRepoFileInteractor();
+          learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectID, user);
         })
         .catch((error) => {
           responder.sendOperationError({ message: `There was an error deleting learning object. ${error}`, status: 400 });

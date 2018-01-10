@@ -136,8 +136,6 @@ export class LearningObjectRepoFileInteractor {
                     console.log(error)
                     reject(error);
                 } else {
-                    console.log('Data')
-                    console.log(data)
                     resolve(data);
                 }
             });

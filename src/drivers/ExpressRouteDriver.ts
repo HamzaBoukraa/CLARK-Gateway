@@ -106,9 +106,6 @@ export default class ExpressRouteDriver {
           let responder = this.getResponder(res);
           let user = req['user'];
           await destroy(this.accessValidator, this.dataStore, responder, req.params.id, user);
-
-          // let learningObjectFile = new LearningObjectRepoFileInteractor();
-          // await learningObjectFile.deleteAllFiles(this.dataStore, responder, req.params.id, user);
         } catch (e) {
           console.log(e);
         }
