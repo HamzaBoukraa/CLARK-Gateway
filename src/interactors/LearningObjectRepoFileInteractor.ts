@@ -10,8 +10,19 @@ export class LearningObjectRepoFileInteractor {
         AWS.config.credentials = AWS_SDK_CONFIG.credentials;
         this._s3 = new AWS.S3({ region: AWS_SDK_CONFIG.region });
     }
-    async storeFiles(dataStore: DataStore, responder: Responder, files, user) {
-        this.uploadToS3(user.userid, files).then(
+
+    /**
+     * Performs uploadToS3 operation and sends response
+     * 
+     * @param {DataStore} dataStore 
+     * @param {Responder} responder 
+     * @param {string} learningObjectID 
+     * @param {any} files 
+     * @param {any} user 
+     * @memberof LearningObjectRepoFileInteractor
+     */
+    async storeFiles(dataStore: DataStore, responder: Responder, learningObjectID: string, files, user) {
+        this.uploadToS3(user.userid, learningObjectID, files).then(
             (learningObjectFiles) => {
                 responder.sendLearningObjectFiles(learningObjectFiles);
             }
@@ -21,6 +32,37 @@ export class LearningObjectRepoFileInteractor {
             }
             );
     }
+
+    /**
+     * Performs deleteFromS3 operation and sends response
+     * 
+     * @param {DataStore} dataStore 
+     * @param {Responder} responder 
+     * @param {string} learningObjectID 
+     * @param {string} filename 
+     * @param {any} user 
+     * @memberof LearningObjectRepoFileInteractor
+     */
+    async deleteFile(dataStore: DataStore, responder: Responder, learningObjectID: string, filename: string, user) {
+        this.deleteFromS3(user.userid, learningObjectID, filename)
+            .then((success) => {
+                responder.sendOperationSuccess();
+            })
+            .catch((error) => {
+                responder.sendOperationError({ message: "There was an error deleting your file. Please try again.", status: 400 });
+            });
+    }
+
+    async deleteAllFiles(dataStore: DataStore, responder: Responder, learningObjectID: string, user) {
+        this.deleteFromS3(user.userid, learningObjectID, null, true)
+            .then((success) => {
+                responder.sendOperationSuccess();
+            })
+            .catch((error) => {
+                responder.sendOperationError({ message: "There was an error deleting your files. Please try again.", status: 400 });
+            });
+    }
+
     /**
      * Uploads files to S3 bucket and returns array of LearningObjectFiles
      * 
@@ -29,7 +71,7 @@ export class LearningObjectRepoFileInteractor {
      * @returns {Promise<any[]>} 
      * @memberof LearningObjectRepoFileInteractor
      */
-    private uploadToS3(author: string, files: any[]): Promise<any[]> {
+    private uploadToS3(author: string, learningObjectID: string, files: any[]): Promise<any[]> {
 
         return Promise.all(files.map((file) => {
             return new Promise((resolve, reject) => {
@@ -44,7 +86,7 @@ export class LearningObjectRepoFileInteractor {
 
                 let params = {
                     Bucket: 'neutrino-file-uploads',
-                    Key: `${author}/${originalname}`,
+                    Key: `${author}/${learningObjectID}/${originalname}`,
                     ACL: 'public-read',
                     Body: fs_file
                 };
@@ -64,6 +106,41 @@ export class LearningObjectRepoFileInteractor {
                 });
             });
         }));
+    }
 
+    /**
+     * Deletes single file or folder containing all files from S3 bucket
+     * 
+     * @private
+     * @param {string} author 
+     * @param {string} learningObjectID 
+     * @param {string} filename 
+     * @returns {Promise<string>} 
+     * @memberof LearningObjectRepoFileInteractor
+     */
+    private deleteFromS3(author: string, learningObjectID: string, filename: string, deleteAll: boolean = false): Promise<string> {
+        let params = deleteAll ?
+            {
+                Bucket: 'neutrino-file-uploads',
+                Key: `${author}/${learningObjectID}`,
+            }
+            : {
+                Bucket: 'neutrino-file-uploads',
+                Key: `${author}/${learningObjectID}/${filename}`,
+            };
+
+        return new Promise<string>((resolve, reject) => {
+            this._s3.deleteObject(params, (error, data) => {
+                if (error) {
+                    console.log('Errorooror')
+                    console.log(error)
+                    reject(error);
+                } else {
+                    console.log('Data')
+                    console.log(data)
+                    resolve(data);
+                }
+            });
+        });
     }
 }

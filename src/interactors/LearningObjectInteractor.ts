@@ -10,8 +10,11 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
         .then((learningObjectID) => {
           responder.sendLearningObject(learningObjectID);
         })
-        .catch((error) => {
-          responder.sendOperationError({ message: `There was an error creating new learning object. ${error}`, status: 400 });
+        .catch((error: string) => {
+          if (error.match(/duplicate\s+key/g).length > 1) {
+            responder.sendOperationError({ message: `Please enter a unique name for Learning Object.`, status: 400 });
+          } else
+            responder.sendOperationError({ message: `There was an error creating new learning object. ${error}`, status: 400 });
         });
     })
     .catch((error) => {

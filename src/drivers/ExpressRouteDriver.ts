@@ -106,20 +106,33 @@ export default class ExpressRouteDriver {
           let responder = this.getResponder(res);
           let user = req['user'];
           await destroy(this.accessValidator, this.dataStore, responder, req.params.id, user);
+
+          // let learningObjectFile = new LearningObjectRepoFileInteractor();
+          // await learningObjectFile.deleteAllFiles(this.dataStore, responder, req.params.id, user);
         } catch (e) {
           console.log(e);
         }
       });
-    router.post('/upload', this.upload.any(), async (req, res) => {
+    router.post('/files/upload', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
         let user = req['user'];
-        await learningObjectFile.storeFiles(this.dataStore, responder, req['files'], user);
+        await learningObjectFile.storeFiles(this.dataStore, responder, req.body.learningObjectID, req['files'], user);
       } catch (e) {
         console.log(e);
       }
-    })
+    });
+    router.delete('/files/delete/:id/:filename', async (req, res) => {
+      try {
+        let responder = this.getResponder(res);
+        let learningObjectFile = new LearningObjectRepoFileInteractor();
+        let user = req['user'];
+        await learningObjectFile.deleteFile(this.dataStore, responder, req.params.id, req.params.filename, user);
+      } catch (e) {
+        console.log(e);
+      }
+    });
   }
 }
 
