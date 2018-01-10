@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/Cyber4All/learning-object-submission.svg?style=svg)](https://circleci.com/gh/Cyber4All/learning-object-submission)
+
 # Learning Object Submission
 
 This server-side application functions as a gateway for all learning object submission to the CLARK system.
