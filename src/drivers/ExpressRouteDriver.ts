@@ -1,3 +1,4 @@
+import { sentry } from './../logging/sentry';
 import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
 import * as multer from 'multer';
@@ -9,9 +10,8 @@ import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
 import { LearningObjectRepoFileInteractor } from '../interactors/LearningObjectRepoFileInteractor';
 
-
 /**
- * Serves as a factory for producing a router for the express app.
+ * Serves as a factory for producing a router for the express app.rt
  *
  * @author Sean Donnelly
  */
@@ -35,7 +35,7 @@ export default class ExpressRouteDriver {
   private constructor(
     public accessValidator: AccessValidator,
     public dataStore: DataStore,
-  ) { }
+  ) {}
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
@@ -44,7 +44,6 @@ export default class ExpressRouteDriver {
 
   setRoutes(router: Router) {
     router.get('/', function (req, res) {
-      console.log('here')
       res.json({ message: 'Welcome to the Bloomin Onion API' });
     });
     router.post('/authenticate', async (req, res) => {
@@ -52,7 +51,7 @@ export default class ExpressRouteDriver {
         let responder = this.getResponder(res);
         await login(this.dataStore, responder, req.body.username, req.body.password);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
     router.post('/register', async (req, res) => {
@@ -60,7 +59,7 @@ export default class ExpressRouteDriver {
         let responder = this.getResponder(res);
         await register(this.dataStore, responder, req.body);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
     router.route('/learning-objects')
@@ -70,7 +69,7 @@ export default class ExpressRouteDriver {
           let user = req['user'];
           await read(this.accessValidator, this.dataStore, responder, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       })
       .post(async (req, res) => {
@@ -79,7 +78,7 @@ export default class ExpressRouteDriver {
           let user = req['user'];
           await create(this.accessValidator, this.dataStore, responder, req.body, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       })
       .patch(async (req, res) => {
@@ -88,7 +87,7 @@ export default class ExpressRouteDriver {
           let user = req['user'];
           await update(this.accessValidator, this.dataStore, responder, req.body.id, req.body.learningObject, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       });
     router.route('/learning-objects:id')
@@ -98,7 +97,7 @@ export default class ExpressRouteDriver {
           let user = req['user'];
           await readOne(this.accessValidator, this.dataStore, responder, req.params.id, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       })
       .delete(async (req, res) => {
@@ -107,7 +106,7 @@ export default class ExpressRouteDriver {
           let user = req['user'];
           await destroy(this.accessValidator, this.dataStore, responder, req.params.id, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       });
     router.post('/files/upload', this.upload.any(), async (req, res) => {
@@ -117,7 +116,7 @@ export default class ExpressRouteDriver {
         let user = req['user'];
         await learningObjectFile.storeFiles(this.dataStore, responder, req.body.learningObjectID, req['files'], user);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
     router.delete('/files/delete/:id/:filename', async (req, res) => {
@@ -127,9 +126,10 @@ export default class ExpressRouteDriver {
         let user = req['user'];
         await learningObjectFile.deleteFile(this.dataStore, responder, req.params.id, req.params.filename, user);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
+
   }
 }
 

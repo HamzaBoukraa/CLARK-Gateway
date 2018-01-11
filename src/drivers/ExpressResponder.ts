@@ -1,15 +1,16 @@
 import { Responder } from '../interfaces/interfaces';
 import { Response } from 'express';
 
+
 export class ExpressResponder implements Responder {
 
-  constructor(public res: Response) { }
+  constructor(public res: Response) {  }
 
   sendUser(user: any) {
     this.res.status(200).json(user);
   }
   sendLearningObject(learningObject) {
-    this.res.status(200).json(learningObject)
+    this.res.status(200).json(learningObject);
   }
   sendLearningObjects(learningObjects) {
     this.res.status(200).json(learningObjects);

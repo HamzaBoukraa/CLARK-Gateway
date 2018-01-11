@@ -1,3 +1,4 @@
+import { sentry } from './../logging/sentry';
 import { AccessValidator, DataStore, Responder } from './../interfaces/interfaces';
 import { LearningObjectRepoFileInteractor } from './LearningObjectRepoFileInteractor';
 
@@ -12,6 +13,7 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
           responder.sendLearningObject(learningObjectID);
         })
         .catch((error: string) => {
+          sentry.logError(error);
           if (error.match(/duplicate\s+key/g).length > 0) {
             responder.sendOperationError({ message: `Please enter a unique name for this Learning Object.`, status: 400 });
           } else
@@ -19,6 +21,7 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
         });
     })
     .catch((error) => {
+      sentry.logError(error);
       responder.invalidAccess();
     });
 }
@@ -32,6 +35,8 @@ export async function update(accessValidator: AccessValidator, dataStore: DataSt
           responder.sendOperationSuccess();
         })
         .catch((error) => {
+          sentry.logError(error);
+
           if (error.match(/duplicate\s+key/g).length > 0) {
             responder.sendOperationError({ message: `Please enter a unique name for this Learning Object.`, status: 400 });
           } else
@@ -39,6 +44,8 @@ export async function update(accessValidator: AccessValidator, dataStore: DataSt
         });
     })
     .catch((error) => {
+      sentry.logError(error);
+
       responder.invalidAccess();
     });
 }
@@ -53,11 +60,15 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
           learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectID, user);
         })
         .catch((error) => {
+          sentry.logError(error);
+
           responder.sendOperationError({ message: `There was an error deleting learning object. ${error}`, status: 400 });
         });
       // Send verification ->
     })
     .catch((error) => {
+      sentry.logError(error);
+
       responder.invalidAccess();
     });
 }
@@ -73,11 +84,15 @@ export async function read(accessValidator: AccessValidator, dataStore: DataStor
           );
         })
         .catch((error) => {
+          sentry.logError(error);
+
           responder.sendOperationError({ message: `There was an error fetching user's learning objects. ${error}`, status: 400 });
         });
 
     })
     .catch((error) => {
+      sentry.logError(error);
+
       responder.invalidAccess();
     });
 }
@@ -92,12 +107,16 @@ export async function readOne(accessValidator: AccessValidator, dataStore: DataS
           );
         })
         .catch((error) => {
+          sentry.logError(error);
+
           responder.sendOperationError({ message: `There was an error fetching user's learning object. ${error}`, status: 400 });
         });
     })
     .catch((error) => {
+      sentry.logError(error);
+
       responder.invalidAccess();
-    })
+    });
 
 }
 
