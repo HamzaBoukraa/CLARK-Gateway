@@ -1,4 +1,3 @@
-import { sentry } from './../logging/sentry';
 import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
 import * as multer from 'multer';
@@ -9,6 +8,7 @@ import { TokenManager } from './TokenManager';
 import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
 import { LearningObjectRepoFileInteractor } from '../interactors/LearningObjectRepoFileInteractor';
+import { sentry } from './../logging/sentry';
 
 /**
  * Serves as a factory for producing a router for the express app.rt

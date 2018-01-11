@@ -1,5 +1,6 @@
 import { Responder } from '../interfaces/interfaces';
 import { Response } from 'express';
+import { sentry } from './../logging/sentry';
 
 
 export class ExpressResponder implements Responder {
@@ -22,6 +23,7 @@ export class ExpressResponder implements Responder {
     this.res.sendStatus(200);
   }
   sendOperationError(error) {
+    sentry.logError(error.message, 400);
     //Default message and status code if no custom error
     !error ? this.res.status(400).send("There was an error processing your request.") :
       //Custom error message and status code
@@ -34,7 +36,7 @@ export class ExpressResponder implements Responder {
     this.res.status(400).send('Invalid registration credentials');
   }
   invalidAccess() {
-    throw new Error('invalidAccess() not implemented!');
+    this.res.status(401).send('Invalid access token');
   }
 
 }

@@ -1,4 +1,5 @@
  import * as Raven from 'raven';
+ import { Client} from 'raven';
  import {SENTRY_URI} from './../config/config';
  /**
  * Singleton class for Sentry Error Logging
@@ -6,16 +7,17 @@
  * @author Tyler Howard
  */
  class Sentry {
+     client: Client = new Client(SENTRY_URI);
      constructor() {
-        Raven.config(SENTRY_URI).install();
+         this.client.install();
      }
-     logError(error, status = null) {
+     logError(error, status?) {
         status ? error = 'Return Code: ' + status + ' (' + error + ')' : error = 'Message: ' + error;
         console.log('Error: ' + error);
-        Raven.captureException(error);
+        this.client.captureException(error);
      }
      logErrorWrapper(func) {
-         Raven.context(function () {
+         this.client.context(function () {
             func();
          });
      }

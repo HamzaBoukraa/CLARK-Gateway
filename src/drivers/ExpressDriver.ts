@@ -1,3 +1,4 @@
+import { sentry } from './../logging/sentry';
 import { DataStore } from './../interfaces/DataStore';
 import { ExpressRouteDriver } from './drivers';
 import * as express from 'express';
@@ -21,6 +22,8 @@ export class ExpressDriver {
     helmetConfig.setup(this.app);
 
     // Configure app to log requests
+    this.app.use(sentry.client.requestHandler());
+    this.app.use(sentry.client.errorHandler());
     this.app.use(logger('dev'));
 
     // configure app to use bodyParser()
@@ -46,10 +49,15 @@ export class ExpressDriver {
       // Pass to next layer of middleware
       next();
     });
-
+    
     //Set Validation Middleware
     this.app.use(enforceTokenAccess);
-
+    this.app.use(function (error, req, res, next) {
+      if (error.name === 'UnauthorizedError') {
+        sentry.logError('Invalid Access Token', 401);
+        res.status(401).send('Invalid Access Token');
+      }
+    });
     // Set our api routes
     this.app.use('/api', ExpressRouteDriver.buildRouter(dataStore), log);
 
