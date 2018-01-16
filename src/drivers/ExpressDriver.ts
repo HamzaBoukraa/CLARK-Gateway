@@ -6,10 +6,10 @@ import * as path from 'path';
 import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
-
 import { router as log } from '../routes/log';
 import { enforceTokenAccess } from '../middleware/jwt.config';
 import * as http from 'http';
+
 
 /**
  * Handles serving the API through the express framework.
@@ -60,8 +60,6 @@ export class ExpressDriver {
     });
     // Set our api routes
     this.app.use('/api', ExpressRouteDriver.buildRouter(dataStore), log);
-
-
     this.linkClient();
     /**
      * Get port from environment and store in Express.
