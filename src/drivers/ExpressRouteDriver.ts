@@ -1,7 +1,7 @@
 import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
 import * as multer from 'multer';
-import { login, register } from '../interactors/AuthenticationInteractor';
+import { login, register, validateToken } from '../interactors/AuthenticationInteractor';
 import { create, destroy, read, readOne, update } from '../interactors/LearningObjectInteractor';
 import { ExpressResponder } from '../drivers/ExpressResponder';
 import { TokenManager } from './TokenManager';
@@ -45,6 +45,13 @@ export default class ExpressRouteDriver {
   setRoutes(router: Router) {
     router.get('/', function (req, res) {
       res.json({ message: 'Welcome to the Bloomin Onion API' });
+    });
+    router.post('/validateToken', (req, res) => {
+      try {
+        validateToken(this.getResponder(res), req.body.token);
+      } catch (e) {
+        sentry.logError(e);
+      }
     });
     router.post('/authenticate', async (req, res) => {
       try {

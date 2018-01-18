@@ -44,17 +44,17 @@ export function generateToken(user) {
  * @param token the JWT as a string
  * @param callback the function to execute after verification
  */
-export function verifyJWT(token, res, callback) {
-  jwt.verify(token, key, { issuer: issuer }, function (err, decoded) {
-    let status;
-    if (err) {
-      // invalid issuer
-      status = false;
-    } else {
-      status = true;
-    }
+export function verifyJWT(token, res, callback): boolean {
+
+  try {
+    let decoded = jwt.verify(token, key, {});
+
     if (typeof callback === 'function') {
-      callback(status, jwt.decode(token));
+      callback(status, decoded);
     }
-  });
+
+    return true;
+  } catch (error) {
+    return false;
+  }
 }
