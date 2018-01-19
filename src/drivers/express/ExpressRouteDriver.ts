@@ -1,14 +1,14 @@
-import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
-import * as multer from 'multer';
-import { login, register, validateToken } from '../interactors/AuthenticationInteractor';
-import { create, destroy, read, readOne, update } from '../interactors/LearningObjectInteractor';
-import { ExpressResponder } from '../drivers/ExpressResponder';
-import { TokenManager } from './TokenManager';
-import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
-import { LearningObjectRepoFileInteractor } from '../interactors/LearningObjectRepoFileInteractor';
-import { sentry } from './../logging/sentry';
+import * as multer from 'multer';
+import { ExpressResponder, TokenManager } from '../drivers';
+import { AccessValidator, DataStore } from '../../interfaces/interfaces';
+import { login, register, validateToken } from '../../interactors/AuthenticationInteractor';
+import { create, destroy, read, readOne, update, fetchLearningObjects,
+         fetchLearningObject, fetchMultipleLearningObject } from '../../interactors/LearningObjectInteractor';
+import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
+import { sentry } from '../../logging/sentry';
+import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -32,16 +32,19 @@ export default class ExpressRouteDriver {
     return router;
   }
 
-  private constructor(
-    public accessValidator: AccessValidator,
-    public dataStore: DataStore,
-  ) {}
+  private constructor(public accessValidator: AccessValidator, public dataStore: DataStore) {}
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
     return new ExpressResponder(res);
   }
 
+  /**
+   * Defines the active routes for the API. Routes take an async callback function that contains a request and response object.
+   * The callback awaits a particular interactor function that executes the connected business use case.
+   *
+   * @param router the router being used by the webserver
+   */
   setRoutes(router: Router) {
     router.get('/', function (req, res) {
       res.json({ message: 'Welcome to the Bloomin Onion API' });
@@ -136,7 +139,21 @@ export default class ExpressRouteDriver {
         sentry.logError(e);
       }
     });
-
+    router.get('/cube/learning-objects', async (req, res) => {
+      await fetchLearningObjects(this.dataStore, this.getResponder(res));
+    });
+    router.get('/cube/learning-objects:id', async (req, res) => {
+      await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.id);
+    });
+    router.get('/cube/learning-objects/checkout/:ids', async (req, res) => {
+      let ids = req.params.ids.split(',');
+      let library = new LibraryInteractor();
+      await library.checkout(this.dataStore, this.getResponder(res), ids);
+    });
+    router.get('/cube/learning-objects/multiple/:ids', async (req, res) => {
+      let ids = req.params.ids.split(',');
+      await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
+    });
   }
 }
 

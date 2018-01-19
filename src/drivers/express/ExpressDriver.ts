@@ -1,13 +1,13 @@
-import { sentry } from './../logging/sentry';
-import { DataStore } from './../interfaces/DataStore';
-import { ExpressRouteDriver } from './drivers';
+import { sentry } from '../../logging/sentry';
+import { DataStore } from '../../interfaces/DataStore';
+import { ExpressRouteDriver } from '../drivers';
 import * as express from 'express';
 import * as path from 'path';
-import * as helmetConfig from '../middleware/helmet';
+import * as helmetConfig from '../../middleware/helmet';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
-import { router as log } from '../routes/log';
-import { enforceTokenAccess } from '../middleware/jwt.config';
+import { router as log } from '../../routes/log';
+import { enforceTokenAccess } from '../../middleware/jwt.config';
 import * as http from 'http';
 
 
@@ -49,8 +49,8 @@ export class ExpressDriver {
       // Pass to next layer of middleware
       next();
     });
-    
-    //Set Validation Middleware
+
+    // Set Validation Middleware
     this.app.use(enforceTokenAccess);
     this.app.use(function (error, req, res, next) {
       if (error.name === 'UnauthorizedError') {

@@ -13,9 +13,9 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
         })
         .catch((error: string) => {
           if (error.match(/duplicate\s+key/g).length > 0) {
-            responder.sendOperationError({ message: `Please enter a unique name for this Learning Object.`, status: 400 });
+            responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
           } else
-            responder.sendOperationError({ message: `There was an error creating new Learning Object. ${error}`, status: 400 });
+            responder.sendOperationError(`There was an error creating new Learning Object. ${error}`, 400);
         });
     })
     .catch((error) => {
@@ -23,7 +23,9 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
     });
 }
 
-export async function update(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, learningObject, user) {
+export async function update(accessValidator: AccessValidator,
+                             dataStore: DataStore, responder: Responder,
+                             learningObjectID, learningObject, user) {
   findAccessStatus(accessValidator, user)
     .then(userid => {
       // Patch data_as_json via dataStore call (else send error ->)
@@ -33,9 +35,9 @@ export async function update(accessValidator: AccessValidator, dataStore: DataSt
         })
         .catch((error) => {
           if (error.match(/duplicate\s+key/g).length > 0) {
-            responder.sendOperationError({ message: `Please enter a unique name for this Learning Object.`, status: 400 });
+            responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
           } else
-            responder.sendOperationError({ message: `There was an error creating new learning object. ${error}`, status: 400 });
+            responder.sendOperationError(`There was an error creating new learning object. ${error}`, 400);
         });
     })
     .catch((error) => {
@@ -53,7 +55,7 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
           learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectID, user);
         })
         .catch((error) => {
-          responder.sendOperationError({ message: `There was an error deleting learning object. ${error}`, status: 400 });
+          responder.sendOperationError(`There was an error deleting learning object. ${error}`, 400);
         });
       // Send verification ->
     })
@@ -73,7 +75,7 @@ export async function read(accessValidator: AccessValidator, dataStore: DataStor
           );
         })
         .catch((error) => {
-          responder.sendOperationError({ message: `There was an error fetching user's learning objects. ${error}`, status: 400 });
+          responder.sendOperationError(`There was an error fetching user's learning objects. ${error}`, 400);
         });
 
     })
@@ -82,24 +84,36 @@ export async function read(accessValidator: AccessValidator, dataStore: DataStor
     });
 }
 
-export async function readOne(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, user) {
-  findAccessStatus(accessValidator, user)
-    .then((userid) => {
-      dataStore.getLearningObject(user.userid, learningObjectID)
-        .then((learningObject) => {
-          responder.sendLearningObject(
-            learningObject
-          );
-        })
-        .catch((error) => {
-          responder.sendOperationError({ message: `There was an error fetching user's learning object. ${error}`, status: 400 });
-        });
+export async function readOne(dataStore: DataStore, responder: Responder, learningObjectID, user) {
+  // TODO: Once publish flag is in the database, add check (if you combine cube and onion readOne functionality)
+  dataStore.getLearningObject(learningObjectID)
+    .then((learningObject) => {
+      // If published
+      responder.sendLearningObject(
+        learningObject
+      );
+      // else, ensure user has ownership
     })
     .catch((error) => {
-      responder.invalidAccess();
-    })
+      responder.sendOperationError(`There was an error fetching user's learning object. ${error}`, 400);
+    });
 
 }
+
+// Cube Functions
+export async function fetchLearningObjects(dataStore: DataStore, responder: Responder) {
+  let learningObjects = await dataStore.readLearningObjects();
+  responder.sendLearningObjects(learningObjects);
+}
+export async function fetchLearningObject(dataStore: DataStore, responder: Responder, id: string) {
+  let learningObject = await dataStore.readLearningObject(id);
+  responder.sendLearningObjects(learningObject);
+}
+export async function fetchMultipleLearningObject(dataStore: DataStore, responder: Responder, ids: string[]) {
+  let learningObjects = await dataStore.readMultipleLearningObjects(ids, false);
+  responder.sendLearningObjects(learningObjects);
+}
+// END CUBE FUNCTIONS
 
 function findAccessStatus(accessValidator: AccessValidator, user): Promise<string> {
   return new Promise((resolve, reject) => {
