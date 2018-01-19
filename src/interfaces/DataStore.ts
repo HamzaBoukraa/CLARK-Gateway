@@ -1,9 +1,11 @@
+import { User } from "clark-entity";
+
 export interface DataStore {
-    connectToDB(): Promise<{}>;
-    login();
-    register();
-    getMyLearningObjects(userid);
-    updateLearningObject(id, learningObject);
-    deleteLearningObject(learningObject);
-    createLearningObject(userid, learningObject);
+    register(user: { username: string, firstname: string, lastname: string, email: string, password: string }): Promise<User>;
+    login(username: string, password: string): Promise<User>;
+    createLearningObject(username: string, learningObject);
+    getMyLearningObjects(username: string);
+    getLearningObject(username: string, learningObjectID: string);
+    updateLearningObject(username: string, learningObjectID: string, learningObject);
+    deleteLearningObject(learningObjectID: string);
 }

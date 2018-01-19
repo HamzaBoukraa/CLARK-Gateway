@@ -1,10 +1,15 @@
 import * as jwt from 'express-jwt';
-import { key } from '../config/config';
+import { key, issuer } from '../config/config';
 
-export function enforceTokenAccess() {
-  return jwt({
-      secret: key,
-    }).unless({
-      path: ['/', '/api', '/api/authenticate', '/api/register'],
-    });
-}
+/**
+ * Configuration for JWT middleware.
+ *
+ * @author Gustavus Shaw II
+ */
+export const enforceTokenAccess = jwt({
+  secret: key,
+  issuer: issuer,
+}).unless({
+  // Routes that don't require authorization
+  path: ['/', '/api', '/api/authenticate', '/api/register'],
+});

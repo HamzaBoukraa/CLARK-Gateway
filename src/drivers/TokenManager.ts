@@ -1,31 +1,40 @@
 import { AccessValidator, AccessResponse } from './../interfaces/AccessValidator';
 import * as jwt from 'jsonwebtoken';
-import { key } from '../config/config';
+import { key, issuer } from '../config/config';
 
 export class TokenManager implements AccessValidator {
-  authenticate(): AccessResponse {
+  /**
+   * Authorizes user to access resource
+   * 
+   * @param {any} user 
+   * @returns {AccessResponse} 
+   * @memberof TokenManager
+   */
+  authorize(user): AccessResponse {
     return {
-      userid: 0,
+      userid: user.userid,
       isAccessable: true,
     };
   }
-
 }
 
 /**
  * Takes a user object and generates a JWT for the user
- * @param user contains the userid, username, firstname, lastname, and email
+ * @param user contains the user's id, username, firstname, lastname, and email
  */
-export function generateToken(userid) {
-  /*let payload = {
-      userid: user.userid
+export function generateToken(user) {
+  let payload = {
+    userid: user.id,
+    firstname: user.name.split(' ')[0],
+    lastname: user.name.split(' ')[1],
+    email: user.email
   };
   let options = {
-      expiresIn: "2d",
-      issuer: "bloomin_onion",
-      audience: user.username
-  };*/
-  let token = jwt.sign({ userid: userid }, key);
+    expiresIn: 86400,
+    issuer: issuer,
+    audience: user.username
+  };
+  let token = jwt.sign(payload, key, options);
   return token;
 }
 
@@ -35,18 +44,17 @@ export function generateToken(userid) {
  * @param token the JWT as a string
  * @param callback the function to execute after verification
  */
-export function verifyJWT(token, res, callback) {
-  jwt.verify(token, key, { issuer: 'bloomin_onion' }, function (err, decoded) {
-      let status;
-      if (err) {
-        // invalid issuer
-        status = false;
-      } else {
-        status = true;
-      }
+export function verifyJWT(token, res, callback): boolean {
 
-      if (typeof callback === 'function') {
-        callback(status, jwt.decode(token));
-      }
-    });
+  try {
+    let decoded = jwt.verify(token, key, {});
+
+    if (typeof callback === 'function') {
+      callback(status, decoded);
+    }
+
+    return true;
+  } catch (error) {
+    return false;
+  }
 }

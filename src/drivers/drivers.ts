@@ -1,4 +1,5 @@
-import { MongoConnector } from './MongoConnector';
+import { DBInteractionConnector } from './DBInteractionConnector';
+import { InMemoryConnector } from './InMemoryConnector';
 import { ExpressResponder } from './ExpressResponder';
 import { ExpressDriver } from './ExpressDriver';
 import ExpressRouteDriver from './ExpressRouteDriver';
@@ -7,5 +8,6 @@ export {
   ExpressDriver,
   ExpressResponder,
   ExpressRouteDriver,
-  MongoConnector,
+  DBInteractionConnector,
+  InMemoryConnector,
 };

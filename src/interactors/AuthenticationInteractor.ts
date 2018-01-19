@@ -1,55 +1,71 @@
 import { DataStore, Responder } from './../interfaces/interfaces';
-import { generateToken } from '../drivers/TokenManager';
+import { generateToken, verifyJWT, TokenManager } from '../drivers/TokenManager';
 
-export async function login(dataStore: DataStore, responder: Responder) {
-    // Try to login with the datastore
-    // response should be the user object
-    let response = dataStore.login();
-    if (isValidLogin(response)) {
-      response.token = generateToken(response.userid);
-      // Clean user object for safe local storage in the client
-      delete response.userid;
-      delete response.password;
-      delete response.decoded_userpwd;
-      responder.sendUser(response);
-    } else {
-      // respond with invalid credential message as failure
-      responder.invalidLogin();
-    }
-}
+
 /**
- * Obtain connection
- * Attempt to insert into db
- * If error, handle
- * If success, send user info to generateAuthedUser
- * Handle response
- * Release connection
+ * Attempts user login via datastore and issues JWT access token
+ * If credentials valid sends user with token
+ * Else sends invalidLogin Response via Responder
+ * 
+ * @export
+ * @param {DataStore} dataStore 
+ * @param {Responder} responder 
+ * @param {string} username 
+ * @param {string} password 
  */
-export async function register(datastore: DataStore, responder: Responder) {
-    let response = datastore.register();
-    if (isValidRegistration(response)) { // FIXME: Does not conform to datastore response
-      response.token = generateToken(response.userid);
-      responder.sendUser(response);
-    } else {
-      // respond with invalid registration credentials
-      responder.invalidRegistration();
-    }
+export async function login(dataStore: DataStore, responder: Responder, username: string, password: string) {
+  // Try to login with the datastore
+  // response should be the user object
+  dataStore.login(username, password)
+    .then((user) => {
+      //Get access token and add to user object
+      user['token'] = generateToken(user);
+      // Clean user object for safe local storage in the client
+      delete user.id;
+      responder.sendUser(user);
+    })
+    .catch((error) => {
+      responder.invalidLogin();
+    });
 }
 
-function isValidLogin(response) {
-  if (response === undefined) {
-    // No username exists that matches what was supplied
-    return false;
-  }
-  if (response.password === response.decoded_userpwd) {
-    return true;
+/**
+ * Attempt user registraction via datastore and issues JWT access token
+ * If username is unique sends user with access token
+ * Else sends invalidRegistration Response via Responder
+ * 
+ * @export
+ * @param {DataStore} datastore 
+ * @param {Responder} responder 
+ * @param {any} user 
+ */
+export async function register(datastore: DataStore, responder: Responder, user) {
+  //Try register with datastore
+  // response should be the user object
+  datastore.register(user)
+    .then((newUser) => {
+      //Get access token and add to user object
+      newUser['token'] = generateToken(newUser);
+      delete newUser.id;
+      responder.sendUser(newUser);
+    })
+    .catch((error) => {
+      // Clean user object for safe local storage in the client
+      if (error === 'email') {
+        responder.sendOperationError({ message: 'Email is already in use.', status: 420 });
+      } else {
+        responder.invalidRegistration();
+
+      }
+    });
+}
+
+export async function validateToken(responder: Responder, token: string) {
+  if (!verifyJWT(token, responder, null)) {
+    responder.invalidAccess();
   } else {
-    // Invalid password for supplied username or server error (?)
-    return false;
+    console.log('we\'ve got success!');
+    responder.sendOperationSuccess();
   }
 }
 
-function isValidRegistration(response) {
-  if (response === undefined) return false;
-  else return true;
-}

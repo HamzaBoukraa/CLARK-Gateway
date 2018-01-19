@@ -3,3 +3,7 @@ dist
 .idea
 npm-debug.log
 .DS_Store
+/tmp
+src/config/aws-sdk/config.json
+src/entity
+

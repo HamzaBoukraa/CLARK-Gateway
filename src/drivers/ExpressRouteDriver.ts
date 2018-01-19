@@ -1,18 +1,23 @@
 import { AccessValidator } from './../interfaces/AccessValidator';
 import * as express from 'express';
-import { login, register } from '../interactors/AuthenticationInteractor';
-import { create, destroy, read, update } from '../interactors/LearningObjectInteractor';
+import * as multer from 'multer';
+import { login, register, validateToken } from '../interactors/AuthenticationInteractor';
+import { create, destroy, read, readOne, update } from '../interactors/LearningObjectInteractor';
 import { ExpressResponder } from '../drivers/ExpressResponder';
 import { TokenManager } from './TokenManager';
 import { DataStore } from '../interfaces/interfaces';
 import { Router } from 'express';
+import { LearningObjectRepoFileInteractor } from '../interactors/LearningObjectRepoFileInteractor';
+import { sentry } from './../logging/sentry';
 
 /**
- * Serves as a factory for producing a router for the express app.
+ * Serves as a factory for producing a router for the express app.rt
  *
  * @author Sean Donnelly
  */
 export default class ExpressRouteDriver {
+
+  upload = multer({ dest: 'tmp/' });
 
   /**
    * Produces a configured express router
@@ -30,7 +35,7 @@ export default class ExpressRouteDriver {
   private constructor(
     public accessValidator: AccessValidator,
     public dataStore: DataStore,
-  ) { }
+  ) {}
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
@@ -41,131 +46,97 @@ export default class ExpressRouteDriver {
     router.get('/', function (req, res) {
       res.json({ message: 'Welcome to the Bloomin Onion API' });
     });
+    router.post('/validateToken', (req, res) => {
+      try {
+        validateToken(this.getResponder(res), req.body.token);
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
     router.post('/authenticate', async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await login(this.dataStore, responder);
+        await login(this.dataStore, responder, req.body.username, req.body.password);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
     router.post('/register', async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await register(this.dataStore, responder);
+        await register(this.dataStore, responder, req.body);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
     router.route('/learning-objects')
       .get(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await read(this.accessValidator, this.dataStore, responder);
+          let user = req['user'];
+          await read(this.accessValidator, this.dataStore, responder, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       })
       .post(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await create(this.accessValidator, this.dataStore, responder, req.body.content);
+          let user = req['user'];
+          await create(this.accessValidator, this.dataStore, responder, req.body, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       })
       .patch(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          await update(this.accessValidator, this.dataStore, responder, req.body.learning_object_id, req.body.content);
+          let user = req['user'];
+          await update(this.accessValidator, this.dataStore, responder, req.body.id, req.body.learningObject, user);
         } catch (e) {
-          console.log(e);
+          sentry.logError(e);
         }
       });
-    router.delete('/learning-objects:id', async (req, res) => {
+    router.route('/learning-objects:id')
+      .get(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await readOne(this.accessValidator, this.dataStore, responder, req.params.id, user);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      })
+      .delete(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await destroy(this.accessValidator, this.dataStore, responder, req.params.id, user);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      });
+    router.post('/files/upload', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
-        await destroy(this.accessValidator, this.dataStore, responder, req.params.id);
+        let learningObjectFile = new LearningObjectRepoFileInteractor();
+        let user = req['user'];
+        await learningObjectFile.storeFiles(this.dataStore, responder, req.body.learningObjectID, req['files'], user);
       } catch (e) {
-        console.log(e);
+        sentry.logError(e);
       }
     });
-  }
-  /*
-  router.patch('/learning-objects', (req, res) => {
-      jwt.verify(req.headers.authorization.substr(7), key, function (err, decoded) {
-          let content = JSON.stringify(this.escapeLearningObject(req.body.content)).replace(/\n/g, '\\\\n');
-          let query = 'UPDATE learning_objects SET name = \'' + validator.escape(req.body.name) + '\', content = \''
-              + content + '\' WHERE learning_object_id = ' + req.body.learning_object_id
-              + ' AND userid = ' + decoded.userid + ';';
-          connectToDB().then((connection: any) => {
-              connection.query(query,
-                               (error, results, fields) => {
-                      if (error) throw error;
-                      res.status(200).json(results);
-                  });
-              connection.release();
-          });
-      });
-  });
-  router.delete('/learning-objects:id', (req, res) => {
-      let query = 'DELETE FROM learning_objects WHERE learning_object_id = ' + req.params.id.substr(1, 2) + ';';
-      connectToDB().then((connection: any) => {
-          connection.query(query,
-                           (error, results, fields) => {
-                  if (error) throw error;
-                  res.status(200).json(results);
-              });
-          connection.release();
-      });
-  });
-}
+    router.delete('/files/delete/:id/:filename', async (req, res) => {
+      try {
+        let responder = this.getResponder(res);
+        let learningObjectFile = new LearningObjectRepoFileInteractor();
+        let user = req['user'];
+        await learningObjectFile.deleteFile(this.dataStore, responder, req.params.id, req.params.filename, user);
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
 
-
-static escapeLearningObject = function (learningObject) {
-  learningObject.mName = validator.escape(learningObject.mName);
-  this.escapeOutcomes(learningObject);
-  return learningObject;
-};
-static escapeGoals = function (learningObject) {
-  for (let g of learningObject.goals) {
-      g = validator.escape(g);
   }
-};
-static escapeOutcomes = function (learningObject) {
-  for (let o of learningObject.outcomes) {
-      for (let q of o.questions) {
-          q.text = validator.escape(q.text);
-      }
-      for (let i of o.instructionalstrategies) {
-          i.text = validator.escape(i.text);
-      }
-  }
-};
-static unescapeLearningObject = function (learningObject) {
-  learningObject.name = validator.unescape(learningObject.name);
-  learningObject.content = validator.unescape(learningObject.content);
-  // unescapeGoals(learningObject);
-  // unescapeOutcomes(learningObject);
-};
-static unescapeGoals = function (learningObject) {
-  if (learningObject.goals) {
-      for (let g of learningObject.goals) {
-          g = validator.unescape(g);
-      }
-  }
-};
-static unescapeOutcomes(learningObject) {
-  if (learningObject.outcomes) {
-      for (let o of learningObject.outcomes) {
-          for (let q of o.questions) {
-              q.text = validator.unescape(q.text);
-          }
-          for (let i of o.instructionalstrategies) {
-              i.text = validator.unescape(i.text);
-          }
-      }
-  }
-}*/
 }
 

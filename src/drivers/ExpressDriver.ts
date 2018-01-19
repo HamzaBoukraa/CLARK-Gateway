@@ -1,15 +1,15 @@
+import { sentry } from './../logging/sentry';
 import { DataStore } from './../interfaces/DataStore';
-
 import { ExpressRouteDriver } from './drivers';
 import * as express from 'express';
 import * as path from 'path';
 import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
-
-
+import * as logger from 'morgan';
 import { router as log } from '../routes/log';
-import { enforceTokenAccess as jwtValidator } from '../middleware/jwt.config';
+import { enforceTokenAccess } from '../middleware/jwt.config';
 import * as http from 'http';
+
 
 /**
  * Handles serving the API through the express framework.
@@ -21,9 +21,14 @@ export class ExpressDriver {
     // Configure Helmet Security
     helmetConfig.setup(this.app);
 
+    // Configure app to log requests
+    this.app.use(sentry.client.requestHandler());
+    this.app.use(sentry.client.errorHandler());
+    this.app.use(logger('dev'));
+
     // configure app to use bodyParser()
-    this.app.use(bodyParser.urlencoded({ extended: true }));
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+    this.app.use(bodyParser.json({ limit: '50mb' }));
 
     // set header to allow connection by given url
     this.app.use(function (req, res, next) {
@@ -35,7 +40,7 @@ export class ExpressDriver {
       res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
       // Request headers you wish to allow
-      res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type,Authorization');
+      res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type,enctype,Cache-Control, Authorization');
 
       // Set to true if you need the website to include cookies in the requests sent
       // to the API (e.g. in case you use sessions)
@@ -44,12 +49,17 @@ export class ExpressDriver {
       // Pass to next layer of middleware
       next();
     });
-
-
-
+    
+    //Set Validation Middleware
+    this.app.use(enforceTokenAccess);
+    this.app.use(function (error, req, res, next) {
+      if (error.name === 'UnauthorizedError') {
+        sentry.logError('Invalid Access Token', 401);
+        res.status(401).send('Invalid Access Token');
+      }
+    });
     // Set our api routes
     this.app.use('/api', ExpressRouteDriver.buildRouter(dataStore), log);
-
     this.linkClient();
     /**
      * Get port from environment and store in Express.
