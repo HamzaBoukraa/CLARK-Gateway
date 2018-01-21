@@ -1,5 +1,5 @@
 import { DataStore, Responder } from './../interfaces/interfaces';
-import { generateToken, verifyJWT, TokenManager } from '../drivers/TokenManager';
+import { generateToken, verifyJWT } from '../drivers/TokenManager';
 
 
 /**
