@@ -51,10 +51,21 @@ export default class ExpressRouteDriver {
     });
     router.use('/users', this.buildUserRouter());
 
+    router.get('/learning-objects', async (req, res) => {
+      try {
+        // check for filters and send
+        if (req.query) await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
+        else await fetchLearningObjects(this.dataStore, this.getResponder(res));
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
+
     router.route('/learning-objects')
     // TODO: cube needs to update get route to include ?published=true
       .get(async (req, res) => {
         try {
+          console.log('test');
           let responder = this.getResponder(res);
           if (req.query.published) {
             await fetchLearningObjects(this.dataStore, this.getResponder(res));

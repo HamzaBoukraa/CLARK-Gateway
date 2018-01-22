@@ -11,5 +11,5 @@ export const enforceTokenAccess = jwt({
   issuer: issuer,
 }).unless({
   // Routes that don't require authorization
-  path: ['/', '/api', '/api/authenticate', '/api/register', /\/api\/cube/i, '/api/learning-objects?published=true'],
+  path: ['/', '/api', '/api/authenticate', '/api/register', /\/api\/learning-object/i],
 });
