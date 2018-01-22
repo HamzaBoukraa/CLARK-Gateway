@@ -52,6 +52,15 @@ export default class ExpressRouteDriver {
     router.use('/users', this.buildUserRouter());
     router.use('/users/:username/learning-objects', this.buildUserLearningObjectRouter());
 
+    router.get('/learning-objects', async (req, res) => {
+      try {
+        // check for filters and send
+        if (req.query) await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
+        else await fetchLearningObjects(this.dataStore, this.getResponder(res));
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
     router.get('/cube/learning-objects:id', async (req, res) => {
       await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.id);
     });

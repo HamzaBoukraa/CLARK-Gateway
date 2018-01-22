@@ -99,7 +99,8 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
 }
 
 // Cube Functions
-export async function fetchLearningObjects(dataStore: DataStore, responder: Responder) {
+export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, filters?: object) {
+  console.log(filters);
   let learningObjects = await dataStore.readLearningObjects();
   responder.sendLearningObjects(learningObjects);
 }
