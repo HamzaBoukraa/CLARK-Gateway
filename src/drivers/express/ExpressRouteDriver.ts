@@ -49,35 +49,19 @@ export default class ExpressRouteDriver {
     router.get('/', function (req, res) {
       res.json({ message: 'Welcome to the Bloomin Onion API' });
     });
-    router.post('/validateToken', (req, res) => {
-      try {
-        validateToken(this.getResponder(res), req.body.token);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
-    router.post('/authenticate', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        await login(this.dataStore, responder, req.body.username, req.body.password);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
-    router.post('/register', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        await register(this.dataStore, responder, req.body);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
+    router.use('/users', this.buildUserRouter());
+
     router.route('/learning-objects')
+    // TODO: cube needs to update get route to include ?published=true
       .get(async (req, res) => {
         try {
           let responder = this.getResponder(res);
-          let user = req['user'];
-          await read(this.accessValidator, this.dataStore, responder, user);
+          if (req.query.published) {
+            await fetchLearningObjects(this.dataStore, this.getResponder(res));
+          } else {
+            let user = req['user'];
+            await read(this.accessValidator, this.dataStore, responder, user);
+          }
         } catch (e) {
           sentry.logError(e);
         }
@@ -105,7 +89,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await readOne(this.accessValidator, this.dataStore, responder, req.params.id, user);
+          await readOne(this.dataStore, responder, req.params.id, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -119,6 +103,7 @@ export default class ExpressRouteDriver {
           sentry.logError(e);
         }
       });
+    // FIXME: '/learning-object/:id/files
     router.post('/files/upload', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
@@ -129,6 +114,7 @@ export default class ExpressRouteDriver {
         sentry.logError(e);
       }
     });
+    // FIXME: '/learning-object/:id/files/:filename
     router.delete('/files/delete/:id/:filename', async (req, res) => {
       try {
         let responder = this.getResponder(res);
@@ -139,21 +125,86 @@ export default class ExpressRouteDriver {
         sentry.logError(e);
       }
     });
-    router.get('/cube/learning-objects', async (req, res) => {
+    // TODO: Merge /cube routes into base layer
+    /*router.get('/learning-objects', async (req, res) => {
       await fetchLearningObjects(this.dataStore, this.getResponder(res));
-    });
+    });*/
     router.get('/cube/learning-objects:id', async (req, res) => {
       await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.id);
     });
-    router.get('/cube/learning-objects/checkout/:ids', async (req, res) => {
+    router.get('/learning-objects/checkout/:ids', async (req, res) => {
       let ids = req.params.ids.split(',');
       let library = new LibraryInteractor();
       await library.checkout(this.dataStore, this.getResponder(res), ids);
     });
-    router.get('/cube/learning-objects/multiple/:ids', async (req, res) => {
-      let ids = req.params.ids.split(',');
-      await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
+  }
+
+  buildUserRouter() {
+    let router: Router = express.Router();
+
+    // Register FIXME: /register
+    router.post('', async (req, res) => {
+      try {
+        let responder = this.getResponder(res);
+        await register(this.dataStore, responder, req.body);
+      } catch (e) {
+        sentry.logError(e);
+      }
     });
+    // Login FIXME: /authenticate
+    router.post('/tokens', async (req, res) => {
+      try {
+        let responder = this.getResponder(res);
+        await login(this.dataStore, responder, req.body.username, req.body.password);
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
+    // Remove account
+    router.delete('/:username', async (req, res) => {
+      sentry.logError(new Error('Cannot delete user accounts at this time'));
+    });
+    router.route('/:username/tokens')
+      // Validate Token FIXME: /validateToken
+      .post(async (req, res) => {
+        try {
+          validateToken(this.getResponder(res), req.body.token);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      })
+      .delete(async (req, res) => {
+        // Logout
+      });
+    router.route('/:username/cart')
+      .get(async (req, res) => {
+        // Get user's cart FIXME: maybe /cart/multiple/:ids ?
+        await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
+      })
+      .delete(async (req, res) => {
+        // Clear user's cart
+      });
+    router.route('/:username/cart/learning-objects/:hash')
+      .post(async (req, res) => {
+        // Add LO to cart
+      })
+      .delete(async (req, res) => {
+        // Delete LO from cart
+      });
+    return router;
   }
 }
 
+// /api/users/:username/learning-objects (require auth check for ownership or public viewing)
+// /api/learning-objects
+
+// POST /users/tokens          = login
+// POST /users                 = register
+// POST /users/:username/tokens      = validateToken
+// DELETE /users/:username/tokens    = logout
+// DELETE /users/:username           = remove account
+
+// GET /users/:username/cart         = get user's cart
+// DELETE /users/:username/cart      = clear user's cart
+// DELETE /users/:username/cart/learning-objects/:hash  = delete Learning Object from user's cart
+// POST /users/:username/cart/learning-objects/:hash  = add Learning Object to user's cart

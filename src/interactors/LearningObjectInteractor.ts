@@ -89,9 +89,7 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
   dataStore.getLearningObject(learningObjectID)
     .then((learningObject) => {
       // If published
-      responder.sendLearningObject(
-        learningObject
-      );
+      responder.sendLearningObject(learningObject);
       // else, ensure user has ownership
     })
     .catch((error) => {
