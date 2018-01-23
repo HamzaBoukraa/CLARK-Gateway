@@ -2,7 +2,7 @@ import { DataStore } from '../interfaces/DataStore';
 import { DB_INTERACTION_URI } from '../config/config'
 import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
-import { LearningObject, User } from 'clark-entity';
+import { LearningObject, User } from '@cyber4all/clark-entity';
 
 export class DBInteractionConnector implements DataStore {
     constructor() { }
