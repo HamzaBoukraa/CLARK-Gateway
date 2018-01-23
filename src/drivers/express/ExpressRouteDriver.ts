@@ -101,9 +101,20 @@ export default class ExpressRouteDriver {
         // Get user's cart FIXME: maybe /cart/multiple/:ids ?
         // TODO: Swap ids for username to proxy to cart-service
         await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
+
+        // TODO remove the route for download=true
+        if (req.query['download']) {
+          // download is true
+          // FIXME: Get ids from cart storage, then send to library checkout
+          let ids = req.params.ids.split(',');
+          let library = new LibraryInteractor();
+          await library.checkout(this.dataStore, this.getResponder(res), ids);
+        }
       })
       .delete(async (req, res) => {
-        // TODO: Clear user's cart
+        // Clear user's cart
+        // TODO pass the username and 
+        // await removeFromCart(username, req.body.id)
       });
     router.route('/:username/cart/learning-objects/:author/:learningObjectName')
       .post(async (req, res) => {
@@ -112,12 +123,6 @@ export default class ExpressRouteDriver {
       .delete(async (req, res) => {
         // TODO: Delete LO from cart
       });
-    router.get('/:username/cart?download=true', async (req, res) => {
-      // FIXME: Get ids from cart storage, then send to library checkout
-      let ids = req.params.ids.split(',');
-      let library = new LibraryInteractor();
-      await library.checkout(this.dataStore, this.getResponder(res), ids);
-    });
 
     return router;
   }
@@ -235,5 +240,5 @@ export default class ExpressRouteDriver {
 
 // GET /users/:username/cart         = get user's cart
 // DELETE /users/:username/cart      = clear user's cart
-// DELETE /users/:username/cart/learning-objects/:author/:learning-object-name  = delete Learning Object from user's cart
-// POST /users/:username/cart/learning-objects/:author/:learning-object-name  = add Learning Object to user's cart
+// DELETE /users/:username/cart/learning-objects/:author/:learningObjectName  = delete Learning Object from user's cart
+// POST /users/:username/cart/learning-objects/:author/:learningObjectName  = add Learning Object to user's cart

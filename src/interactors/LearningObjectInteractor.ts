@@ -108,6 +108,13 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
 export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, filters?: object) {
   // TODO: Allow optional filters in DataStore.readLearningObjects()
   console.log(filters);
+  // parse filters
+  if (filters['academiclevel']) {
+    // do something with academiclevel filter here
+  }
+  if (filters['page']) {
+    // do something with page filtering here (IE change page)
+  }
   let learningObjects = await dataStore.readLearningObjects();
   responder.sendLearningObjects(learningObjects);
 }
