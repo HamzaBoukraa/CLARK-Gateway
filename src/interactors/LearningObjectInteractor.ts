@@ -64,15 +64,21 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
     });
 }
 
+/**
+ * Fetch all Learning Objects associated with the given user.
+ *
+ * @export
+ * @param {AccessValidator} accessValidator
+ * @param {DataStore} dataStore
+ * @param {Responder} responder
+ * @param {any} user
+ */
 export async function read(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, user) {
   findAccessStatus(accessValidator, user)
     .then(userid => {
-      // Fetch all Learning Objects associated with the userid
       dataStore.getMyLearningObjects(userid)
         .then((learningObjects) => {
-          responder.sendLearningObjects(
-            learningObjects
-          );
+          responder.sendLearningObjects(learningObjects);
         })
         .catch((error) => {
           responder.sendOperationError(`There was an error fetching user's learning objects. ${error}`, 400);
@@ -100,12 +106,13 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
 
 // Cube Functions
 export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, filters?: object) {
+  // TODO: Allow optional filters in DataStore.readLearningObjects()
   console.log(filters);
   let learningObjects = await dataStore.readLearningObjects();
   responder.sendLearningObjects(learningObjects);
 }
-export async function fetchLearningObject(dataStore: DataStore, responder: Responder, id: string) {
-  let learningObject = await dataStore.readLearningObject(id);
+export async function fetchLearningObject(dataStore: DataStore, responder: Responder, author: string, learningObjectName: string) {
+  let learningObject = await dataStore.readLearningObject(author, learningObjectName);
   responder.sendLearningObjects(learningObject);
 }
 export async function fetchMultipleLearningObject(dataStore: DataStore, responder: Responder, ids: string[]) {

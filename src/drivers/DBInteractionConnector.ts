@@ -180,14 +180,17 @@ export class DBInteractionConnector implements DataStore {
         return await this.request(LO_SUGGESTION_URI, EVENT.FETCH_LEARNING_OBJECTS, {});
     }
 
-    async readLearningObject(id: string): Promise<string> {
-        return await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT, { id: id });
+    async readLearningObject(author: string, learningObjectName: string): Promise<string> {
+        return await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT, {
+            username: author,
+            learningObjectName: learningObjectName,
+        });
     }
 
-    // TODO: return P<LearningObject[]>
     async readMultipleLearningObjects(ids: string[], fullObject: boolean): Promise<string[]> {
         if (fullObject) {
           return Promise.all(
+              // TODO: Update to utilize cart-service
             ids.map((id) => {
               return this.readLearningObject(id);
             })

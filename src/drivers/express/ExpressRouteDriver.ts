@@ -51,19 +51,7 @@ export default class ExpressRouteDriver {
     });
     router.use('/users', this.buildUserRouter());
     router.use('/users/:username/learning-objects', this.buildUserLearningObjectRouter());
-
-    router.get('/learning-objects', async (req, res) => {
-      try {
-        // check for filters and send
-        if (req.query) await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
-        else await fetchLearningObjects(this.dataStore, this.getResponder(res));
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
-    router.get('/cube/learning-objects:id', async (req, res) => {
-      await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.id);
-    });
+    router.use('/learning-objects', this.buildPublicLearningObjectRouter());
   }
 
   /**
@@ -71,7 +59,7 @@ export default class ExpressRouteDriver {
    *
    * @returns {Router}
    */
-  buildUserRouter() {
+  private buildUserRouter() {
     let router: Router = express.Router();
 
     // Register FIXME: /register
@@ -92,7 +80,7 @@ export default class ExpressRouteDriver {
         sentry.logError(e);
       }
     });
-    // Remove account
+    // TODO: Remove account
     router.delete('/:username', async (req, res) => {
       sentry.logError(new Error('Cannot delete user accounts at this time'));
     });
@@ -106,22 +94,23 @@ export default class ExpressRouteDriver {
         }
       })
       .delete(async (req, res) => {
-        // Logout
+        // TODO: Logout
       });
     router.route('/:username/cart')
       .get(async (req, res) => {
         // Get user's cart FIXME: maybe /cart/multiple/:ids ?
+        // TODO: Swap ids for username to proxy to cart-service
         await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
       })
       .delete(async (req, res) => {
-        // Clear user's cart
+        // TODO: Clear user's cart
       });
-    router.route('/:username/cart/learning-objects/:hash')
+    router.route('/:username/cart/learning-objects/:author/:learningObjectName')
       .post(async (req, res) => {
-        // Add LO to cart
+        // TODO: Add LO to cart
       })
       .delete(async (req, res) => {
-        // Delete LO from cart
+        // TODO: Delete LO from cart
       });
     router.get('/:username/cart?download=true', async (req, res) => {
       // FIXME: Get ids from cart storage, then send to library checkout
@@ -141,39 +130,39 @@ export default class ExpressRouteDriver {
   private buildUserLearningObjectRouter() {
     let router: Router = express.Router();
     router.route('')
-    .get(async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        let user = req['user'];
-        await read(this.accessValidator, this.dataStore, responder, user);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    })
-    .post(async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        let user = req['user'];
-        await create(this.accessValidator, this.dataStore, responder, req.body, user);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    })
-    .patch(async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        let user = req['user'];
-        await update(this.accessValidator, this.dataStore, responder, req.body.id, req.body.learningObject, user);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
-    router.route('/:id')
       .get(async (req, res) => {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await readOne(this.dataStore, responder, req.params.id, user);
+          await read(this.accessValidator, this.dataStore, responder, user);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      })
+      .post(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await create(this.accessValidator, this.dataStore, responder, req.body, user);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      })
+      .patch(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await update(this.accessValidator, this.dataStore, responder, req.body.id, req.body.learningObject, user);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      });
+    router.route('/:learningObjectName')
+      .get(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await readOne(this.dataStore, responder, req.params.learningObjectName, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -187,7 +176,7 @@ export default class ExpressRouteDriver {
           sentry.logError(e);
         }
       });
-    router.post('/:id/files', this.upload.any(), async (req, res) => {
+    router.post('/:learningObjectName/files', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
@@ -197,7 +186,7 @@ export default class ExpressRouteDriver {
         sentry.logError(e);
       }
     });
-    router.delete('/:id/files/:filename', async (req, res) => {
+    router.delete('/:learningObjectName/files/:filename', async (req, res) => {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
@@ -206,6 +195,30 @@ export default class ExpressRouteDriver {
       } catch (e) {
         sentry.logError(e);
       }
+    });
+    return router;
+  }
+
+  /**
+   * Route handlers for /api/learning-objects
+   *
+   * @private
+   * @returns {Router}
+   * @memberof ExpressRouteDriver
+   */
+  private buildPublicLearningObjectRouter() {
+    let router: Router = express.Router();
+    router.get('', async (req, res) => {
+      try {
+        // check for filters and send
+        if (req.query) await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
+        else await fetchLearningObjects(this.dataStore, this.getResponder(res));
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
+    router.get('/:author/:learningObjectName', async (req, res) => {
+      await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.author, req.params.learningObjectName);
     });
     return router;
   }
@@ -222,5 +235,5 @@ export default class ExpressRouteDriver {
 
 // GET /users/:username/cart         = get user's cart
 // DELETE /users/:username/cart      = clear user's cart
-// DELETE /users/:username/cart/learning-objects/:hash  = delete Learning Object from user's cart
-// POST /users/:username/cart/learning-objects/:hash  = add Learning Object to user's cart
+// DELETE /users/:username/cart/learning-objects/:author/:learning-object-name  = delete Learning Object from user's cart
+// POST /users/:username/cart/learning-objects/:author/:learning-object-name  = add Learning Object to user's cart
