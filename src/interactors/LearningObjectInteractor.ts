@@ -100,7 +100,13 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
 
 // Cube Functions
 export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, filters?: object) {
-  console.log(filters);
+  // parse filters
+  if (filters['academiclevel']) {
+    // do something with academiclevel filter here
+  }
+  if (filters['page']) {
+    // do something with page filtering here (IE change page)
+  }
   let learningObjects = await dataStore.readLearningObjects();
   responder.sendLearningObjects(learningObjects);
 }

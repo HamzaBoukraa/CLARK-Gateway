@@ -112,23 +112,28 @@ export default class ExpressRouteDriver {
       .get(async (req, res) => {
         // Get user's cart FIXME: maybe /cart/multiple/:ids ?
         await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
+
+        // TODO remove the route for download=true
+        if (req.query['download']) {
+          // download is true
+          // FIXME: Get ids from cart storage, then send to library checkout
+          let ids = req.params.ids.split(',');
+          let library = new LibraryInteractor();
+          await library.checkout(this.dataStore, this.getResponder(res), ids);
+        }
       })
       .delete(async (req, res) => {
         // Clear user's cart
+        // TODO pass the username and 
+        // await removeFromCart(username, req.body.id)
       });
-    router.route('/:username/cart/learning-objects/:hash')
+    router.route('/:username/cart/learning-objects/:author/:learning-object-name')
       .post(async (req, res) => {
         // Add LO to cart
       })
       .delete(async (req, res) => {
         // Delete LO from cart
       });
-    router.get('/:username/cart?download=true', async (req, res) => {
-      // FIXME: Get ids from cart storage, then send to library checkout
-      let ids = req.params.ids.split(',');
-      let library = new LibraryInteractor();
-      await library.checkout(this.dataStore, this.getResponder(res), ids);
-    });
 
     return router;
   }
