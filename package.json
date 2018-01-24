@@ -43,6 +43,7 @@
     "clark-taxonomy": "^1.0.14",
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
+    "express-http-proxy": "^1.1.0",
     "express-jwt": "^5.3.0",
     "helmet": "^3.6.1",
     "jsonwebtoken": "^7.4.1",

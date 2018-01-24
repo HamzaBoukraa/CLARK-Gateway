@@ -1,13 +1,9 @@
-import { AccessValidator, DataStore, Responder } from './../interfaces/interfaces';
+import { DataStore, Responder } from './../interfaces/interfaces';
 import { LearningObjectRepoFileInteractor } from './LearningObjectRepoFileInteractor';
 
-// FIXME: DRY violated by accessStatus repitition (promise structure maybe?)
-
-export async function create(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObject, user: any) {
-  findAccessStatus(accessValidator, user)
-    .then(userid => {
+export async function create(dataStore: DataStore, responder: Responder, learningObject, user: any) {
       // create new LearningObject(userid, data_as_json)
-      dataStore.createLearningObject(userid, learningObject)
+      dataStore.createLearningObject(user.userid, learningObject)
         .then((learningObjectID) => {
           responder.sendLearningObject(learningObjectID);
         })
@@ -17,37 +13,24 @@ export async function create(accessValidator: AccessValidator, dataStore: DataSt
           } else
             responder.sendOperationError(`There was an error creating new Learning Object. ${error}`, 400);
         });
+}
+
+export async function update(dataStore: DataStore, responder: Responder, learningObjectID, learningObject, user) {
+
+  // Patch data_as_json via dataStore call (else send error ->)
+  dataStore.updateLearningObject(user.userid, learningObjectID, learningObject)
+    .then(() => {
+      responder.sendOperationSuccess();
     })
     .catch((error) => {
-      responder.invalidAccess();
+      if (error.match(/duplicate\s+key/g).length > 0) {
+        responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
+      } else
+        responder.sendOperationError(`There was an error creating new learning object. ${error}`, 400);
     });
 }
 
-export async function update(accessValidator: AccessValidator,
-                             dataStore: DataStore, responder: Responder,
-                             learningObjectID, learningObject, user) {
-  findAccessStatus(accessValidator, user)
-    .then(userid => {
-      // Patch data_as_json via dataStore call (else send error ->)
-      dataStore.updateLearningObject(userid, learningObjectID, learningObject)
-        .then(() => {
-          responder.sendOperationSuccess();
-        })
-        .catch((error) => {
-          if (error.match(/duplicate\s+key/g).length > 0) {
-            responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
-          } else
-            responder.sendOperationError(`There was an error creating new learning object. ${error}`, 400);
-        });
-    })
-    .catch((error) => {
-      responder.invalidAccess();
-    });
-}
-
-export async function destroy(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, learningObjectID, user) {
-  findAccessStatus(accessValidator, user)
-    .then(userid => {
+export async function destroy(dataStore: DataStore, responder: Responder, learningObjectID, user) {
       // Delete LO from data store (else send error ->)
       dataStore.deleteLearningObject(learningObjectID)
         .then(() => {
@@ -58,10 +41,6 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
           responder.sendOperationError(`There was an error deleting learning object. ${error}`, 400);
         });
       // Send verification ->
-    })
-    .catch((error) => {
-      responder.invalidAccess();
-    });
 }
 
 /**
@@ -73,21 +52,14 @@ export async function destroy(accessValidator: AccessValidator, dataStore: DataS
  * @param {Responder} responder
  * @param {any} user
  */
-export async function read(accessValidator: AccessValidator, dataStore: DataStore, responder: Responder, user) {
-  findAccessStatus(accessValidator, user)
-    .then(userid => {
-      dataStore.getMyLearningObjects(userid)
+export async function read(dataStore: DataStore, responder: Responder, user) {
+      dataStore.getMyLearningObjects(user.userid)
         .then((learningObjects) => {
           responder.sendLearningObjects(learningObjects);
         })
         .catch((error) => {
           responder.sendOperationError(`There was an error fetching user's learning objects. ${error}`, 400);
         });
-
-    })
-    .catch((error) => {
-      responder.invalidAccess();
-    });
 }
 
 export async function readOne(dataStore: DataStore, responder: Responder, learningObjectID, user) {
@@ -101,7 +73,6 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
     .catch((error) => {
       responder.sendOperationError(`There was an error fetching user's learning object. ${error}`, 400);
     });
-
 }
 
 // Cube Functions
@@ -127,12 +98,3 @@ export async function fetchMultipleLearningObject(dataStore: DataStore, responde
   responder.sendLearningObjects(learningObjects);
 }
 // END CUBE FUNCTIONS
-
-function findAccessStatus(accessValidator: AccessValidator, user): Promise<string> {
-  return new Promise((resolve, reject) => {
-    let accessStatus = accessValidator.authorize(user);
-    if (accessStatus.isAccessable) {
-      resolve(accessStatus.userid);
-    } else reject(new Error('Invalid Access'));
-  });
-}

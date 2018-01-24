@@ -11,5 +11,6 @@ export const enforceTokenAccess = jwt({
   issuer: issuer,
 }).unless({
   // Routes that don't require authorization
-  path: ['/', '/api', '/api/authenticate', '/api/register', /\/api\/learning-object/i],
+  path: ['/api', '/api/users', '/api/authenticate', '/api/register', /\/api\/learning-object/i],
 });
+// TODO: Whitelist user routes

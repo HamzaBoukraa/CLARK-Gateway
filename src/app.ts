@@ -1,4 +1,4 @@
-import { ExpressDriver, DBInteractionConnector, InMemoryConnector } from './drivers/drivers';
+import { ExpressDriver, DBInteractionConnector } from './drivers/drivers';
 import { DataStore } from './interfaces/interfaces';
 // ----------------------------------------------------------------------------------
 // Initializations

@@ -1,14 +1,16 @@
 import * as express from 'express';
 import { Router } from 'express';
 import * as multer from 'multer';
-import { ExpressResponder, TokenManager } from '../drivers';
-import { AccessValidator, DataStore } from '../../interfaces/interfaces';
-import { login, register, validateToken } from '../../interactors/AuthenticationInteractor';
+import * as proxy from 'express-http-proxy';
+import { ExpressResponder } from '../drivers';
+import { DataStore } from '../../interfaces/interfaces';
 import { create, destroy, read, readOne, update, fetchLearningObjects,
          fetchLearningObject, fetchMultipleLearningObject } from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
 import { LibraryInteractor } from '../../interactors/LibraryInteractor';
+
+const USERS_API = process.env.USERS_API || 'localhost:3000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -25,14 +27,13 @@ export default class ExpressRouteDriver {
    * @param dataStore the data store that the routes should utilize
    */
   public static buildRouter(dataStore) {
-    let accessValidator = new TokenManager();
-    let e = new ExpressRouteDriver(accessValidator, dataStore);
+    let e = new ExpressRouteDriver(dataStore);
     let router: Router = express.Router();
     e.setRoutes(router);
     return router;
   }
 
-  private constructor(public accessValidator: AccessValidator, public dataStore: DataStore) {}
+  private constructor(public dataStore: DataStore) { console.log(USERS_API); }
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
@@ -62,40 +63,43 @@ export default class ExpressRouteDriver {
   private buildUserRouter() {
     let router: Router = express.Router();
 
+    // Welcome page
+    router.get('', proxy(USERS_API, {
+      proxyReqPathResolver: (req) => {
+        return '/users';
+      },
+    }));
     // Register FIXME: /register
-    router.post('', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        await register(this.dataStore, responder, req.body);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
+    router.post('', proxy(USERS_API, {
+      proxyReqPathResolver: (req) => {
+        return '/users';
+      },
+    }));
     // Login FIXME: /authenticate
-    router.post('/tokens', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        await login(this.dataStore, responder, req.body.username, req.body.password);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
+    router.post('/tokens', proxy(USERS_API, {
+      proxyReqPathResolver: (req) => {
+        return '/users/tokens';
+      },
+    }));
     // TODO: Remove account
-    router.delete('/:username', async (req, res) => {
-      sentry.logError(new Error('Cannot delete user accounts at this time'));
-    });
+    router.delete('/:username', proxy(USERS_API, {
+      proxyReqPathResolver: (req) => {
+        return `/users/${req.params.username}`;
+      },
+    }));
     router.route('/:username/tokens')
       // Validate Token FIXME: /validateToken
-      .post(async (req, res) => {
-        try {
-          validateToken(this.getResponder(res), req.body.token);
-        } catch (e) {
-          sentry.logError(e);
-        }
-      })
-      .delete(async (req, res) => {
-        // TODO: Logout
-      });
+      .post(proxy(USERS_API, {
+        proxyReqPathResolver: (req) => {
+          return `/users/${req.params.username}/tokens`;
+        },
+      }))
+      // Logout
+      .delete(proxy(USERS_API, {
+        proxyReqPathResolver: (req) => {
+          return `/users/${req.params.username}/tokens`;
+        },
+      }));
     router.route('/:username/cart')
       .get(async (req, res) => {
         // Get user's cart FIXME: maybe /cart/multiple/:ids ?
@@ -139,7 +143,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await read(this.accessValidator, this.dataStore, responder, user);
+          await read(this.dataStore, responder, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -148,7 +152,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await create(this.accessValidator, this.dataStore, responder, req.body, user);
+          await create(this.dataStore, responder, req.body, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -157,7 +161,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await update(this.accessValidator, this.dataStore, responder, req.body.id, req.body.learningObject, user);
+          await update(this.dataStore, responder, req.body.id, req.body.learningObject, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -176,7 +180,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await destroy(this.accessValidator, this.dataStore, responder, req.params.id, user);
+          await destroy(this.dataStore, responder, req.params.id, user);
         } catch (e) {
           sentry.logError(e);
         }
