@@ -12,6 +12,7 @@ import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
 // FIXME: Grab from env
 const USERS_API = process.env.USERS_API || 'localhost:4000';
+const CART_API = process.env.CART_API || 'localhost:3006';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -102,32 +103,27 @@ export default class ExpressRouteDriver {
         },
       }));
     router.route('/:username/cart')
-      .get(async (req, res) => {
-        // Get user's cart FIXME: maybe /cart/multiple/:ids ?
-        // TODO: Swap ids for username to proxy to cart-service
-        await fetchMultipleLearningObject(this.dataStore, this.getResponder(res), ids);
-
-        // TODO remove the route for download=true
-        if (req.query['download']) {
-          // download is true
-          // FIXME: Get ids from cart storage, then send to library checkout
-          let ids = req.params.ids.split(',');
-          let library = new LibraryInteractor();
-          await library.checkout(this.dataStore, this.getResponder(res), ids);
-        }
-      })
-      .delete(async (req, res) => {
-        // Clear user's cart
-        // TODO pass the username and 
-        // await removeFromCart(username, req.body.id)
-      });
+      .get(proxy(CART_API, {
+        proxyReqPathResolver: (req) => {
+          return `/api/users/${req.params.username}/cart`;
+        },
+      }))
+      .delete(proxy(CART_API, {
+        proxyReqPathResolver: (req) => {
+          return `/api/users/${req.params.username}/cart`;
+        },
+      }));
     router.route('/:username/cart/learning-objects/:author/:learningObjectName')
-      .post(async (req, res) => {
-        // TODO: Add LO to cart
-      })
-      .delete(async (req, res) => {
-        // TODO: Delete LO from cart
-      });
+      .post(proxy(CART_API, {
+        proxyReqPathResolver: (req) => {
+          return `/api/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+        },
+      }))
+      .delete(proxy(CART_API, {
+        proxyReqPathResolver: (req) => {
+          return `/api/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+        },
+      }));
 
     return router;
   }
