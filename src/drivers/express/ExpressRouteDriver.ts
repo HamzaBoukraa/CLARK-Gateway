@@ -10,6 +10,7 @@ import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObje
 import { sentry } from '../../logging/sentry';
 import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
+// FIXME: Grab from env
 const USERS_API = process.env.USERS_API || 'localhost:3000';
 
 /**
@@ -33,7 +34,7 @@ export default class ExpressRouteDriver {
     return router;
   }
 
-  private constructor(public dataStore: DataStore) { console.log(USERS_API); }
+  private constructor(public dataStore: DataStore) { }
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
