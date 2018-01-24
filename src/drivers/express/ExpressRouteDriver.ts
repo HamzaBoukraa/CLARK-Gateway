@@ -11,7 +11,7 @@ import { sentry } from '../../logging/sentry';
 import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
 // FIXME: Grab from env
-const USERS_API = process.env.USERS_API || 'localhost:3000';
+const USERS_API = process.env.USERS_API || 'localhost:4000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -157,15 +157,6 @@ export default class ExpressRouteDriver {
         } catch (e) {
           sentry.logError(e);
         }
-      })
-      .patch(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          let user = req['user'];
-          await update(this.dataStore, responder, req.body.id, req.body.learningObject, user);
-        } catch (e) {
-          sentry.logError(e);
-        }
       });
     router.route('/:learningObjectName')
       .get(async (req, res) => {
@@ -173,6 +164,15 @@ export default class ExpressRouteDriver {
           let responder = this.getResponder(res);
           let user = req['user'];
           await readOne(this.dataStore, responder, req.params.learningObjectName, user);
+        } catch (e) {
+          sentry.logError(e);
+        }
+      })
+      .patch(async (req, res) => {
+        try {
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          await update(this.dataStore, responder, req.body.id, req.body.learningObject, user);
         } catch (e) {
           sentry.logError(e);
         }
