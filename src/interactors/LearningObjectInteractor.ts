@@ -2,17 +2,19 @@ import { DataStore, Responder } from './../interfaces/interfaces';
 import { LearningObjectRepoFileInteractor } from './LearningObjectRepoFileInteractor';
 
 export async function create(dataStore: DataStore, responder: Responder, learningObject, user: any) {
-      // create new LearningObject(userid, data_as_json)
-      dataStore.createLearningObject(user.userid, learningObject)
-        .then((learningObjectID) => {
-          responder.sendLearningObject(learningObjectID);
-        })
-        .catch((error: string) => {
-          if (error.match(/duplicate\s+key/g).length > 0) {
-            responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
-          } else
-            responder.sendOperationError(`There was an error creating new Learning Object. ${error}`, 400);
-        });
+  console.log(learningObject);
+  // create new LearningObject(userid, data_as_json)
+  dataStore.createLearningObject(user.username, learningObject)
+    .then((learningObjectID) => {
+      responder.sendLearningObject(learningObjectID);
+    })
+    .catch((error: string) => {
+      console.log(error);
+      if (error.match(/duplicate\s+key/g).length > 0) {
+        responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
+      } else
+        responder.sendOperationError(`There was an error creating new Learning Object. ${error}`, 400);
+    });
 }
 
 export async function update(dataStore: DataStore, responder: Responder, learningObjectID, learningObject, user) {
@@ -30,17 +32,34 @@ export async function update(dataStore: DataStore, responder: Responder, learnin
     });
 }
 
-export async function destroy(dataStore: DataStore, responder: Responder, learningObjectID, user) {
+export async function destroy(dataStore: DataStore, responder: Responder, learningObjectName: string, user) {
       // Delete LO from data store (else send error ->)
-      dataStore.deleteLearningObject(learningObjectID)
+      dataStore.deleteLearningObject(user.username, learningObjectName)
         .then(() => {
-          let learningObjectFile = new LearningObjectRepoFileInteractor();
-          learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectID, user);
+          // let learningObjectFile = new LearningObjectRepoFileInteractor();
+          // learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectName, user);
+          console.log('success');
+          responder.sendOperationSuccess();
         })
         .catch((error) => {
           responder.sendOperationError(`There was an error deleting learning object. ${error}`, 400);
         });
       // Send verification ->
+}
+
+export async function destroyMultiple(dataStore: DataStore, responder: Responder, learningObjectNames: string[], user) {
+  // Delete LO from data store (else send error ->)
+  dataStore.deleteLearningObjects(user.username, learningObjectNames)
+    .then(() => {
+      // let learningObjectFile = new LearningObjectRepoFileInteractor();
+      // learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectName, user);
+      console.log('success');
+      responder.sendOperationSuccess();
+    })
+    .catch((error) => {
+      responder.sendOperationError(`There was an error deleting learning object. ${error}`, 400);
+    });
+  // Send verification ->
 }
 
 /**
@@ -53,13 +72,13 @@ export async function destroy(dataStore: DataStore, responder: Responder, learni
  * @param {any} user
  */
 export async function read(dataStore: DataStore, responder: Responder, user) {
-      dataStore.getMyLearningObjects(user.userid)
-        .then((learningObjects) => {
-          responder.sendLearningObjects(learningObjects);
-        })
-        .catch((error) => {
-          responder.sendOperationError(`There was an error fetching user's learning objects. ${error}`, 400);
-        });
+  dataStore.getMyLearningObjects(user.username)
+    .then((learningObjects) => {
+      responder.sendLearningObjects(learningObjects);
+    })
+    .catch((error) => {
+      responder.sendOperationError(`There was an error fetching user's learning objects. ${error}`, 400);
+    });
 }
 
 export async function readOne(dataStore: DataStore, responder: Responder, learningObjectID, user) {

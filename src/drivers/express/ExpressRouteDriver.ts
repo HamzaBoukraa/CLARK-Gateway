@@ -4,7 +4,7 @@ import * as multer from 'multer';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
-import { create, destroy, read, readOne, update, fetchLearningObjects,
+import { create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects,
          fetchLearningObject, fetchMultipleLearningObject } from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
@@ -92,6 +92,7 @@ export default class ExpressRouteDriver {
       // Validate Token FIXME: /validateToken
       .post(proxy(USERS_API, {
         proxyReqPathResolver: (req) => {
+          console.log('fuck me');
           return `/users/${req.params.username}/tokens`;
         },
       }))
@@ -172,7 +173,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await update(this.dataStore, responder, req.body.id, req.body.learningObject, user);
+          await update(this.dataStore, responder, req.params.learningObjectName, req.body.learningObject, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -181,8 +182,18 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          await destroy(this.dataStore, responder, req.params.id, user);
+          await destroy(this.dataStore, responder, req.params.learningObjectName, user);
         } catch (e) {
+          sentry.logError(e);
+        }
+      });
+      router.delete('/multiple/:names', async (req,res)=>{
+        try{
+          let responder = this.getResponder(res);
+          let user = req['user'];
+          let names = req.params.names.split(',');
+          await destroyMultiple(this.dataStore, responder, names, user);
+        }catch(e){
           sentry.logError(e);
         }
       });

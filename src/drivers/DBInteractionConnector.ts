@@ -3,6 +3,7 @@ import { DB_INTERACTION_URI, LO_SUGGESTION_URI } from '../config/config';
 import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
 import { LearningObject, User } from 'clark-entity';
+import * as request from 'request';
 
 export class DBInteractionConnector implements DataStore {
 
@@ -71,16 +72,7 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async createLearningObject(username: string, learningObject: any): Promise<string> {
-        let userid = await this.request(DB_INTERACTION_URI, EVENT.FIND_USER, { userid: username });
-        if (!userid || userid.error) return Promise.reject(userid.error);
-
-        let user = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return Promise.reject(user.error);
-
-        learningObject = LearningObject.unserialize(JSON.stringify(learningObject), user);
-        learningObject = LearningObject.serialize(learningObject);
-
-        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: userid, object: learningObject });
+        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: LearningObject.serialize(learningObject) });
         if (!learningObjectID || learningObjectID.error) return Promise.reject(learningObjectID.error);
 
         return learningObjectID;
@@ -94,30 +86,8 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async getMyLearningObjects(username: string): Promise<any> {
-        let userid = await this.request(DB_INTERACTION_URI, EVENT.FIND_USER, { userid: username });
-        if (!userid || userid.error) return Promise.reject(userid.error);
-
-        let LOs = await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT_SUMARY, { id: userid });
-
-        let user = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return Promise.reject(user.error);
-        user = User.unserialize(user);
-
-        // Attach id's to learning objects and return array of Learning Objects
-        return Promise.all(LOs.map((learningObject) => {
-            learningObject = LearningObject.unserialize(learningObject, user);
-            return new Promise<LearningObject>((resolve, reject) => {
-                this.request(DB_INTERACTION_URI, EVENT.FIND_LEARNING_OBJECT, { author: userid, name: learningObject['_name'] })
-                    .then((learningObjectID) => {
-                        if (!learningObjectID || learningObjectID.error) {
-                            reject(learningObjectID.error);
-                        } else {
-                            learningObject['id'] = learningObjectID;
-                            resolve(learningObject);
-                        }
-                    });
-            });
-        }));
+        let objects = await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT_SUMARY + `/${username}`, {}, 'GET');
+        return objects;
     }
 
     /**
@@ -171,8 +141,12 @@ export class DBInteractionConnector implements DataStore {
      * @returns {Promise<any>}
      * @memberof DatabaseInteractionConnector
      */
-    async deleteLearningObject(learningObjectID: string): Promise<any> {
-        return this.request(DB_INTERACTION_URI, EVENT.DELETE_LEARNING_OBJECT, { id: learningObjectID });
+    async deleteLearningObject(username: string, learningObjectName: string): Promise<any> {
+        return this.request(DB_INTERACTION_URI, EVENT.DELETE_LEARNING_OBJECT + `/${username}/${learningObjectName}`, { }, 'DELETE');
+    }
+
+    async deleteLearningObjects(username: string, learningObjectNames: string[]): Promise<any> {
+        return this.request(DB_INTERACTION_URI, EVENT.DELETE_MULTIPLE_LEARNING_OBJECTS + `/${username}/${learningObjectNames}`, {}, 'DELETE');
     }
 
 // CUBE
@@ -201,9 +175,9 @@ export class DBInteractionConnector implements DataStore {
     }
 // END CUBE
 
-    private async request(URI: string, event: string, params: {}): Promise<any> {
+    private async request(URI: string, event: string, params: {}, method?: string): Promise<any> {
         return rp({
-            method: 'POST',
+            method: method ? method : 'POST',
             uri: URI + event,
             body: params,
             json: true,

@@ -7,7 +7,8 @@ export interface DataStore {
     getMyLearningObjects(username: string);
     getLearningObject(learningObjectID: string);
     updateLearningObject(username: string, learningObjectID: string, learningObject);
-    deleteLearningObject(learningObjectID: string);
+    deleteLearningObject(username: string, learningObjectName: string);
+    deleteLearningObjects(username: string, learningObjectName: string[]);
     // CUBE
     readLearningObjects(): Promise<string[]>;
     readLearningObject(author: string, learningObjectName: string): Promise<string>;
