@@ -2,7 +2,7 @@ import { DataStore } from '../interfaces/DataStore';
 import { DB_INTERACTION_URI, LO_SUGGESTION_URI } from '../config/config';
 import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
-import { LearningObject, User } from 'clark-entity';
+import { LearningObject, User } from '@cyber4all/clark-entity';
 import * as request from 'request';
 
 export class DBInteractionConnector implements DataStore {
@@ -145,14 +145,11 @@ export class DBInteractionConnector implements DataStore {
 
 // CUBE
     async readLearningObjects(): Promise<string[]> {
-        return await this.request(LO_SUGGESTION_URI, EVENT.FETCH_LEARNING_OBJECTS, {});
+        return await this.request(DB_INTERACTION_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
     }
 
     async readLearningObject(author: string, learningObjectName: string): Promise<string> {
-        return await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT, {
-            username: author,
-            learningObjectName: learningObjectName,
-        });
+        return await this.request(DB_INTERACTION_URI, `${EVENT.LOAD_LEARNING_OBJECT}/${author}/${learningObjectName}`, {}, 'GET');
     }
 
     async readMultipleLearningObjects(ids: string[], fullObject: boolean): Promise<string[]> {
@@ -164,7 +161,7 @@ export class DBInteractionConnector implements DataStore {
             })
           );
         } else {
-          return this.request(LO_SUGGESTION_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });
+          return this.request(DB_INTERACTION_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });
         }
     }
 // END CUBE

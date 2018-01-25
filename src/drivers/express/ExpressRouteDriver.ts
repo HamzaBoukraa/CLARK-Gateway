@@ -233,6 +233,7 @@ export default class ExpressRouteDriver {
       }
     });
     router.get('/:author/:learningObjectName', async (req, res) => {
+      console.log(req.params.author, req.params.learningObjectName);
       await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.author, req.params.learningObjectName);
     });
     return router;
