@@ -7,3 +7,4 @@ npm-debug.log
 src/config/aws-sdk/config.json
 src/entity
 
+.env

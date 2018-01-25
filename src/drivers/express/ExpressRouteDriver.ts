@@ -4,12 +4,16 @@ import * as multer from 'multer';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
-import { create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects,
-         fetchLearningObject, fetchMultipleLearningObject } from '../../interactors/LearningObjectInteractor';
+import {
+  create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects,
+  fetchLearningObject, fetchMultipleLearningObject
+} from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
 import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
 
@@ -182,15 +186,15 @@ export default class ExpressRouteDriver {
         }
       });
     router.delete('/multiple/:names', async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          let user = req['user'];
-          let names = req.params.names.split(',');
-          await destroyMultiple(this.dataStore, responder, names, user);
-        } catch (e) {
-          sentry.logError(e);
-        }
-      });
+      try {
+        let responder = this.getResponder(res);
+        let user = req['user'];
+        let names = req.params.names.split(',');
+        await destroyMultiple(this.dataStore, responder, names, user);
+      } catch (e) {
+        sentry.logError(e);
+      }
+    });
     router.post('/:learningObjectName/files', this.upload.any(), async (req, res) => {
       try {
         let responder = this.getResponder(res);
