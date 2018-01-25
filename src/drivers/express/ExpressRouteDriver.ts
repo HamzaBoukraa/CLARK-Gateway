@@ -6,7 +6,7 @@ import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
 import {
   create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects,
-  fetchLearningObject, fetchMultipleLearningObject
+  fetchLearningObject, fetchMultipleLearningObject,
 } from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
@@ -14,8 +14,11 @@ import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
-const USERS_API = process.env.USERS_API || 'localhost:4000';
-const CART_API = process.env.CART_API || 'localhost:3006';
+// const USERS_API = process.env.USERS_API || 'localhost:4000';
+// const CART_API = process.env.CART_API || 'localhost:3006';
+
+const USERS_API = process.env.USERS_API || 'http://user-service-production.us-east-1.elasticbeanstalk.com/';
+const CART_API = process.env.CART_API || 'http://cart-service-production.us-east-1.elasticbeanstalk.com';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -89,42 +92,42 @@ export default class ExpressRouteDriver {
     // Remove account
     router.delete('/:username', proxy(USERS_API, {
       proxyReqPathResolver: (req) => {
-        return `/users/${req.params.username}`;
+        return `/users/${encodeURIComponent(req.params.username)}`;
       },
     }));
     router.route('/:username/tokens')
       // Validate Token
       .post(proxy(USERS_API, {
         proxyReqPathResolver: (req) => {
-          return `/users/${req.params.username}/tokens`;
+          return `/users/${encodeURIComponent(req.params.username)}/tokens`;
         },
       }))
       // Logout
       .delete(proxy(USERS_API, {
         proxyReqPathResolver: (req) => {
-          return `/users/${req.params.username}/tokens`;
+          return `/users/${encodeURIComponent(req.params.username)}/tokens`;
         },
       }));
     router.route('/:username/cart')
       .get(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          return `/api/users/${req.params.username}/cart`;
+          return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
         },
       }))
       .delete(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          return `/api/users/${req.params.username}/cart`;
+          return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
         },
       }));
     router.route('/:username/cart/learning-objects/:author/:learningObjectName')
       .post(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          return `/api/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+          return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
         },
       }))
       .delete(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          return `/api/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+          return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
         },
       }));
 
@@ -152,6 +155,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
+          console.log(user);
           await create(this.dataStore, responder, req.body, user);
         } catch (e) {
           sentry.logError(e);

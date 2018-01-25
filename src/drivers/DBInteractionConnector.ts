@@ -72,7 +72,15 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async createLearningObject(username: string, learningObject: any): Promise<string> {
-        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: LearningObject.serialize(learningObject) });
+        let object;
+        try {
+            object = LearningObject.serialize(learningObject);
+        } catch (e) {
+            console.log(e);
+            object = JSON.stringify(learningObject);
+        }
+
+        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: object });
         if (!learningObjectID || learningObjectID.error) return Promise.reject(learningObjectID.error);
 
         return learningObjectID;
