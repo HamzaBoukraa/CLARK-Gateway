@@ -25,6 +25,7 @@ export async function update(dataStore: DataStore, responder: Responder, learnin
       responder.sendOperationSuccess();
     })
     .catch((error) => {
+      console.log(error);
       if (error.match(/duplicate\s+key/g).length > 0) {
         responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
       } else
@@ -83,7 +84,7 @@ export async function read(dataStore: DataStore, responder: Responder, user) {
 
 export async function readOne(dataStore: DataStore, responder: Responder, learningObjectID, user) {
   // TODO: Once publish flag is in the database, add check (if you combine cube and onion readOne functionality)
-  dataStore.getLearningObject(learningObjectID)
+  dataStore.getLearningObject(user.username, learningObjectID)
     .then((learningObject) => {
       // If published
       responder.sendLearningObject(learningObject);

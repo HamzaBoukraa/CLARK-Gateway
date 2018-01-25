@@ -98,9 +98,10 @@ export class DBInteractionConnector implements DataStore {
      * @returns {Promise<LearningObject>}
      * @memberof DatabaseInteractionConnector
      */
-    async getLearningObject(learningObjectID: string): Promise<LearningObject> {
+    async getLearningObject(username: string, learningObjectName: string): Promise<LearningObject> {
 
-        let learningObject = await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT, { id: learningObjectID });
+        // tslint:disable-next-line:max-line-length
+        let learningObject = await this.request(DB_INTERACTION_URI, `${EVENT.LOAD_LEARNING_OBJECT}/${username}/${learningObjectName}`, {}, 'GET');
         if (!learningObject || learningObject.error) return Promise.reject(learningObject.error);
 
         return learningObject;
@@ -115,19 +116,12 @@ export class DBInteractionConnector implements DataStore {
      */
     async updateLearningObject(username: string, learningObjectID: string, learningObject: any): Promise<any> {
 
-        let userid = await this.request(DB_INTERACTION_URI, EVENT.FIND_USER, { userid: username });
-        if (!userid || userid.error) return Promise.reject(userid.error);
-
-        let user = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
-        if (!user || user.error) return Promise.reject(user.error);
-
-        learningObject = LearningObject.unserialize(learningObject, user);
-        learningObject = LearningObject.serialize(learningObject);
 
         // If object then there is an error
-        let object = await this.request(DB_INTERACTION_URI, EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject });
+        // tslint:disable-next-line:max-line-length
+        let object = await this.request(DB_INTERACTION_URI, EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject }, 'PATCH');
 
-        if (object) {
+        if (object.error) {
             return Promise.reject(object.error);
         }
 

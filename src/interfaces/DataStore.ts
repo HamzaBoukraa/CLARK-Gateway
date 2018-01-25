@@ -5,7 +5,7 @@ export interface DataStore {
     login(username: string, password: string): Promise<User>;
     createLearningObject(username: string, learningObject);
     getMyLearningObjects(username: string);
-    getLearningObject(learningObjectID: string);
+    getLearningObject(username: string, learningObjectName: string);
     updateLearningObject(username: string, learningObjectID: string, learningObject);
     deleteLearningObject(username: string, learningObjectName: string);
     deleteLearningObjects(username: string, learningObjectName: string[]);

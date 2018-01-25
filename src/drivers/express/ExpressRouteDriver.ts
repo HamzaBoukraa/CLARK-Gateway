@@ -92,7 +92,6 @@ export default class ExpressRouteDriver {
       // Validate Token
       .post(proxy(USERS_API, {
         proxyReqPathResolver: (req) => {
-          console.log('fuck me');
           return `/users/${req.params.username}/tokens`;
         },
       }))
@@ -202,12 +201,12 @@ export default class ExpressRouteDriver {
         sentry.logError(e);
       }
     });
-    router.delete('/:learningObjectName/files/:filename', async (req, res) => {
+    router.delete('/:learningObjectID/files/:filename', async (req, res) => {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
         let user = req['user'];
-        await learningObjectFile.deleteFile(this.dataStore, responder, req.params.id, req.params.filename, user);
+        await learningObjectFile.deleteFile(this.dataStore, responder, req.params.learningObjectID, req.params.filename, user);
       } catch (e) {
         sentry.logError(e);
       }

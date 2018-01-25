@@ -22,7 +22,7 @@ export class LearningObjectRepoFileInteractor {
      * @memberof LearningObjectRepoFileInteractor
      */
     async storeFiles(dataStore: DataStore, responder: Responder, learningObjectID: string, files, user) {
-        this.uploadToS3(user.userid, learningObjectID, files).then(
+        this.uploadToS3(user.username, learningObjectID, files).then(
             (learningObjectFiles) => {
                 responder.sendLearningObjectFiles(learningObjectFiles);
             },
@@ -44,7 +44,8 @@ export class LearningObjectRepoFileInteractor {
      * @memberof LearningObjectRepoFileInteractor
      */
     async deleteFile(dataStore: DataStore, responder: Responder, learningObjectID: string, filename: string, user) {
-        this.deleteFromS3(user.userid, learningObjectID, filename)
+        console.log(user);
+        this.deleteFromS3(user.username, learningObjectID, filename)
             .then((success) => {
                 responder.sendOperationSuccess();
             })
@@ -54,7 +55,7 @@ export class LearningObjectRepoFileInteractor {
     }
 
     async deleteAllFiles(dataStore: DataStore, responder: Responder, learningObjectID: string, user) {
-        this.deleteFromS3(user.userid, learningObjectID, null, true)
+        this.deleteFromS3(user.username, learningObjectID, null, true)
             .then((success) => {
                 responder.sendOperationSuccess();
             })
