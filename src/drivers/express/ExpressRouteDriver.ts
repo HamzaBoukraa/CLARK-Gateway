@@ -10,7 +10,6 @@ import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObje
 import { sentry } from '../../logging/sentry';
 import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
-// FIXME: Grab from env
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
 
@@ -71,26 +70,26 @@ export default class ExpressRouteDriver {
         return '/users';
       },
     }));
-    // Register FIXME: /register
+    // Register
     router.post('', proxy(USERS_API, {
       proxyReqPathResolver: (req) => {
         return '/users';
       },
     }));
-    // Login FIXME: /authenticate
+    // Login
     router.post('/tokens', proxy(USERS_API, {
       proxyReqPathResolver: (req) => {
         return '/users/tokens';
       },
     }));
-    // TODO: Remove account
+    // Remove account
     router.delete('/:username', proxy(USERS_API, {
       proxyReqPathResolver: (req) => {
         return `/users/${req.params.username}`;
       },
     }));
     router.route('/:username/tokens')
-      // Validate Token FIXME: /validateToken
+      // Validate Token
       .post(proxy(USERS_API, {
         proxyReqPathResolver: (req) => {
           console.log('fuck me');
@@ -183,13 +182,13 @@ export default class ExpressRouteDriver {
           sentry.logError(e);
         }
       });
-      router.delete('/multiple/:names', async (req,res)=>{
-        try{
+    router.delete('/multiple/:names', async (req, res) => {
+        try {
           let responder = this.getResponder(res);
           let user = req['user'];
           let names = req.params.names.split(',');
           await destroyMultiple(this.dataStore, responder, names, user);
-        }catch(e){
+        } catch (e) {
           sentry.logError(e);
         }
       });
