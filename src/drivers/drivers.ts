@@ -1,7 +1,7 @@
 import { DBInteractionConnector } from './DBInteractionConnector';
-import { ExpressResponder } from './ExpressResponder';
-import { ExpressDriver } from './ExpressDriver';
-import ExpressRouteDriver from './ExpressRouteDriver';
+import { ExpressResponder } from './express/ExpressResponder';
+import { ExpressDriver } from './express/ExpressDriver';
+import ExpressRouteDriver from './express/ExpressRouteDriver';
 
 export {
   ExpressDriver,

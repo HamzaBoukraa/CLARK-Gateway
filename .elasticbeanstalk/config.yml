@@ -1,8 +1,8 @@
 branch-defaults:
   master:
-    environment: LearningObjectSubmission-env
+    environment: CLARK-Gateway-Production
 global:
-  application_name: learning-object-submission
+  application_name: CLARK
   default_ec2_keyname: null
   default_platform: arn:aws:elasticbeanstalk:us-east-1::platform/Node.js running on
     64bit Amazon Linux/4.3.0

@@ -1,6 +1,6 @@
-import { Responder } from '../interfaces/interfaces';
+import { Responder } from '../../interfaces/interfaces';
 import { Response } from 'express';
-import { sentry } from './../logging/sentry';
+import { sentry } from '../../logging/sentry';
 
 
 export class ExpressResponder implements Responder {
@@ -22,12 +22,12 @@ export class ExpressResponder implements Responder {
   sendOperationSuccess() {
     this.res.sendStatus(200);
   }
-  sendOperationError(error) {
-    sentry.logError(error.message, 400);
-    //Default message and status code if no custom error
-    !error ? this.res.status(400).send("There was an error processing your request.") :
-      //Custom error message and status code
-      this.res.status(error.status).send(error.message);
+  sendOperationError(message, status = 400) {
+    sentry.logError(message, status);
+    // Default message and status code if no custom error
+    !message ? this.res.status(status).send('There was an error processing your request.') :
+      // Custom error message and status code
+      this.res.status(status).send(message);
   }
   invalidLogin() {
     this.res.status(400).json({ message: 'Invalid Username or Password' });
@@ -38,5 +38,13 @@ export class ExpressResponder implements Responder {
   invalidAccess() {
     this.res.status(401).send('Invalid access token');
   }
-
+  /**
+   * Returns current Writable Response Stream
+   *
+   * @returns {Response}
+   * @memberof Responder
+   */
+  writeStream(): Response {
+    return this.res;
+  }
 }
