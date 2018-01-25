@@ -136,14 +136,14 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async deleteLearningObject(username: string, learningObjectName: string): Promise<any> {
-        return this.request(DB_INTERACTION_URI, EVENT.DELETE_LEARNING_OBJECT + `/${username}/${learningObjectName}`, { }, 'DELETE');
+        return this.request(DB_INTERACTION_URI, EVENT.DELETE_LEARNING_OBJECT + `/${username}/${learningObjectName}`, {}, 'DELETE');
     }
 
     async deleteLearningObjects(username: string, learningObjectNames: string[]): Promise<any> {
         return this.request(DB_INTERACTION_URI, EVENT.DELETE_MULTIPLE_LEARNING_OBJECTS + `/${username}/${learningObjectNames}`, {}, 'DELETE');
     }
 
-// CUBE
+    // CUBE
     async readLearningObjects(): Promise<string[]> {
         return await this.request(DB_INTERACTION_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
     }
@@ -154,17 +154,17 @@ export class DBInteractionConnector implements DataStore {
 
     async readMultipleLearningObjects(ids: string[], fullObject: boolean): Promise<string[]> {
         if (fullObject) {
-          return Promise.all(
-              // TODO: Update to utilize cart-service
-            ids.map((id) => {
-              return this.readLearningObject(id);
-            })
-          );
+            return Promise.all(
+                // TODO: Update to utilize cart-service
+                ids.map((id) => {
+                    return null;
+                })
+            );
         } else {
-          return this.request(DB_INTERACTION_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });
+            return this.request(DB_INTERACTION_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });
         }
     }
-// END CUBE
+    // END CUBE
 
     private async request(URI: string, event: string, params: {}, method?: string): Promise<any> {
         return rp({

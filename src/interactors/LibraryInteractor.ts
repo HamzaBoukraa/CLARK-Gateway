@@ -2,7 +2,7 @@ import { DataStore, Responder } from './../interfaces/interfaces';
 import * as PDFKit from 'pdfkit';
 import * as fs from 'fs';
 import * as archiver from 'archiver';
-import { LearningObject } from 'clark-entity/dist/learning-object';
+import { LearningObject } from '@cyber4all/clark-entity';
 import * as request from 'request';
 
 /**
@@ -24,7 +24,7 @@ export class LibraryInteractor {
         let objects = await dataStore.readMultipleLearningObjects(learningObjectIDs, true);
         let learningObjects = objects.map((_learningObject) => {
             let object = JSON.parse(_learningObject);
-            let learningObject = LearningObject.unserialize(_learningObject, object['author']);
+            let learningObject = LearningObject.unserialize(_learningObject);
             return learningObject;
         });
 
@@ -73,7 +73,7 @@ export class LibraryInteractor {
 
             // MetaData
             doc.info.Title = learningObject.name;
-            doc.info.Author = learningObject.author._name;
+            doc.info.Author = learningObject.author['_name'];
             doc.info.Creator = 'C.L.A.R.K. | Cybersecurity Labs and Resource Knowledge-base';
             doc.info.CreationDate = new Date(+learningObject.date);
             doc.info.ModDate = new Date();
@@ -84,8 +84,8 @@ export class LibraryInteractor {
             doc.text(new Date(+learningObject.date).toLocaleDateString(
                 'en-US',
                 { month: 'long', day: 'numeric', year: 'numeric' }),
-                     { align: 'center' });
-            doc.text(learningObject.author._name, { align: 'center' });
+                { align: 'center' });
+            doc.text(learningObject.author['_name'], { align: 'center' });
 
             doc.addPage();
 
