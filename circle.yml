@@ -12,4 +12,4 @@ deployment:
     branch: production
     commands:
       - npm run pack
-      - eb deploy LearningObjectSubmission-env --profile default
+      - eb deploy CLARK-Gateway-Production --profile default
