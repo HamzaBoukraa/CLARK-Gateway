@@ -1,20 +1,19 @@
-import * as Raven from 'raven';
-import { Client, ConstructorOptions} from 'raven';
-import {SENTRY_URI} from './../config/config';
+import { Client, ConstructorOptions } from 'raven';
+import { SENTRY_URI } from './../config/config';
 import * as dotenv from 'dotenv';
 //import * as fs from 'fs';
-    /**
-     * Singleton class for Sentry Error Logging
-     *
-     * @author Tyler Howard
-     */
+/**
+ * Singleton class for Sentry Error Logging
+ *
+ * @author Tyler Howard
+ */
 dotenv.config();
 // const envConfig = dotenv.parse(fs.readFileSync('.env'))
 // for (var k in envConfig) {
 //     process.env[k] = envConfig[k]
 // }
 class Sentry {
-    config: ConstructorOptions = { };
+    config: ConstructorOptions = {};
     client: Client;
     constructor() {
         this.isProduction() ? this.configure() : this.client = new Client('', this.config);

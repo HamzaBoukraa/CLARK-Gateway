@@ -1,4 +1,4 @@
-import { User } from "clark-entity";
+import { User } from "@cyber4all/clark-entity";
 
 export interface DataStore {
     register(user: { username: string, firstname: string, lastname: string, email: string, password: string }): Promise<User>;
