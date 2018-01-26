@@ -157,8 +157,8 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          console.log(user);
-          await create(this.dataStore, responder, req.body, user);
+          console.log(req.body.object);
+          await create(this.dataStore, responder, req.body.object, user);
         } catch (e) {
           sentry.logError(e);
         }
@@ -177,6 +177,7 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
+          console.log(req.body.learningObject);
           await update(this.dataStore, responder, req.params.learningObjectName, req.body.learningObject, user);
         } catch (e) {
           sentry.logError(e);

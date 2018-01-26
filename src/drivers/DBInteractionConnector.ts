@@ -72,15 +72,17 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async createLearningObject(username: string, learningObject: any): Promise<string> {
-        let object;
-        try {
-            object = LearningObject.serialize(learningObject);
-        } catch (e) {
-            console.log(e);
-            object = JSON.stringify(learningObject);
-        }
+        // let object;
+        // try {
+        //     object = LearningObject.serialize(learningObject);
+        // } catch (e) {
+        //     console.log(e);
+        //     object = JSON.stringify(learningObject);
+        // }
 
-        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: object });
+        // console.log(object);
+
+        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: learningObject });
         if (!learningObjectID || learningObjectID.error) return Promise.reject(learningObjectID.error);
 
         return learningObjectID;
@@ -123,14 +125,21 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async updateLearningObject(username: string, learningObjectID: string, learningObject: any): Promise<any> {
-
-
         // If object then there is an error
         // tslint:disable-next-line:max-line-length
-        let object = await this.request(DB_INTERACTION_URI, EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject }, 'PATCH');
+        // let object;
+        // try {
+        //     object = LearningObject.serialize(learningObject);
+        // } catch (e) {
+        //     object = JSON.stringify(learningObject);
+        // }
 
-        if (object.error) {
-            return Promise.reject(object.error);
+        // console.log(object);
+        let returnedLearningObject = await this.request(DB_INTERACTION_URI, EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject }, 'PATCH');
+        console.log('tag', returnedLearningObject);
+
+        if (returnedLearningObject.error) {
+            return Promise.reject(returnedLearningObject.error);
         }
 
         return null;
