@@ -1,5 +1,4 @@
 import { DataStore, Responder } from './../interfaces/interfaces';
-import { LearningObjectRepoFileInteractor } from './LearningObjectRepoFileInteractor';
 
 export async function create(dataStore: DataStore, responder: Responder, learningObject, user: any) {
   console.log(learningObject);

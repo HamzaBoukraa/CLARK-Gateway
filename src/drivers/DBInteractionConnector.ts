@@ -1,13 +1,10 @@
 import { DataStore } from '../interfaces/DataStore';
-import { DB_INTERACTION_URI, LO_SUGGESTION_URI } from '../config/config';
+import { DB_INTERACTION_URI } from '../config/config';
 import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
 import { LearningObject, User } from '@cyber4all/clark-entity';
-import * as request from 'request';
 
 export class DBInteractionConnector implements DataStore {
-
-    constructor() { }
 
     /**
      * Registers new user
@@ -22,18 +19,18 @@ export class DBInteractionConnector implements DataStore {
             user.username,
             `${user.firstname} ${user.lastname}`,
             user.email,
-            user.password
+            user.password,
         );
         let emailRegistered = await this.request(DB_INTERACTION_URI, EVENT.CHECK_EMAIL_REGISTERED, { email: user.email });
         if (emailRegistered) return Promise.reject('email');
 
         let userid = await this.request(DB_INTERACTION_URI, EVENT.ADD_USER, { user: User.serialize(newUser) });
         if (userid && !userid.error) {
-            let user = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
-            if (user && !user.error) {
-                return User.unserialize(user);
+            let loadedUser = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
+            if (loadedUser && !loadedUser.error) {
+                return User.unserialize(loadedUser);
             }
-            return Promise.reject(user.error);
+            return Promise.reject(loadedUser.error);
         }
         return Promise.reject(userid.error);
     }
@@ -175,7 +172,7 @@ export class DBInteractionConnector implements DataStore {
                 // TODO: Update to utilize cart-service
                 ids.map((id) => {
                     return null;
-                })
+                }),
             );
         } else {
             return this.request(DB_INTERACTION_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });

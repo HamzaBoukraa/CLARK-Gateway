@@ -8,3 +8,4 @@ src/config/aws-sdk/config.json
 src/entity
 
 .env
+dist.zip

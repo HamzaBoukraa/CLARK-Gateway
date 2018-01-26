@@ -1,7 +1,10 @@
+import * as env from 'dotenv';
+env.config();
+
 export const AWS_SDK_CONFIG = {
     credentials: {
-        accessKeyId: 'AKIAIZGCFCYFJKOTSD2Q',
-        secretAccessKey: '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',
+        accessKeyId: process.env.ACCESS_KEY_ID,
+        secretAccessKey: process.env.SECRET_ACCESS_KEY,
     },
-    region: 'us-east-2',
+    region: process.env.REGION,
 };

@@ -3,6 +3,7 @@ import * as AWS from 'aws-sdk';
 import * as fs from 'fs';
 import { AWS_SDK_CONFIG } from '../config/aws-sdk/config';
 
+// TODO: Move to microservice
 export class LearningObjectRepoFileInteractor {
     private _s3;
     constructor() {
