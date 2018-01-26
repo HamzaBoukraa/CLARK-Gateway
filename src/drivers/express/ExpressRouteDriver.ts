@@ -111,7 +111,9 @@ export default class ExpressRouteDriver {
     router.route('/:username/cart')
       .get(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
+          return (req.query.download) ? 
+          `/api/users/${encodeURIComponent(req.params.username)}/cart?download=true` :
+          `/api/users/${encodeURIComponent(req.params.username)}/cart`;
         },
       }))
       .delete(proxy(CART_API, {
