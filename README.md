@@ -4,6 +4,8 @@
 
 This server-side application functions as a gateway for all learning object submission to the CLARK system.
 
+Full developer documentation can be found at https://cyber4all.github.io/CLARK-Gateway/
+
 ## API Routes
 
 ### `/authenticate`
