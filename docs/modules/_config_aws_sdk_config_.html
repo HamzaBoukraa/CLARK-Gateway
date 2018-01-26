@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;drivers/express/ExpressRouteDriver&quot; | clark-gateway</title>
+	<title>&quot;config/aws-sdk/config&quot; | clark-gateway</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_drivers_express_expressroutedriver_.html">&quot;drivers/express/ExpressRouteDriver&quot;</a>
+					<a href="_config_aws_sdk_config_.html">&quot;config/aws-sdk/config&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;drivers/express/ExpressRouteDriver&quot;</h1>
+			<h1>External module &quot;config/aws-sdk/config&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -71,42 +71,65 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Object literals</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_drivers_express_expressroutedriver_.expressroutedriver.html" class="tsd-kind-icon">Express<wbr>Route<wbr>Driver</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Variables</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_drivers_express_expressroutedriver_.html#cart_api" class="tsd-kind-icon">CART_<wbr>API</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_drivers_express_expressroutedriver_.html#users_api" class="tsd-kind-icon">USERS_<wbr>API</a></li>
+								<li class="tsd-kind-object-literal tsd-parent-kind-external-module"><a href="_config_aws_sdk_config_.html#aws_sdk_config" class="tsd-kind-icon">AWS_<wbr>SDK_<wbr>CONFIG</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="cart_api" class="tsd-anchor"></a>
-					<h3>CART_<wbr>API</h3>
-					<div class="tsd-signature tsd-kind-icon">CART_<wbr>API<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;process.env.CART_API || &#x27;http://cart-service-production.us-east-1.elasticbeanstalk.com&#x27;</span></div>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Object literals</h2>
+				<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-external-module">
+					<a name="aws_sdk_config" class="tsd-anchor"></a>
+					<h3>AWS_<wbr>SDK_<wbr>CONFIG</h3>
+					<div class="tsd-signature tsd-kind-icon">AWS_<wbr>SDK_<wbr>CONFIG<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/drivers/express/ExpressRouteDriver.ts#L17">drivers/express/ExpressRouteDriver.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/config/aws-sdk/config.ts#L4">config/aws-sdk/config.ts:4</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="users_api" class="tsd-anchor"></a>
-					<h3>USERS_<wbr>API</h3>
-					<div class="tsd-signature tsd-kind-icon">USERS_<wbr>API<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;process.env.USERS_API || &#x27;http://user-service-production.us-east-1.elasticbeanstalk.com/&#x27;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/drivers/express/ExpressRouteDriver.ts#L16">drivers/express/ExpressRouteDriver.ts:16</a></li>
-						</ul>
-					</aside>
+					<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+						<a name="aws_sdk_config.region" class="tsd-anchor"></a>
+						<h3>region</h3>
+						<div class="tsd-signature tsd-kind-icon">region<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;process.env.REGION</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/config/aws-sdk/config.ts#L9">config/aws-sdk/config.ts:9</a></li>
+							</ul>
+						</aside>
+					</section>
+					<section class="tsd-panel tsd-member tsd-kind-object-literal tsd-parent-kind-object-literal">
+						<a name="aws_sdk_config.credentials" class="tsd-anchor"></a>
+						<h3>credentials</h3>
+						<div class="tsd-signature tsd-kind-icon">credentials<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+						<aside class="tsd-sources">
+							<ul>
+								<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/config/aws-sdk/config.ts#L5">config/aws-sdk/config.ts:5</a></li>
+							</ul>
+						</aside>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="aws_sdk_config.credentials.accesskeyid" class="tsd-anchor"></a>
+							<h3>access<wbr>Key<wbr>Id</h3>
+							<div class="tsd-signature tsd-kind-icon">access<wbr>Key<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;process.env.ACCESS_KEY_ID</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/config/aws-sdk/config.ts#L6">config/aws-sdk/config.ts:6</a></li>
+								</ul>
+							</aside>
+						</section>
+						<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-object-literal">
+							<a name="aws_sdk_config.credentials.secretaccesskey" class="tsd-anchor"></a>
+							<h3>secret<wbr>Access<wbr>Key</h3>
+							<div class="tsd-signature tsd-kind-icon">secret<wbr>Access<wbr>Key<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;process.env.SECRET_ACCESS_KEY</span></div>
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/config/aws-sdk/config.ts#L7">config/aws-sdk/config.ts:7</a></li>
+								</ul>
+							</aside>
+						</section>
+					</section>
 				</section>
 			</section>
 		</div>
@@ -119,7 +142,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_app_.html">"app"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="_config_aws_sdk_config_.html">"config/aws-<wbr>sdk/config"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -140,7 +163,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_drivers_express_expressresponder_.html">"drivers/express/<wbr>Express<wbr>Responder"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="_drivers_express_expressroutedriver_.html">"drivers/express/<wbr>Express<wbr>Route<wbr>Driver"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -171,14 +194,8 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_drivers_express_expressroutedriver_.expressroutedriver.html" class="tsd-kind-icon">Express<wbr>Route<wbr>Driver</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_drivers_express_expressroutedriver_.html#cart_api" class="tsd-kind-icon">CART_<wbr>API</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_drivers_express_expressroutedriver_.html#users_api" class="tsd-kind-icon">USERS_<wbr>API</a>
+					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module">
+						<a href="_config_aws_sdk_config_.html#aws_sdk_config" class="tsd-kind-icon">AWS_<wbr>SDK_<wbr>CONFIG</a>
 					</li>
 				</ul>
 			</nav>

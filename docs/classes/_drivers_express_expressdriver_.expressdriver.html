@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Sentry | clark-gateway</title>
+	<title>ExpressDriver | clark-gateway</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,24 +56,31 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_logging_sentry_.html">&quot;logging/sentry&quot;</a>
+					<a href="../modules/_drivers_express_expressdriver_.html">&quot;drivers/express/ExpressDriver&quot;</a>
 				</li>
 				<li>
-					<a href="_logging_sentry_.sentry.html">Sentry</a>
+					<a href="_drivers_express_expressdriver_.expressdriver.html">ExpressDriver</a>
 				</li>
 			</ul>
-			<h1>Class Sentry</h1>
+			<h1>Class ExpressDriver</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Handles serving the API through the express framework.</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Sentry</span>
+						<span class="target">ExpressDriver</span>
 					</li>
 				</ul>
 			</section>
@@ -81,156 +88,74 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#client" class="tsd-kind-icon">client</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#config" class="tsd-kind-icon">config</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="_drivers_express_expressdriver_.expressdriver.html#app" class="tsd-kind-icon">app</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#configure" class="tsd-kind-icon">configure</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#isproduction" class="tsd-kind-icon">is<wbr>Production</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#logerror" class="tsd-kind-icon">log<wbr>Error</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-not-exported"><a href="_logging_sentry_.sentry.html#logerrorwrapper" class="tsd-kind-icon">log<wbr>Error<wbr>Wrapper</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_drivers_express_expressdriver_.expressdriver.html#linkclient" class="tsd-kind-icon">link<wbr>Client</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_drivers_express_expressdriver_.expressdriver.html#start" class="tsd-kind-icon">start</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Sentry<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_logging_sentry_.sentry.html" class="tsd-signature-type">Sentry</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L17">logging/sentry.ts:17</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <a href="_logging_sentry_.sentry.html" class="tsd-signature-type">Sentry</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-					<a name="client" class="tsd-anchor"></a>
-					<h3>client</h3>
-					<div class="tsd-signature tsd-kind-icon">client<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Client</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a name="app" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> app</h3>
+					<div class="tsd-signature tsd-kind-icon">app<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Express</span><span class="tsd-signature-symbol"> =&nbsp;express()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L17">logging/sentry.ts:17</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-					<a name="config" class="tsd-anchor"></a>
-					<h3>config</h3>
-					<div class="tsd-signature tsd-kind-icon">config<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ConstructorOptions</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L16">logging/sentry.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/drivers/express/ExpressDriver.ts#L16">drivers/express/ExpressDriver.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-					<a name="configure" class="tsd-anchor"></a>
-					<h3>configure</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">configure<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="linkclient" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> link<wbr>Client</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">link<wbr>Client<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L29">logging/sentry.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/drivers/express/ExpressDriver.ts#L83">drivers/express/ExpressDriver.ts:83</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-					<a name="isproduction" class="tsd-anchor"></a>
-					<h3>is<wbr>Production</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Production<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="start" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> start</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">start<span class="tsd-signature-symbol">(</span>dataStore<span class="tsd-signature-symbol">: </span><a href="../interfaces/_interfaces_datastore_.datastore.html" class="tsd-signature-type">DataStore</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Express</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L21">logging/sentry.ts:21</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-					<a name="logerror" class="tsd-anchor"></a>
-					<h3>log<wbr>Error</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">log<wbr>Error<span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, status<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L33">logging/sentry.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/4a17420/src/drivers/express/ExpressDriver.ts#L18">drivers/express/ExpressDriver.ts:18</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>error: <span class="tsd-signature-type">any</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> status: <span class="tsd-signature-type">any</span></h5>
+									<h5>dataStore: <a href="../interfaces/_interfaces_datastore_.datastore.html" class="tsd-signature-type">DataStore</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-					<a name="logerrorwrapper" class="tsd-anchor"></a>
-					<h3>log<wbr>Error<wbr>Wrapper</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">log<wbr>Error<wbr>Wrapper<span class="tsd-signature-symbol">(</span>func<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Cyber4All/learning-object-submission/blob/c2a11b5/src/logging/sentry.ts#L38">logging/sentry.ts:38</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>func: <span class="tsd-signature-type">any</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Express</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -260,7 +185,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_drivers_drivers_.html">"drivers/drivers"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_drivers_express_expressdriver_.html">"drivers/express/<wbr>Express<wbr>Driver"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -284,7 +209,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_interfaces_interfaces_.html">"interfaces/interfaces"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_logging_sentry_.html">"logging/sentry"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -299,37 +224,22 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_logging_sentry_.sentry.html" class="tsd-kind-icon">Sentry</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_drivers_express_expressdriver_.expressdriver.html" class="tsd-kind-icon">Express<wbr>Driver</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+								<a href="_drivers_express_expressdriver_.expressdriver.html#app" class="tsd-kind-icon">app</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#client" class="tsd-kind-icon">client</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_drivers_express_expressdriver_.expressdriver.html#linkclient" class="tsd-kind-icon">link<wbr>Client</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#config" class="tsd-kind-icon">config</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#configure" class="tsd-kind-icon">configure</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#isproduction" class="tsd-kind-icon">is<wbr>Production</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#logerror" class="tsd-kind-icon">log<wbr>Error</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-								<a href="_logging_sentry_.sentry.html#logerrorwrapper" class="tsd-kind-icon">log<wbr>Error<wbr>Wrapper</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_drivers_express_expressdriver_.expressdriver.html#start" class="tsd-kind-icon">start</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_logging_sentry_.html#sentry-1" class="tsd-kind-icon">sentry</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

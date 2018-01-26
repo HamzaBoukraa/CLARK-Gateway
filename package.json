@@ -9,7 +9,7 @@
     "gulp-tsc": "node_modules/.bin/gulp start",
     "lint": "node_modules/.bin/tslint --project ./src/**",
     "pack": "npm run build && cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
-    "document": "node_modules/.bin/typedoc --out ./doc/ ./src/"
+    "document": "node_modules/.bin/typedoc --out ./docs/ ./src/"
   },
   "author": "",
   "license": "ISC",
