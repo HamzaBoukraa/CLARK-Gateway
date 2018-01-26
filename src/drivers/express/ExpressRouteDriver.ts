@@ -4,13 +4,9 @@ import * as multer from 'multer';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
-import {
-  create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects,
-  fetchLearningObject, fetchMultipleLearningObject,
-} from '../../interactors/LearningObjectInteractor';
+import { create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects, fetchLearningObject } from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
-import { LibraryInteractor } from '../../interactors/LibraryInteractor';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
