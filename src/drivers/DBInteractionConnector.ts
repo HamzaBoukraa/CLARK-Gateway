@@ -1,8 +1,9 @@
 import { DataStore } from '../interfaces/DataStore';
-import { DB_INTERACTION_URI } from '../config/config';
 import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
 import { LearningObject, User } from '@cyber4all/clark-entity';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 export class DBInteractionConnector implements DataStore {
 
@@ -21,12 +22,12 @@ export class DBInteractionConnector implements DataStore {
             user.email,
             user.password,
         );
-        let emailRegistered = await this.request(DB_INTERACTION_URI, EVENT.CHECK_EMAIL_REGISTERED, { email: user.email });
+        let emailRegistered = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.CHECK_EMAIL_REGISTERED, { email: user.email });
         if (emailRegistered) return Promise.reject('email');
 
-        let userid = await this.request(DB_INTERACTION_URI, EVENT.ADD_USER, { user: User.serialize(newUser) });
+        let userid = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.ADD_USER, { user: User.serialize(newUser) });
         if (userid && !userid.error) {
-            let loadedUser = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
+            let loadedUser = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.LOAD_USER, { id: userid });
             if (loadedUser && !loadedUser.error) {
                 return User.unserialize(loadedUser);
             }
@@ -45,11 +46,11 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabseInteractionConnector
      */
     async login(username: string, password: string): Promise<User> {
-        let authenticated = await this.request(DB_INTERACTION_URI, EVENT.AUTHENTICATE, { userid: username, pwd: password });
+        let authenticated = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.AUTHENTICATE, { userid: username, pwd: password });
         if (authenticated && !authenticated.error) {
-            let userid = await this.request(DB_INTERACTION_URI, EVENT.FIND_USER, { userid: username });
+            let userid = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FIND_USER, { userid: username });
             if (userid && !userid.error) {
-                let user = await this.request(DB_INTERACTION_URI, EVENT.LOAD_USER, { id: userid });
+                let user = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.LOAD_USER, { id: userid });
                 if (user && !user.error) {
                     return User.unserialize(user);
                 }
@@ -79,7 +80,7 @@ export class DBInteractionConnector implements DataStore {
 
         // console.log(object);
 
-        let learningObjectID = await this.request(DB_INTERACTION_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: learningObject });
+        let learningObjectID = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.ADD_LEARNING_OBJECT, { author: username, object: learningObject });
         if (!learningObjectID || learningObjectID.error) return Promise.reject(learningObjectID.error);
 
         return learningObjectID;
@@ -93,7 +94,7 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async getMyLearningObjects(username: string): Promise<any> {
-        let objects = await this.request(DB_INTERACTION_URI, EVENT.LOAD_LEARNING_OBJECT_SUMARY + `/${username}`, {}, 'GET');
+        let objects = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.LOAD_LEARNING_OBJECT_SUMARY + `/${username}`, {}, 'GET');
         return objects;
     }
 
@@ -108,7 +109,7 @@ export class DBInteractionConnector implements DataStore {
     async getLearningObject(username: string, learningObjectName: string): Promise<LearningObject> {
 
         // tslint:disable-next-line:max-line-length
-        let learningObject = await this.request(DB_INTERACTION_URI, `${EVENT.LOAD_LEARNING_OBJECT}/${username}/${learningObjectName}`, {}, 'GET');
+        let learningObject = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, `${EVENT.LOAD_LEARNING_OBJECT}/${username}/${learningObjectName}`, {}, 'GET');
         if (!learningObject || learningObject.error) return Promise.reject(learningObject.error);
 
         return learningObject;
@@ -132,7 +133,7 @@ export class DBInteractionConnector implements DataStore {
         // }
 
         // console.log(object);
-        let returnedLearningObject = await this.request(DB_INTERACTION_URI, EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject }, 'PATCH');
+        let returnedLearningObject = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.UPDATE_LEARNING_OBJECT, { id: learningObjectID, object: learningObject }, 'PATCH');
         console.log('tag', returnedLearningObject);
 
         if (returnedLearningObject.error) {
@@ -150,20 +151,20 @@ export class DBInteractionConnector implements DataStore {
      * @memberof DatabaseInteractionConnector
      */
     async deleteLearningObject(username: string, learningObjectName: string): Promise<any> {
-        return this.request(DB_INTERACTION_URI, EVENT.DELETE_LEARNING_OBJECT + `/${username}/${learningObjectName}`, {}, 'DELETE');
+        return this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.DELETE_LEARNING_OBJECT + `/${username}/${learningObjectName}`, {}, 'DELETE');
     }
 
     async deleteLearningObjects(username: string, learningObjectNames: string[]): Promise<any> {
-        return this.request(DB_INTERACTION_URI, EVENT.DELETE_MULTIPLE_LEARNING_OBJECTS + `/${username}/${learningObjectNames}`, {}, 'DELETE');
+        return this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.DELETE_MULTIPLE_LEARNING_OBJECTS + `/${username}/${learningObjectNames}`, {}, 'DELETE');
     }
 
     // CUBE
     async readLearningObjects(): Promise<string[]> {
-        return await this.request(DB_INTERACTION_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
+        return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
     }
 
     async readLearningObject(author: string, learningObjectName: string): Promise<string> {
-        return await this.request(DB_INTERACTION_URI, `${EVENT.LOAD_LEARNING_OBJECT}/${author}/${learningObjectName}`, {}, 'GET');
+        return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, `${EVENT.LOAD_LEARNING_OBJECT}/${author}/${learningObjectName}`, {}, 'GET');
     }
 
     async readMultipleLearningObjects(ids: string[], fullObject: boolean): Promise<string[]> {
@@ -175,7 +176,7 @@ export class DBInteractionConnector implements DataStore {
                 }),
             );
         } else {
-            return this.request(DB_INTERACTION_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });
+            return this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_MULTIPLE_LEARNING_OBJECTS, { ids: ids });
         }
     }
     // END CUBE
@@ -183,7 +184,7 @@ export class DBInteractionConnector implements DataStore {
     private async request(URI: string, event: string, params: {}, method?: string): Promise<any> {
         return rp({
             method: method ? method : 'POST',
-            uri: URI + event,
+            uri: URI + 'api' + event,
             body: params,
             json: true,
         });

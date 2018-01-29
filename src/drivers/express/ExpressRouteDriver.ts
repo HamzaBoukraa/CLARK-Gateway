@@ -10,11 +10,9 @@ import { sentry } from '../../logging/sentry';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
-// const USERS_API = process.env.USERS_API || 'localhost:4000';
-// const CART_API = process.env.CART_API || 'localhost:3006';
+const USERS_API = process.env.USERS_API || 'localhost:4000';
+const CART_API = process.env.CART_API || 'localhost:3006';
 
-const USERS_API = process.env.USERS_API || 'http://user-service-production.us-east-1.elasticbeanstalk.com/';
-const CART_API = process.env.CART_API || 'http://cart-service-production.us-east-1.elasticbeanstalk.com';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -107,9 +105,9 @@ export default class ExpressRouteDriver {
     router.route('/:username/cart')
       .get(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          return (req.query.download) ? 
-          `/api/users/${encodeURIComponent(req.params.username)}/cart?download=true` :
-          `/api/users/${encodeURIComponent(req.params.username)}/cart`;
+          return (req.query.download) ?
+            `/api/users/${encodeURIComponent(req.params.username)}/cart?download=true` :
+            `/api/users/${encodeURIComponent(req.params.username)}/cart`;
         },
       }))
       .delete(proxy(CART_API, {
