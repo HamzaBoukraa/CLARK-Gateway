@@ -12,7 +12,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
-
+const LEARNING_OBJECT_SERVICE_URI = process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -230,8 +230,13 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
     router.get('', async (req, res) => {
       try {
-        // check for filters and send
-        if (req.query) await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
+        if (req.query){
+          proxy(LEARNING_OBJECT_SERVICE_URI, {
+            proxyReqPathResolver: (req) => {
+              return `/api/suggestObjects?${this.objectToQuery(req.query)}`;
+            },
+          })
+        }
         else await fetchLearningObjects(this.dataStore, this.getResponder(res));
       } catch (e) {
         sentry.logError(e);
@@ -243,7 +248,20 @@ export default class ExpressRouteDriver {
     });
     return router;
   }
+
+  private objectToQuery(obj:object):string {
+    let str = [];
+    for (let p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+      }
+    return str.join("&");
+  }
+
+
 }
+
+
 
 // /api/users/:username/learning-objects (require auth check for ownership or public viewing)
 // /api/learning-objects
