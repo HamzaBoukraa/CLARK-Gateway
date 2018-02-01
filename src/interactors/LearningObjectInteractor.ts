@@ -33,18 +33,18 @@ export async function update(dataStore: DataStore, responder: Responder, learnin
 }
 
 export async function destroy(dataStore: DataStore, responder: Responder, learningObjectName: string, user) {
-      // Delete LO from data store (else send error ->)
-      dataStore.deleteLearningObject(user.username, learningObjectName)
-        .then(() => {
-          // let learningObjectFile = new LearningObjectRepoFileInteractor();
-          // learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectName, user);
-          console.log('success');
-          responder.sendOperationSuccess();
-        })
-        .catch((error) => {
-          responder.sendOperationError(`There was an error deleting learning object. ${error}`, 400);
-        });
-      // Send verification ->
+  // Delete LO from data store (else send error ->)
+  dataStore.deleteLearningObject(user.username, learningObjectName)
+    .then(() => {
+      // let learningObjectFile = new LearningObjectRepoFileInteractor();
+      // learningObjectFile.deleteAllFiles(this.dataStore, responder, learningObjectName, user);
+      console.log('success');
+      responder.sendOperationSuccess();
+    })
+    .catch((error) => {
+      responder.sendOperationError(`There was an error deleting learning object. ${error}`, 400);
+    });
+  // Send verification ->
 }
 
 export async function destroyMultiple(dataStore: DataStore, responder: Responder, learningObjectNames: string[], user) {
@@ -99,12 +99,15 @@ export async function fetchLearningObjects(dataStore: DataStore, responder: Resp
   // TODO: Allow optional filters in DataStore.readLearningObjects()
   console.log(filters);
   // parse filters
-  if (filters['academiclevel']) {
-    // do something with academiclevel filter here
+  if (filters) {
+    if (filters['academiclevel']) {
+      // do something with academiclevel filter here
+    }
+    if (filters['page']) {
+      // do something with page filtering here (IE change page)
+    }
   }
-  if (filters['page']) {
-    // do something with page filtering here (IE change page)
-  }
+
   let learningObjects = await dataStore.readLearningObjects();
   responder.sendLearningObjects(learningObjects);
 }

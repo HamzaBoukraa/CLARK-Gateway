@@ -230,7 +230,7 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
     router.get('', async (req, res) => {
       try {
-        if (req.query){
+        if (Object.keys(req.query).length) {
           proxy(LEARNING_OBJECT_SERVICE_URI, {
             proxyReqPathResolver: (req) => {
               return `/api/suggestObjects?${this.objectToQuery(req.query)}`;
@@ -249,7 +249,7 @@ export default class ExpressRouteDriver {
     return router;
   }
 
-  private objectToQuery(obj:object):string {
+  private objectToQuery(obj: object): string {
     let str = [];
     for (let p in obj)
       if (obj.hasOwnProperty(p)) {
