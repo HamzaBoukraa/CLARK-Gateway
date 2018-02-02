@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/Cyber4All/learning-object-submission.svg?style=svg)](https://circleci.com/gh/Cyber4All/learning-object-submission)
+[![CircleCI](https://circleci.com/gh/Cyber4All/CLARK-Gateway.svg?style=svg)](https://circleci.com/gh/Cyber4All/learning-object-submission)
 
 # Learning Object Submission
 
@@ -8,18 +8,7 @@ Full developer documentation can be found at https://cyber4all.github.io/CLARK-G
 
 ## API Routes
 
-### `/authenticate`
-Request | []() | []()
----|---|---
-`username`|`string`|user's unique name
-`password`|`string`|user's password
-
-Response | []() | []()
----|---|---
-`firstname`|`string`|user's first name
-`token`|`string`|user's JSON Web Token
-
-### `/register`
+### `POST /users` - Add a new user
 Request | []() | []()
 ---|---|---
 `username`|`string`|user's unique name
@@ -28,7 +17,36 @@ Request | []() | []()
 `lastname`|`string`|user's last name
 `email`|`string`|user's email address
 
+#### On Success
 Response | []() | []()
 ---|---|---
-`firstname`|`string`|user's first name
-`token`|`string`|user's JSON Web Token
+`token` | `string` | user's access token
+`email` | `string` | user's email address
+`name` | `string` | user's first and last name (concatenated)
+`objects` | [LearningObject[]](https://github.com/Cyber4All/clark-entity#LearningObject) | user's learning objects
+`username` | `string` | user's unique username
+
+#### On Error
+status | body | statusText
+---|---|---
+`400` | `{ message: 'Invalid username or password' }` | `Bad Request`
+
+### `POST /api/users/token` - Create a new token for a user (log in)
+Request | []() | []()
+---|---|---
+`username`|`string`|user's unique name
+`password`|`string`|user's password
+
+#### On Success
+Response | []() | []()
+---|---|---
+`token` | `string` | user's access token
+`email` | `string` | user's email address
+`name` | `string` | user's first and last name (concatenated)
+`objects` | [LearningObject[]](https://github.com/Cyber4All/clark-entity#LearningObject) | user's learning objects
+`username` | `string` | user's unique username
+
+#### On Error
+status | body | statusText
+---|---|---
+`400` | `{ message: 'Invalid username or password' }` | `Bad Request`
