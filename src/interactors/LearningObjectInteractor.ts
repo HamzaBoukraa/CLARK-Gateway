@@ -95,20 +95,8 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
 }
 
 // Cube Functions
-export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, filters?: object) {
-  // TODO: Allow optional filters in DataStore.readLearningObjects()
-  console.log(filters);
-  // parse filters
-  if (filters) {
-    if (filters['academiclevel']) {
-      // do something with academiclevel filter here
-    }
-    if (filters['page']) {
-      // do something with page filtering here (IE change page)
-    }
-  }
-
-  let learningObjects = await dataStore.readLearningObjects();
+export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, query?: object) {
+  let learningObjects = await dataStore.readLearningObjects(query);
   responder.sendLearningObjects(learningObjects);
 }
 export async function fetchLearningObject(dataStore: DataStore, responder: Responder, author: string, learningObjectName: string) {

@@ -7,6 +7,7 @@ import { DataStore } from '../../interfaces/interfaces';
 import { create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects, fetchLearningObject } from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
+import * as querystring from 'querystring';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -230,14 +231,22 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
     router.get('', async (req, res) => {
       try {
-        if (Object.keys(req.query).length) {
-          proxy(LEARNING_OBJECT_SERVICE_URI, {
-            proxyReqPathResolver: (req) => {
-              return `/api/suggestObjects?${this.objectToQuery(req.query)}`;
-            },
-          })
-        }
-        else await fetchLearningObjects(this.dataStore, this.getResponder(res));
+        // TODO: Uncomment when proxy issue is fixed
+        //if (Object.keys(req.query).length) {
+        // FIXME: Proxy not proxying
+        // proxy(LEARNING_OBJECT_SERVICE_URI, {
+        //   proxyReqPathResolver: (req) => {
+        //     let queryString = querystring.stringify(req.query);
+        //     console.log(queryString);
+        //     return `/api/suggestObjects?${queryString}`;
+        //   },
+        // })
+        //await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
+        //}
+        //else await fetchLearningObjects(this.dataStore, this.getResponder(res));
+        
+        Object.keys(req.query).length ? await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query)
+          : await fetchLearningObjects(this.dataStore, this.getResponder(res));
       } catch (e) {
         sentry.logError(e);
       }
@@ -248,16 +257,6 @@ export default class ExpressRouteDriver {
     });
     return router;
   }
-
-  private objectToQuery(obj: object): string {
-    let str = [];
-    for (let p in obj)
-      if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-      }
-    return str.join("&");
-  }
-
 
 }
 

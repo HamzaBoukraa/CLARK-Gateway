@@ -2,6 +2,7 @@ import { DataStore } from '../interfaces/DataStore';
 import * as EVENT from './DBInteractionActions';
 import * as rp from 'request-promise';
 import { LearningObject, User } from '@cyber4all/clark-entity';
+import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
@@ -159,8 +160,9 @@ export class DBInteractionConnector implements DataStore {
     }
 
     // CUBE
-    async readLearningObjects(): Promise<string[]> {
-        return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
+    async readLearningObjects(query?: object): Promise<string[]> {
+        return query ? await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.SUGGEST_LEARNING_OBJECTS + `?${querystring.stringify(query)}`, {}, 'get')
+            : await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
     }
 
     async readLearningObject(author: string, learningObjectName: string): Promise<string> {

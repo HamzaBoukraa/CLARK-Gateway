@@ -15,3 +15,4 @@ export const DELETE_MULTIPLE_LEARNING_OBJECTS = '/deleteMultipleLearningObjects'
 // From cube-api
 export const FETCH_LEARNING_OBJECTS = '/fetchAllObjects';
 export const FETCH_MULTIPLE_LEARNING_OBJECTS = '/fetchMultipleObjects';
+export const SUGGEST_LEARNING_OBJECTS = '/suggestObjects';

@@ -10,7 +10,7 @@ export interface DataStore {
     deleteLearningObject(username: string, learningObjectName: string);
     deleteLearningObjects(username: string, learningObjectName: string[]);
     // CUBE
-    readLearningObjects(): Promise<string[]>;
+    readLearningObjects(query?: object): Promise<string[]>;
     readLearningObject(author: string, learningObjectName: string): Promise<string>;
     readMultipleLearningObjects(ids: string[], fullObject: boolean): Promise<string[]>;
 }
