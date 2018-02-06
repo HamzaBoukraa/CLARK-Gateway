@@ -163,7 +163,7 @@ export class DBInteractionConnector implements DataStore {
     async readLearningObjects(query?: object): Promise<string[]> {
         if (query) {
             let keys = Object.keys(query);
-            if ((keys.length === 2) && (keys.indexOf('currPage') > -1) && (keys.indexOf('limit') > -1)) {
+            if (((keys.length > 0) && (keys.length < 3)) && (keys.indexOf('limit') > -1)) {
                 return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS + `?${querystring.stringify(query)}`, {}, 'get');
             } else {
                 return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.SUGGEST_LEARNING_OBJECTS + `?${querystring.stringify(query)}`, {}, 'get');
