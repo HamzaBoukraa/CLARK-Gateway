@@ -265,8 +265,7 @@ export default class ExpressRouteDriver {
         // await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
         // }
         // else await fetchLearningObjects(this.dataStore, this.getResponder(res));
-        Object.keys(req.query).length ? await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query)
-          : await fetchLearningObjects(this.dataStore, this.getResponder(res));
+        await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query)
       } catch (e) {
         sentry.logError(e);
       }
@@ -277,7 +276,7 @@ export default class ExpressRouteDriver {
     return router;
   }
 
-  private objectToQuery(obj:object):string {
+  private objectToQuery(obj: object): string {
     let str = [];
     for (let p in obj)
       if (obj.hasOwnProperty(p)) {
