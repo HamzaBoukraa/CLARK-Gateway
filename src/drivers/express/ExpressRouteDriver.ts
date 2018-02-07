@@ -56,6 +56,12 @@ export default class ExpressRouteDriver {
     router.use('/users', this.buildUserRouter());
     router.use('/users/:username/learning-objects', this.buildUserLearningObjectRouter());
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
+
+    router.get('/count/:author', proxy(CART_API, {
+      proxyReqPathResolver: (req) => {
+        return `/api/count/${encodeURIComponent(req.params.author)}`
+      },
+    }));
   }
 
   /**
@@ -105,6 +111,7 @@ export default class ExpressRouteDriver {
       }));
     router.route('/:username/cart')
       .get(proxy(CART_API, {
+        // get cart
         proxyReqPathResolver: (req) => {
           return (req.query.download) ?
             `/api/users/${encodeURIComponent(req.params.username)}/cart?download=true` :
@@ -112,19 +119,35 @@ export default class ExpressRouteDriver {
         },
       }))
       .delete(proxy(CART_API, {
+        // clear cart
         proxyReqPathResolver: (req) => {
           return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
         },
       }));
     router.route('/:username/cart/learning-objects/:author/:learningObjectName')
+      .get(proxy(CART_API, {
+        // download single object
+        proxyReqPathResolver: (req) => {
+          return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
+        },
+      }))
       .post(proxy(CART_API, {
+        // add learning object to cart
         proxyReqPathResolver: (req) => {
           return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
         },
       }))
       .delete(proxy(CART_API, {
+        // remove learning object from cart
         proxyReqPathResolver: (req) => {
           return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
+        },
+      }));
+    router.route('/:username/library/learning-objects/:author/:learningObjectName')
+      .post(proxy(CART_API, {
+        proxyReqPathResolver: (req) => {
+          console.log('test');
+          return `/api/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
         },
       }));
 
@@ -152,7 +175,6 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          console.log(req.body.object);
           await create(this.dataStore, responder, req.body.object, user);
         } catch (e) {
           sentry.logError(e);
@@ -172,7 +194,6 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let user = req['user'];
-          console.log(req.body.learningObject);
           await update(this.dataStore, responder, req.params.learningObjectName, req.body.learningObject, user);
         } catch (e) {
           sentry.logError(e);
@@ -232,7 +253,7 @@ export default class ExpressRouteDriver {
     router.get('', async (req, res) => {
       try {
         // TODO: Uncomment when proxy issue is fixed
-        //if (Object.keys(req.query).length) {
+        // if (Object.keys(req.query).length) {
         // FIXME: Proxy not proxying
         // proxy(LEARNING_OBJECT_SERVICE_URI, {
         //   proxyReqPathResolver: (req) => {
@@ -241,10 +262,9 @@ export default class ExpressRouteDriver {
         //     return `/api/suggestObjects?${queryString}`;
         //   },
         // })
-        //await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
-        //}
-        //else await fetchLearningObjects(this.dataStore, this.getResponder(res));
-        
+        // await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
+        // }
+        // else await fetchLearningObjects(this.dataStore, this.getResponder(res));
         Object.keys(req.query).length ? await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query)
           : await fetchLearningObjects(this.dataStore, this.getResponder(res));
       } catch (e) {
@@ -252,11 +272,20 @@ export default class ExpressRouteDriver {
       }
     });
     router.get('/:author/:learningObjectName', async (req, res) => {
-      console.log(req.params.author, req.params.learningObjectName);
       await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.author, req.params.learningObjectName);
     });
     return router;
   }
+
+  private objectToQuery(obj:object):string {
+    let str = [];
+    for (let p in obj)
+      if (obj.hasOwnProperty(p)) {
+        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
+      }
+    return str.join('&');
+  }
+
 
 }
 

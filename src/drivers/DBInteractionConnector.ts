@@ -98,6 +98,7 @@ export class DBInteractionConnector implements DataStore {
         let objects = await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.LOAD_LEARNING_OBJECT_SUMARY + `/${username}`, {}, 'GET');
         return objects;
     }
+    
 
     /**
      * Gets LearningObject by ID

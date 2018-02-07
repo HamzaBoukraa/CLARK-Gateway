@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@cyber4all/clark-entity": "^1.1.1",
-    "@cyber4all/clark-taxonomy": "^1.0.16",
+    "@cyber4all/clark-taxonomy": "1.0.16",
     "@types/bcrypt-nodejs": "0.0.30",
     "@types/express-jwt": "0.0.38",
     "@types/jsonwebtoken": "^7.2.3",
@@ -43,7 +43,6 @@
     "aws-sdk": "^2.147.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.1",
-    "clark-taxonomy": "^1.0.14",
     "dotenv": "^4.0.0",
     "express": "^4.15.2",
     "express-http-proxy": "^1.1.0",

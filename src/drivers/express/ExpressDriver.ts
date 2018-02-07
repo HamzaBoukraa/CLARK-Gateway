@@ -52,7 +52,6 @@ export class ExpressDriver {
     this.app.use(enforceTokenAccess);
     this.app.use(function (error, req, res, next) {
       if (error.name === 'UnauthorizedError') {
-        console.log('dammit');
         sentry.logError('Invalid Access Token', 401);
         res.status(401).send('Invalid Access Token');
       }
