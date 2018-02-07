@@ -162,8 +162,16 @@ export class DBInteractionConnector implements DataStore {
 
     // CUBE
     async readLearningObjects(query?: object): Promise<string[]> {
-        return query ? await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.SUGGEST_LEARNING_OBJECTS + `?${querystring.stringify(query)}`, {}, 'get')
-            : await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
+        if (query) {
+            let keys = Object.keys(query);
+            if (((keys.length > 0) && (keys.length < 3)) && (keys.indexOf('limit') > -1)) {
+                return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS + `?${querystring.stringify(query)}`, {}, 'get');
+            } else {
+                return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.SUGGEST_LEARNING_OBJECTS + `?${querystring.stringify(query)}`, {}, 'get');
+            }
+        }
+
+        return await this.request(process.env.LEARNING_OBJECT_SERVICE_URI, EVENT.FETCH_LEARNING_OBJECTS, {}, 'get');
     }
 
     async readLearningObject(author: string, learningObjectName: string): Promise<string> {
