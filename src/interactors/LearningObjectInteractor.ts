@@ -95,9 +95,8 @@ export async function readOne(dataStore: DataStore, responder: Responder, learni
 }
 
 // Cube Functions
-export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, filters?: object) {
-  // TODO: Allow optional filters in DataStore.readLearningObjects()
-  let learningObjects = await dataStore.readLearningObjects();
+export async function fetchLearningObjects(dataStore: DataStore, responder: Responder, query?: object) {
+  let learningObjects = await dataStore.readLearningObjects(query);
   responder.sendLearningObjects(learningObjects);
 }
 export async function fetchLearningObject(dataStore: DataStore, responder: Responder, author: string, learningObjectName: string) {
