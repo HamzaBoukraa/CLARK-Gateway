@@ -1,15 +1,13 @@
 import { DataStore, Responder } from './../interfaces/interfaces';
 
 export async function create(dataStore: DataStore, responder: Responder, learningObject, user: any) {
-  console.log(learningObject);
   // create new LearningObject(userid, data_as_json)
   dataStore.createLearningObject(user.username, learningObject)
     .then((learningObjectID) => {
       responder.sendLearningObject(learningObjectID);
     })
-    .catch((error: string) => {
-      console.log(error);
-      if (error.match(/duplicate\s+key/g).length > 0) {
+    .catch((error) => {
+      if (error.error.match(/duplicate\s+key/g).length > 0) {
         responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
       } else
         responder.sendOperationError(`There was an error creating new Learning Object. ${error}`, 400);
@@ -24,8 +22,7 @@ export async function update(dataStore: DataStore, responder: Responder, learnin
       responder.sendOperationSuccess();
     })
     .catch((error) => {
-      console.log(error);
-      if (error.match(/duplicate\s+key/g).length > 0) {
+      if (error.error.match(/duplicate\s+key/g).length > 0) {
         responder.sendOperationError(`Please enter a unique name for this Learning Object.`, 400);
       } else
         responder.sendOperationError(`There was an error creating new learning object. ${error}`, 400);
