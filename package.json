@@ -8,7 +8,7 @@
     "build": "node_modules/.bin/gulp tsc",
     "gulp-tsc": "node_modules/.bin/gulp start",
     "lint": "node_modules/.bin/tslint --project ./src/**",
-    "pack": "npm run build && cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
+    "pack": "npm run build && cp ./package.json ./dist  && cp -r ./.ebextensions ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
     "deploy": "eb deploy CLARK-Gateway-Production --profile clark",
     "document": "node_modules/.bin/typedoc --out ./docs/ ./src/"
   },
