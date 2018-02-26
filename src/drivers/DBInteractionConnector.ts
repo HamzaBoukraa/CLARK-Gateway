@@ -162,6 +162,7 @@ export class DBInteractionConnector implements DataStore {
 
     // CUBE
     async readLearningObjects(query?: object): Promise<string[]> {
+        console.log('tester');
         if (query) {
             let keys = Object.keys(query);
             if (((keys.length > 0) && (keys.length < 3)) && (keys.indexOf('limit') > -1)) {

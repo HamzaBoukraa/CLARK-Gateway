@@ -7,7 +7,8 @@ import * as http from 'http';
 import { enforceTokenAccess } from '../../middleware/jwt.config'; import { sentry } from '../../logging/sentry';
 import { DataStore } from '../../interfaces/DataStore';
 import { ExpressRouteDriver } from '../drivers';
-
+import * as cors from 'cors';
+import * as cookieParser from 'cookie-parser';
 
 /**
  * Handles serving the API through the express framework.
@@ -27,26 +28,32 @@ export class ExpressDriver {
     // configure app to use bodyParser()
     this.app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
     this.app.use(bodyParser.json({ limit: '50mb' }));
+    
+    // set cookie parser
+    this.app.use(cookieParser());
 
-    // set header to allow connection by given url
-    this.app.use(function (req, res, next) {
+    // // set header to allow connection by given url
+    // this.app.use(function (req, res, next) {
 
-      // Website you wish to allow to connect
-      res.header('Access-Control-Allow-Origin', '*');
+    //   // Website you wish to allow to connect
+    //   res.header('Access-Control-Allow-Origin', '*');
 
-      // Request methods you wish to allow
-      res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+    //   // Request methods you wish to allow
+    //   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-      // Request headers you wish to allow
-      res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type,enctype,Cache-Control, Authorization');
+    //   // Request headers you wish to allow
+    //   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type,enctype,Cache-Control, Authorization');
 
-      // Set to true if you need the website to include cookies in the requests sent
-      // to the API (e.g. in case you use sessions)
-      res.header('Access-Control-Allow-Credentials', 'true');
+    //   // Set to true if you need the website to include cookies in the requests sent
+    //   // to the API (e.g. in case you use sessions)
+    //   res.header('Access-Control-Allow-Credentials', 'true');
 
-      // Pass to next layer of middleware
-      next();
-    });
+    //   // Pass to next layer of middleware
+    //   next();
+    // });
+
+    this.app.use(cors({ origin: true, credentials: true }));
+
 
     // Set Validation Middleware
     this.app.use(enforceTokenAccess);

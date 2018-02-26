@@ -146,7 +146,6 @@ export default class ExpressRouteDriver {
     router.route('/:username/library/learning-objects/:author/:learningObjectName')
       .post(proxy(CART_API, {
         proxyReqPathResolver: (req) => {
-          console.log('test');
           return `/api/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
         },
       }));
