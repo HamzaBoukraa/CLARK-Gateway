@@ -96,11 +96,11 @@ export default class ExpressRouteDriver {
         return `/users/${encodeURIComponent(req.params.username)}`;
       },
     }));
-    router.route('/:username/tokens')
+    router.route('/tokens')
       // Validate Token
-      .post(proxy(USERS_API, {
+      .get(proxy(USERS_API, {
         proxyReqPathResolver: (req) => {
-          return `/users/${encodeURIComponent(req.params.username)}/tokens`;
+          return `/users/tokens`;
         },
       }))
       // Logout
@@ -109,6 +109,12 @@ export default class ExpressRouteDriver {
           return `/users/${encodeURIComponent(req.params.username)}/tokens`;
         },
       }));
+    router.route('/ota-codes').all(proxy(USERS_API, {
+      proxyReqPathResolver: (req) => {
+        console.log(`/users/ota-codes?${querystring.stringify(req.query)}`);
+        return `/users/ota-codes?${querystring.stringify(req.query)}`;
+      },
+    }));
     router.route('/:username/cart')
       .get(proxy(CART_API, {
         // get cart
