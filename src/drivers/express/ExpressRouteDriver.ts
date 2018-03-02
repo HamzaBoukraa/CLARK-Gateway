@@ -104,11 +104,11 @@ export default class ExpressRouteDriver {
         },
       }))
       // Logout
-      .delete(proxy(USERS_API, {
-        proxyReqPathResolver: (req) => {
-          return `/users/${encodeURIComponent(req.params.username)}/tokens`;
-        },
-      }));
+    router.delete('/:username/tokens', proxy(USERS_API, {
+      proxyReqPathResolver: (req) => {
+        return `/users/${encodeURIComponent(req.params.username)}/tokens`;
+      },
+    }));
     router.route('/ota-codes').all(proxy(USERS_API, {
       proxyReqPathResolver: (req) => {
         console.log(`/users/ota-codes?${querystring.stringify(req.query)}`);

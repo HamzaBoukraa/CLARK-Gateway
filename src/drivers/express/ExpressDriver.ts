@@ -56,6 +56,7 @@ export class ExpressDriver {
     this.app.use(cors({ origin: true, credentials: true }));
 
 
+
     // Set Validation Middleware
     this.app.use(enforceTokenAccess);
     this.app.use(function (error, req, res, next) {
