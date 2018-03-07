@@ -4,16 +4,17 @@ import * as multer from 'multer';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
-import { create, destroy, destroyMultiple, read, readOne, update, fetchLearningObjects, fetchLearningObject } from '../../interactors/LearningObjectInteractor';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
 import * as querystring from 'querystring';
 
 import * as dotenv from 'dotenv';
+import { LEARNING_OBJECT_ROUTES } from '../../environment/routes';
 dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
-const LEARNING_OBJECT_SERVICE_URI = process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
+const LEARNING_OBJECT_SERVICE_URI =
+  process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -21,7 +22,6 @@ const LEARNING_OBJECT_SERVICE_URI = process.env.LEARNING_OBJECT_SERVICE_URI || '
  * @author Sean Donnelly
  */
 export default class ExpressRouteDriver {
-
   upload = multer({ dest: 'tmp/' });
 
   /**
@@ -36,7 +36,7 @@ export default class ExpressRouteDriver {
     return router;
   }
 
-  private constructor(public dataStore: DataStore) { }
+  private constructor(public dataStore: DataStore) {}
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
@@ -50,22 +50,28 @@ export default class ExpressRouteDriver {
    * @param router the router being used by the webserver
    */
   setRoutes(router: Router) {
-    router.get('/', function (req, res) {
-      res.json({ message: 'Welcome to the Bloomin Onion API' });
+    router.get('/', function(req, res) {
+      res.json({ message: 'Welcome to the C.L.A.R.K. Gateway API' });
     });
     router.use('/users', this.buildUserRouter());
-    router.use('/users/:username/learning-objects', this.buildUserLearningObjectRouter());
+    router.use(
+      '/users/:username/learning-objects',
+      this.buildUserLearningObjectRouter()
+    );
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
 
-    router.get('/count/:author', proxy(CART_API, {
-      proxyReqPathResolver: (req) => {
-        return `/api/count/${encodeURIComponent(req.params.author)}`
-      },
-    }));
+    router.get(
+      '/count/:author',
+      proxy(CART_API, {
+        proxyReqPathResolver: req => {
+          return `/count/${encodeURIComponent(req.params.author)}`;
+        }
+      })
+    );
   }
 
   /**
-   * Route handlers for /api/users
+   * Route handlers for /users
    *
    * @returns {Router}
    */
@@ -73,172 +79,251 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
 
     // Welcome page
-    router.get('', proxy(USERS_API, {
-      proxyReqPathResolver: (req) => {
-        return '/users';
-      },
-    }));
+    router.get(
+      '',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return '/users';
+        }
+      })
+    );
     // Register
-    router.post('', proxy(USERS_API, {
-      proxyReqPathResolver: (req) => {
-        return '/users';
-      },
-    }));
+    router.post(
+      '',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return '/users';
+        }
+      })
+    );
     // Login
-    router.post('/tokens', proxy(USERS_API, {
-      proxyReqPathResolver: (req) => {
-        return '/users/tokens';
-      },
-    }));
+    router.post(
+      '/tokens',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return '/users/tokens';
+        }
+      })
+    );
     // Remove account
-    router.delete('/:username', proxy(USERS_API, {
-      proxyReqPathResolver: (req) => {
-        return `/users/${encodeURIComponent(req.params.username)}`;
-      },
-    }));
-    router.route('/tokens')
+    router.delete(
+      '/:username',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}`;
+        }
+      })
+    );
+    router
+      .route('/tokens')
       // Validate Token
-      .get(proxy(USERS_API, {
-        proxyReqPathResolver: (req) => {
-          return `/users/tokens`;
-        },
-      }))
-      // Logout
-    router.delete('/:username/tokens', proxy(USERS_API, {
-      proxyReqPathResolver: (req) => {
-        return `/users/${encodeURIComponent(req.params.username)}/tokens`;
-      },
-    }));
-    router.route('/ota-codes').all(proxy(USERS_API, {
-      proxyReqPathResolver: (req) => {
-        console.log(`/users/ota-codes?${querystring.stringify(req.query)}`);
-        return `/users/ota-codes?${querystring.stringify(req.query)}`;
-      },
-    }));
-    router.route('/:username/cart')
-      .get(proxy(CART_API, {
-        // get cart
-        proxyReqPathResolver: (req) => {
-          return (req.query.download) ?
-            `/api/users/${encodeURIComponent(req.params.username)}/cart?download=true` :
-            `/api/users/${encodeURIComponent(req.params.username)}/cart`;
-        },
-      }))
-      .delete(proxy(CART_API, {
-        // clear cart
-        proxyReqPathResolver: (req) => {
-          return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
-        },
-      }));
-    router.route('/:username/cart/learning-objects/:author/:learningObjectName')
-      .get(proxy(CART_API, {
-        // download single object
-        proxyReqPathResolver: (req) => {
-          return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
-        },
-      }))
-      .post(proxy(CART_API, {
-        // add learning object to cart
-        proxyReqPathResolver: (req) => {
-          return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
-        },
-      }))
-      .delete(proxy(CART_API, {
-        // remove learning object from cart
-        proxyReqPathResolver: (req) => {
-          return `/api/users/${encodeURIComponent(req.params.username)}/cart/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
-        },
-      }));
-    router.route('/:username/library/learning-objects/:author/:learningObjectName')
-      .post(proxy(CART_API, {
-        proxyReqPathResolver: (req) => {
-          return `/api/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${req.params.author}/${encodeURIComponent(req.params.learningObjectName)}`;
-        },
-      }));
+      .get(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return `/users/tokens`;
+          }
+        })
+      );
+    // Logout
+    router.delete(
+      '/:username/tokens',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/tokens`;
+        }
+      })
+    );
+    router.route('/ota-codes').all(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          console.log(`/users/ota-codes?${querystring.stringify(req.query)}`);
+          return `/users/ota-codes?${querystring.stringify(req.query)}`;
+        }
+      })
+    );
+    router
+      .route('/:username/cart')
+      .get(
+        proxy(CART_API, {
+          // get cart
+          proxyReqPathResolver: req => {
+            return req.query.download
+              ? `/api/users/${encodeURIComponent(
+                  req.params.username
+                )}/cart?download=true`
+              : `/api/users/${encodeURIComponent(req.params.username)}/cart`;
+          }
+        })
+      )
+      .delete(
+        proxy(CART_API, {
+          // clear cart
+          proxyReqPathResolver: req => {
+            return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
+          }
+        })
+      );
+    router
+      .route('/:username/cart/learning-objects/:author/:learningObjectName')
+      .get(
+        proxy(CART_API, {
+          // download single object
+          proxyReqPathResolver: req => {
+            return `/api/users/${encodeURIComponent(
+              req.params.username
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+              req.params.learningObjectName
+            )}`;
+          }
+        })
+      )
+      .post(
+        proxy(CART_API, {
+          // add learning object to cart
+          proxyReqPathResolver: req => {
+            return `/api/users/${encodeURIComponent(
+              req.params.username
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+              req.params.learningObjectName
+            )}`;
+          }
+        })
+      )
+      .delete(
+        proxy(CART_API, {
+          // remove learning object from cart
+          proxyReqPathResolver: req => {
+            return `/api/users/${encodeURIComponent(
+              req.params.username
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+              req.params.learningObjectName
+            )}`;
+          }
+        })
+      );
+    router
+      .route('/:username/library/learning-objects/:author/:learningObjectName')
+      .post(
+        proxy(CART_API, {
+          proxyReqPathResolver: req => {
+            return `/api/users/${encodeURIComponent(
+              req.params.username
+            )}/library/learning-objects/${
+              req.params.author
+            }/${encodeURIComponent(req.params.learningObjectName)}`;
+          }
+        })
+      );
 
     return router;
   }
 
   /**
-   * Route handlers for /api/users/:username/learning-objects
+   * Route handlers for /users/:username/learning-objects
    *
    * @returns {Router}
    */
   private buildUserLearningObjectRouter() {
     let router: Router = express.Router();
-    router.route('')
-      .get(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
+    router
+      .route('')
+      .get(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            let user = req['user'];
+            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMARY(
+              user.username
+            );
+          }
+        })
+      )
+      .post(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return LEARNING_OBJECT_ROUTES.CREATE_UPDATE_LEARNING_OBJECT;
+          }
+        })
+      );
+    router
+      .route('/:learningObjectName')
+      .get(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            let user = req['user'];
+            let learningObjectName = req.params.learningObjectName;
+            return LEARNING_OBJECT_ROUTES.LOAD_DELETE_LEARNING_OBJECT(
+              user.username,
+              learningObjectName
+            );
+          }
+        })
+      )
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return LEARNING_OBJECT_ROUTES.CREATE_UPDATE_LEARNING_OBJECT;
+          }
+        })
+      )
+      // FIXME: Deletion should delete files as well
+      .delete(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            let user = req['user'];
+            let learningObjectName = req.params.learningObjectName;
+            return LEARNING_OBJECT_ROUTES.LOAD_DELETE_LEARNING_OBJECT(
+              user.username,
+              learningObjectName
+            );
+          }
+        })
+      );
+    // FIXME: Deletion should delete files as well
+    router.delete(
+      '/multiple/:names',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
           let user = req['user'];
-          await read(this.dataStore, responder, user);
-        } catch (e) {
-          sentry.logError(e);
+          let names = req.params.names.split(',');
+          return LEARNING_OBJECT_ROUTES.DELETE_MULTIPLE_LEARNING_OBJECT(
+            user.username,
+            names
+          );
         }
       })
-      .post(async (req, res) => {
+    );
+    router.post(
+      '/:learningObjectName/files',
+      this.upload.any(),
+      async (req, res) => {
         try {
           let responder = this.getResponder(res);
+          let learningObjectFile = new LearningObjectRepoFileInteractor();
           let user = req['user'];
-          await create(this.dataStore, responder, req.body.object, user);
+          await learningObjectFile.storeFiles(
+            this.dataStore,
+            responder,
+            req.body.learningObjectID,
+            req['files'],
+            user
+          );
         } catch (e) {
           sentry.logError(e);
         }
-      });
-    router.route('/:learningObjectName')
-      .get(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          let user = req['user'];
-          await readOne(this.dataStore, responder, req.params.learningObjectName, user);
-        } catch (e) {
-          sentry.logError(e);
-        }
-      })
-      .patch(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          let user = req['user'];
-          await update(this.dataStore, responder, req.params.learningObjectName, req.body.learningObject, user);
-        } catch (e) {
-          sentry.logError(e);
-        }
-      })
-      .delete(async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          let user = req['user'];
-          await destroy(this.dataStore, responder, req.params.learningObjectName, user);
-        } catch (e) {
-          sentry.logError(e);
-        }
-      });
-    router.delete('/multiple/:names', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        let user = req['user'];
-        let names = req.params.names.split(',');
-        await destroyMultiple(this.dataStore, responder, names, user);
-      } catch (e) {
-        sentry.logError(e);
       }
-    });
-    router.post('/:learningObjectName/files', this.upload.any(), async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        let learningObjectFile = new LearningObjectRepoFileInteractor();
-        let user = req['user'];
-        await learningObjectFile.storeFiles(this.dataStore, responder, req.body.learningObjectID, req['files'], user);
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
+    );
     router.delete('/:learningObjectID/files/:filename', async (req, res) => {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
         let user = req['user'];
-        await learningObjectFile.deleteFile(this.dataStore, responder, req.params.learningObjectID, req.params.filename, user);
+        await learningObjectFile.deleteFile(
+          this.dataStore,
+          responder,
+          req.params.learningObjectID,
+          req.params.filename,
+          user
+        );
       } catch (e) {
         sentry.logError(e);
       }
@@ -247,7 +332,7 @@ export default class ExpressRouteDriver {
   }
 
   /**
-   * Route handlers for /api/learning-objects
+   * Route handlers for /learning-objects
    *
    * @private
    * @returns {Router}
@@ -255,45 +340,30 @@ export default class ExpressRouteDriver {
    */
   private buildPublicLearningObjectRouter() {
     let router: Router = express.Router();
-    router.get('', async (req, res) => {
-      try {
-        // TODO: Uncomment when proxy issue is fixed
-        // if (Object.keys(req.query).length) {
-        // FIXME: Proxy not proxying
-        // proxy(LEARNING_OBJECT_SERVICE_URI, {
-        //   proxyReqPathResolver: (req) => {
-        //     let queryString = querystring.stringify(req.query);
-        //     console.log(queryString);
-        //     return `/api/suggestObjects?${queryString}`;
-        //   },
-        // })
-        // await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query);
-        // }
-        // else await fetchLearningObjects(this.dataStore, this.getResponder(res));
-        await fetchLearningObjects(this.dataStore, this.getResponder(res), req.query)
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
-    router.get('/:author/:learningObjectName', async (req, res) => {
-      await fetchLearningObject(this.dataStore, this.getResponder(res), req.params.author, req.params.learningObjectName);
-    });
+    router.get(
+      '',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS;
+        }
+      })
+    );
+    router.get(
+      '/:author/:learningObjectName',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          let username = req.params.author;
+          let learningObjectName = req.params.learningObjectName;
+          return LEARNING_OBJECT_ROUTES.LOAD_DELETE_LEARNING_OBJECT(
+            username,
+            learningObjectName
+          );
+        }
+      })
+    );
     return router;
   }
-
-  private objectToQuery(obj: object): string {
-    let str = [];
-    for (let p in obj)
-      if (obj.hasOwnProperty(p)) {
-        str.push(encodeURIComponent(p) + '=' + encodeURIComponent(obj[p]));
-      }
-    return str.join('&');
-  }
-
-
 }
-
-
 
 // /api/users/:username/learning-objects (require auth check for ownership or public viewing)
 // /api/learning-objects

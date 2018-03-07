@@ -1,6 +1,6 @@
 {
   "name": "clark-gateway",
-  "version": "1.0.0-alpha.1.1",
+  "version": "1.0.0-beta.2.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "typescript": "^2.3.4"
   },
   "dependencies": {
-    "@cyber4all/clark-entity": "^1.1.1",
+    "@cyber4all/clark-entity": "^2.1.0-beta.0.0",
     "@cyber4all/clark-taxonomy": "1.0.16",
     "@types/bcrypt-nodejs": "0.0.30",
     "@types/express-jwt": "0.0.38",
@@ -64,5 +64,8 @@
   },
   "pre-commit": [
     "lint"
-  ]
+  ],
+  "prettier": {
+    "singleQuote": true
+  }
 }

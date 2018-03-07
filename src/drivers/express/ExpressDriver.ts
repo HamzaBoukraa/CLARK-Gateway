@@ -29,29 +29,9 @@ export class ExpressDriver {
     // configure app to use bodyParser()
     this.app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
     this.app.use(bodyParser.json({ limit: '50mb' }));
-    
+
     // set cookie parser
     this.app.use(cookieParser());
-
-    // // set header to allow connection by given url
-    // this.app.use(function (req, res, next) {
-
-    //   // Website you wish to allow to connect
-    //   res.header('Access-Control-Allow-Origin', '*');
-
-    //   // Request methods you wish to allow
-    //   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    //   // Request headers you wish to allow
-    //   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type,enctype,Cache-Control, Authorization');
-
-    //   // Set to true if you need the website to include cookies in the requests sent
-    //   // to the API (e.g. in case you use sessions)
-    //   res.header('Access-Control-Allow-Credentials', 'true');
-
-    //   // Pass to next layer of middleware
-    //   next();
-    // });
 
     this.app.use(cors({ origin: true, credentials: true }));
 
@@ -59,14 +39,14 @@ export class ExpressDriver {
 
     // Set Validation Middleware
     this.app.use(enforceTokenAccess);
-    this.app.use(function (error, req, res, next) {
+    this.app.use(function(error, req, res, next) {
       if (error.name === 'UnauthorizedError') {
         sentry.logError('Invalid Access Token', 401);
         res.status(401).send('Invalid Access Token');
       }
     });
     // Set our api routes
-    this.app.use('/api', ExpressRouteDriver.buildRouter(dataStore));
+    this.app.use('/', ExpressRouteDriver.buildRouter(dataStore));
     this.linkClient();
     /**
      * Get port from environment and store in Express.
@@ -83,7 +63,6 @@ export class ExpressDriver {
      * Listen on provided port, on all network interfaces.
      */
     server.listen(port, () => console.log(`API running on localhost:${port}`));
-
 
     return this.app;
   }
