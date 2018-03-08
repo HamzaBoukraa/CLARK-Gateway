@@ -334,7 +334,10 @@ export default class ExpressRouteDriver {
       '',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS;
+          let route = `${
+            LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS
+          }?${querystring.stringify(req.query)}`;
+          return route;
         }
       })
     );
