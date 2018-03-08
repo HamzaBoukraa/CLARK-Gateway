@@ -1,8 +1,7 @@
-import { DataStore, Responder } from "./../interfaces/interfaces";
-import * as AWS from "aws-sdk";
-import * as fs from "fs";
-import { AWS_SDK_CONFIG } from "../config/aws-sdk/config";
-import { User } from "@cyber4all/clark-entity";
+import { DataStore, Responder } from './../interfaces/interfaces';
+import * as AWS from 'aws-sdk';
+import * as fs from 'fs';
+import { AWS_SDK_CONFIG } from '../config/aws-sdk/config';
 
 // TODO: Move to microservice
 export class LearningObjectRepoFileInteractor {
@@ -28,15 +27,15 @@ export class LearningObjectRepoFileInteractor {
     responder: Responder,
     learningObjectID: string,
     files,
-    user: User
+    username: string
   ) {
-    this.uploadToS3(user.username, learningObjectID, files)
+    this.uploadToS3(username, learningObjectID, files)
       .then(learningObjectFiles => {
         responder.sendLearningObjectFiles(learningObjectFiles);
       })
       .catch(error => {
         responder.sendOperationError(
-          "There was an error uploading your files. Please try again.",
+          'There was an error uploading your files. Please try again.',
           400
         );
       });
@@ -57,15 +56,15 @@ export class LearningObjectRepoFileInteractor {
     responder: Responder,
     learningObjectID: string,
     filename: string,
-    user: User
+    username: string
   ) {
-    this.deleteFromS3(user.username, learningObjectID, filename)
+    this.deleteFromS3(username, learningObjectID, filename)
       .then(success => {
         responder.sendOperationSuccess();
       })
       .catch(error => {
         responder.sendOperationError(
-          "There was an error deleting your file. Please try again.",
+          'There was an error deleting your file. Please try again.',
           400
         );
       });
@@ -75,15 +74,15 @@ export class LearningObjectRepoFileInteractor {
     dataStore: DataStore,
     responder: Responder,
     learningObjectID: string,
-    user
+    username: string
   ) {
-    this.deleteFromS3(user.username, learningObjectID, null, true)
+    this.deleteFromS3(username, learningObjectID, null, true)
       .then(success => {
         responder.sendOperationSuccess();
       })
       .catch(error => {
         responder.sendOperationError(
-          "There was an error deleting your files. Please try again.",
+          'There was an error deleting your files. Please try again.',
           400
         );
       });
@@ -114,9 +113,9 @@ export class LearningObjectRepoFileInteractor {
           let fs_file = fs.createReadStream(tmp_path);
 
           let params = {
-            Bucket: "neutrino-file-uploads",
+            Bucket: 'neutrino-file-uploads',
             Key: `${username}/${learningObjectID}/${originalname}`,
-            ACL: "public-read",
+            ACL: 'public-read',
             Body: fs_file
           };
           this._s3.upload(params, (error, data) => {
@@ -156,18 +155,18 @@ export class LearningObjectRepoFileInteractor {
   ): Promise<string> {
     let params = deleteAll
       ? {
-          Bucket: "neutrino-file-uploads",
+          Bucket: 'neutrino-file-uploads',
           Key: `${username}/${learningObjectID}`
         }
       : {
-          Bucket: "neutrino-file-uploads",
+          Bucket: 'neutrino-file-uploads',
           Key: `${username}/${learningObjectID}/${filename}`
         };
 
     return new Promise<string>((resolve, reject) => {
       this._s3.deleteObject(params, (error, data) => {
         if (error) {
-          console.log("Errorooror");
+          console.log('Errorooror');
           console.log(error);
           reject(error);
         } else {

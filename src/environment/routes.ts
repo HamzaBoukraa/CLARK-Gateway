@@ -1,23 +1,21 @@
 export const LEARNING_OBJECT_ROUTES = {
   CREATE_UPDATE_LEARNING_OBJECT: '/learning-objects',
-  LOAD_DELETE_LEARNING_OBJECT(username: string, learningObjectName: string) {
+  LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${username}/${encodeURIComponent(
       learningObjectName
     )}`;
   },
-  LOAD_LEARNING_OBJECT_SUMARY(username: string): string {
-    return `/learning-objects/${username}/summary`;
-  },
+  LOAD_LEARNING_OBJECT_SUMARY: '/learning-objects/summary',
   FIND_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${username}/${encodeURIComponent(
       learningObjectName
     )}/id`;
   },
-  DELETE_MULTIPLE_LEARNING_OBJECT(
-    username: string,
-    learningObjectNames: string[]
-  ) {
-    return `/learning-objects/${username}/${encodeURIComponent(
+  DELETE_LEARNING_OBJECT(learningObjectName: string) {
+    return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
+  },
+  DELETE_MULTIPLE_LEARNING_OBJECTS(learningObjectNames: string[]) {
+    return `/learning-objects/${encodeURIComponent(
       learningObjectNames.toString()
     )}/multiple`;
   },

@@ -1,5 +1,4 @@
 import * as jwt from 'express-jwt';
-import { key, issuer } from '../config/config';
 
 /**
  * Configuration for JWT middleware.
@@ -7,22 +6,22 @@ import { key, issuer } from '../config/config';
  * @author Gustavus Shaw II
  */
 export const enforceTokenAccess = jwt({
-  secret: key,
-  issuer: issuer,
+  secret: process.env.KEY,
+  issuer: process.env.ISSUER,
   getToken: req => {
     return req.cookies.presence;
   }
 }).unless({
   // Routes that don't require authorization
   path: [
-    '/api',
-    '/api/users/ota-codes',
-    '/api/users/tokens',
-    /\/api\/users\/[A-Z,a-z,0-9,_]+\/tokens/i,
-    /\/api\/learning-object/i,
-    { url: '/api/users', methods: ['POST'] }, // register
-    '/api/users/ota-codes', // all ota-code routes do their own verifcation outsides of JWT
-    { url: '/api/users/tokens', methods: ['POST'] } // login
+    '/',
+    '/users/ota-codes',
+    '/users/tokens',
+    /\/users\/[A-Z,a-z,0-9,_]+\/tokens/i,
+    /\/learning-object/i,
+    { url: '/users', methods: ['POST'] },
+    '/users/ota-codes',
+    { url: '/users/tokens', methods: ['POST'] }
   ]
-});
+}); // register // all ota-code routes do their own verifcation outsides of JWT // login
 // TODO: Whitelist user routes

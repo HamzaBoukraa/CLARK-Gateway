@@ -7,7 +7,7 @@ import { DataStore } from '../../interfaces/interfaces';
 import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
 import { sentry } from '../../logging/sentry';
 import * as querystring from 'querystring';
-
+import * as TokenManager from '../TokenManager';
 import * as dotenv from 'dotenv';
 import { LEARNING_OBJECT_ROUTES } from '../../environment/routes';
 dotenv.config();
@@ -148,10 +148,10 @@ export default class ExpressRouteDriver {
           // get cart
           proxyReqPathResolver: req => {
             return req.query.download
-              ? `/api/users/${encodeURIComponent(
+              ? `/users/${encodeURIComponent(
                   req.params.username
                 )}/cart?download=true`
-              : `/api/users/${encodeURIComponent(req.params.username)}/cart`;
+              : `/users/${encodeURIComponent(req.params.username)}/cart`;
           }
         })
       )
@@ -159,7 +159,7 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // clear cart
           proxyReqPathResolver: req => {
-            return `/api/users/${encodeURIComponent(req.params.username)}/cart`;
+            return `/users/${encodeURIComponent(req.params.username)}/cart`;
           }
         })
       );
@@ -181,7 +181,7 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // add learning object to cart
           proxyReqPathResolver: req => {
-            return `/api/users/${encodeURIComponent(
+            return `/users/${encodeURIComponent(
               req.params.username
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName
@@ -193,7 +193,7 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // remove learning object from cart
           proxyReqPathResolver: req => {
-            return `/api/users/${encodeURIComponent(
+            return `/users/${encodeURIComponent(
               req.params.username
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName
@@ -206,7 +206,7 @@ export default class ExpressRouteDriver {
       .post(
         proxy(CART_API, {
           proxyReqPathResolver: req => {
-            return `/api/users/${encodeURIComponent(
+            return `/users/${encodeURIComponent(
               req.params.username
             )}/library/learning-objects/${
               req.params.author
@@ -230,10 +230,7 @@ export default class ExpressRouteDriver {
       .get(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            let user = req['user'];
-            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMARY(
-              user.username
-            );
+            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMARY;
           }
         })
       )
@@ -249,10 +246,9 @@ export default class ExpressRouteDriver {
       .get(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            let user = req['user'];
             let learningObjectName = req.params.learningObjectName;
-            return LEARNING_OBJECT_ROUTES.LOAD_DELETE_LEARNING_OBJECT(
-              user.username,
+            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT(
+              null,
               learningObjectName
             );
           }
@@ -269,10 +265,8 @@ export default class ExpressRouteDriver {
       .delete(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            let user = req['user'];
             let learningObjectName = req.params.learningObjectName;
-            return LEARNING_OBJECT_ROUTES.LOAD_DELETE_LEARNING_OBJECT(
-              user.username,
+            return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
               learningObjectName
             );
           }
@@ -283,12 +277,8 @@ export default class ExpressRouteDriver {
       '/multiple/:names',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          let user = req['user'];
           let names = req.params.names.split(',');
-          return LEARNING_OBJECT_ROUTES.DELETE_MULTIPLE_LEARNING_OBJECT(
-            user.username,
-            names
-          );
+          return LEARNING_OBJECT_ROUTES.DELETE_MULTIPLE_LEARNING_OBJECTS(names);
         }
       })
     );
@@ -299,13 +289,13 @@ export default class ExpressRouteDriver {
         try {
           let responder = this.getResponder(res);
           let learningObjectFile = new LearningObjectRepoFileInteractor();
-          let user = req['user'];
+          let user = await TokenManager.decode(req.cookies.presence);
           await learningObjectFile.storeFiles(
             this.dataStore,
             responder,
             req.body.learningObjectID,
             req['files'],
-            user
+            user.username
           );
         } catch (e) {
           sentry.logError(e);
@@ -316,13 +306,13 @@ export default class ExpressRouteDriver {
       try {
         let responder = this.getResponder(res);
         let learningObjectFile = new LearningObjectRepoFileInteractor();
-        let user = req['user'];
+        let user = await TokenManager.decode(req.cookies.presence);
         await learningObjectFile.deleteFile(
           this.dataStore,
           responder,
           req.params.learningObjectID,
           req.params.filename,
-          user
+          user.username
         );
       } catch (e) {
         sentry.logError(e);
@@ -354,7 +344,7 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           let username = req.params.author;
           let learningObjectName = req.params.learningObjectName;
-          return LEARNING_OBJECT_ROUTES.LOAD_DELETE_LEARNING_OBJECT(
+          return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT(
             username,
             learningObjectName
           );
