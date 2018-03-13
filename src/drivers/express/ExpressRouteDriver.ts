@@ -113,14 +113,18 @@ export default class ExpressRouteDriver {
       })
     );
     // Remove account
-    router.delete(
-      '/:username',
-      proxy(USERS_API, {
+    router.route('/:username')
+    .delete(proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}`;
-        }
-      })
-    );
+        },
+      }),
+    ).patch(proxy(USERS_API, {
+      proxyReqPathResolver: req => {
+        return `/users/${encodeURIComponent(req.params.username)}`;
+      },
+    }));
+
     router
       .route('/tokens')
       // Validate Token
