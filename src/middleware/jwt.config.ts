@@ -10,7 +10,7 @@ export const enforceTokenAccess = jwt({
   issuer: process.env.ISSUER,
   getToken: req => {
     return req.cookies.presence;
-  }
+  },
 }).unless({
   // Routes that don't require authorization
   path: [
@@ -22,6 +22,6 @@ export const enforceTokenAccess = jwt({
     { url: '/users', methods: ['POST'] },
     '/users/ota-codes',
     { url: '/users/tokens', methods: ['POST'] }
-  ]
+  ],
 }); // register // all ota-code routes do their own verifcation outsides of JWT // login
 // TODO: Whitelist user routes
