@@ -79,23 +79,30 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
 
     // Welcome page
-    router.get(
-      '',
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return '/users';
-        }
-      })
-    );
-    // Register
-    router.post(
-      '',
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return '/users';
-        }
-      })
-    );
+    router
+      .route('')
+      .get(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return '/users';
+          }
+        })
+      )
+      // Register
+      .post(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return '/users';
+          }
+        })
+      )
+      .patch(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return '/users';
+          }
+        })
+      );
     // Login
     router.post(
       '/tokens',
