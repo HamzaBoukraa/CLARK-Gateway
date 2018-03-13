@@ -104,8 +104,10 @@ export class LearningObjectRepoFileInteractor {
     return Promise.all(
       files.map(file => {
         return new Promise((resolve, reject) => {
+          let name_desc = file.originalname.split(/!@!/g);
           let tmp_path = file.path;
-          let originalname = file.originalname;
+          let originalname = name_desc[0];
+          let description = name_desc[1];
           let fileType = file.mimetype;
           let extension = originalname.match(/([A-Za-z]{1,})$/)[0];
           let date = Date.now().toString();
@@ -127,7 +129,8 @@ export class LearningObjectRepoFileInteractor {
                 fileType: fileType,
                 extension: extension,
                 url: data.Location,
-                date: date
+                date: date,
+                description: description
               };
               resolve(newLearningObjectFile);
             }

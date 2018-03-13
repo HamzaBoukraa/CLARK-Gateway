@@ -1,9 +1,7 @@
-import { ExpressDriver, DBInteractionConnector } from './drivers/drivers';
-import { DataStore } from './interfaces/interfaces';
+import { ExpressDriver } from './drivers/drivers';
 // ----------------------------------------------------------------------------------
 // Initializations
 // ----------------------------------------------------------------------------------
 
-let dataStore: DataStore = new DBInteractionConnector();
 // ----------------------------------------------------------------------------------
-ExpressDriver.start(dataStore);
+ExpressDriver.start(null);

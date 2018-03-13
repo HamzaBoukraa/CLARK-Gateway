@@ -17,6 +17,7 @@ export const enforceTokenAccess = jwt({
     '/',
     '/users/ota-codes',
     '/users/tokens',
+    '/users/search',
     /\/users\/[A-Z,a-z,0-9,_]+\/tokens/i,
     /\/learning-object/i,
     { url: '/users', methods: ['POST'] },

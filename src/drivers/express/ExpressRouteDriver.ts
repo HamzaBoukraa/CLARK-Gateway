@@ -85,23 +85,30 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
 
     // Welcome page
-    router.get(
-      '',
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return '/users';
-        }
-      })
-    );
-    // Register
-    router.post(
-      '',
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return '/users';
-        }
-      })
-    );
+    router
+      .route('')
+      .get(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return '/users';
+          }
+        })
+      )
+      // Register
+      .post(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return '/users';
+          }
+        })
+      )
+      .patch(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            return '/users';
+          }
+        })
+      );
     // Login
     router.post(
       '/tokens',
@@ -112,14 +119,14 @@ export default class ExpressRouteDriver {
       })
     );
     // Remove account
-    router.delete(
-      '/:username',
+    router.route('/:username').delete(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}`;
         }
       })
     );
+
     router
       .route('/tokens')
       // Validate Token
@@ -220,6 +227,15 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+
+    router.get(
+      '/search',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users?${querystring.stringify(req.query)}`;
+        }
+      })
+    );
 
     return router;
   }
@@ -359,6 +375,16 @@ export default class ExpressRouteDriver {
           );
         },
       }),
+    );
+    router.get(
+      '/:author',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.FETCH_USERS_LEARNING_OBJECTS(
+            req.params.author
+          );
+        }
+      })
     );
     return router;
   }
