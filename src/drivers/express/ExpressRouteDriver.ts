@@ -59,7 +59,11 @@ export default class ExpressRouteDriver {
       this.buildUserLearningObjectRouter()
     );
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
-
+    router.get('/collections/:name/learning-objects', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return `/collections/${encodeURIComponent(req.params.name)}/learning-objects`;
+      },
+    }));
     router.get(
       '/count/:author',
       proxy(CART_API, {
@@ -68,6 +72,8 @@ export default class ExpressRouteDriver {
         }
       })
     );
+
+    
   }
 
   /**
@@ -174,7 +180,7 @@ export default class ExpressRouteDriver {
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName
             )}`;
-          }
+          },
         })
       )
       .post(
@@ -182,12 +188,12 @@ export default class ExpressRouteDriver {
           // add learning object to cart
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
-              req.params.username
+              req.params.username,
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName
             )}`;
           }
-        })
+        }),
       )
       .delete(
         proxy(CART_API, {
@@ -198,8 +204,8 @@ export default class ExpressRouteDriver {
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName
             )}`;
-          }
-        })
+          },
+        }),
       );
     router
       .route('/:username/library/learning-objects/:author/:learningObjectName')
@@ -211,8 +217,8 @@ export default class ExpressRouteDriver {
             )}/library/learning-objects/${
               req.params.author
             }/${encodeURIComponent(req.params.learningObjectName)}`;
-          }
-        })
+          },
+        }),
       );
 
     return router;
@@ -232,14 +238,14 @@ export default class ExpressRouteDriver {
           proxyReqPathResolver: req => {
             return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMARY;
           }
-        })
+        }),
       )
       .post(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             return LEARNING_OBJECT_ROUTES.CREATE_UPDATE_LEARNING_OBJECT;
-          }
-        })
+          },
+        }),
       );
     router
       .route('/:learningObjectName')
@@ -259,7 +265,7 @@ export default class ExpressRouteDriver {
           proxyReqPathResolver: req => {
             return LEARNING_OBJECT_ROUTES.CREATE_UPDATE_LEARNING_OBJECT;
           }
-        })
+        }),
       )
       // FIXME: Deletion should delete files as well
       .delete(
@@ -269,8 +275,8 @@ export default class ExpressRouteDriver {
             return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
               learningObjectName
             );
-          }
-        })
+          },
+        }),
       );
     // FIXME: Deletion should delete files as well
     router.delete(
@@ -279,8 +285,8 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           let names = req.params.names.split(',');
           return LEARNING_OBJECT_ROUTES.DELETE_MULTIPLE_LEARNING_OBJECTS(names);
-        }
-      })
+        },
+      }),
     );
     router.post(
       '/:learningObjectName/files',
@@ -295,12 +301,12 @@ export default class ExpressRouteDriver {
             responder,
             req.body.learningObjectID,
             req['files'],
-            user.username
+            user.username,
           );
         } catch (e) {
           sentry.logError(e);
         }
-      }
+      },
     );
     router.delete('/:learningObjectID/files/:filename', async (req, res) => {
       try {
@@ -312,7 +318,7 @@ export default class ExpressRouteDriver {
           responder,
           req.params.learningObjectID,
           req.params.filename,
-          user.username
+          user.username,
         );
       } catch (e) {
         sentry.logError(e);
@@ -338,8 +344,8 @@ export default class ExpressRouteDriver {
             LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS
           }?${querystring.stringify(req.query)}`;
           return route;
-        }
-      })
+        },
+      }),
     );
     router.get(
       '/:author/:learningObjectName',
@@ -351,8 +357,8 @@ export default class ExpressRouteDriver {
             username,
             learningObjectName
           );
-        }
-      })
+        },
+      }),
     );
     return router;
   }
