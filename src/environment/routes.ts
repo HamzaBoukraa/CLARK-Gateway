@@ -19,7 +19,10 @@ export const LEARNING_OBJECT_ROUTES = {
       learningObjectNames.toString()
     )}/multiple`;
   },
-  FETCH_LEARNING_OBJECTS: '/learning-objects'
+  FETCH_LEARNING_OBJECTS: '/learning-objects',
+  FETCH_USERS_LEARNING_OBJECTS(username: string) {
+    return `/users/${username}/learning-objects`;
+  }
 };
 
 export const FETCH_MULTIPLE_LEARNING_OBJECTS = '/learning-objects/multiple';
