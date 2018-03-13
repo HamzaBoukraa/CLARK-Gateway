@@ -222,6 +222,15 @@ export default class ExpressRouteDriver {
         })
       );
 
+    router.get(
+      '/search',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users?${querystring.stringify(req.query)}`;
+        }
+      })
+    );
+
     return router;
   }
 
