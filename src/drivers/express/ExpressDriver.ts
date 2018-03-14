@@ -35,8 +35,6 @@ export class ExpressDriver {
 
     this.app.use(cors({ origin: true, credentials: true }));
 
-
-
     // Set Validation Middleware
     this.app.use(enforceTokenAccess);
     this.app.use(function(error, req, res, next) {
@@ -62,7 +60,9 @@ export class ExpressDriver {
     /**
      * Listen on provided port, on all network interfaces.
      */
-    server.listen(port, () => console.log(`API running on localhost:${port}`));
+    server.listen(port, () =>
+      console.log(`CLARK Gateway API running on localhost:${port}`)
+    );
 
     return this.app;
   }
