@@ -2,10 +2,8 @@ import { Responder } from '../../interfaces/interfaces';
 import { Response } from 'express';
 import { sentry } from '../../logging/sentry';
 
-
 export class ExpressResponder implements Responder {
-
-  constructor(public res: Response) {  }
+  constructor(public res: Response) {}
 
   sendUser(user: any) {
     this.res.status(200).json(user);
@@ -22,12 +20,12 @@ export class ExpressResponder implements Responder {
   sendOperationSuccess() {
     this.res.sendStatus(200);
   }
-  sendOperationError(message, status = 400) {
+  sendOperationError(
+    message = 'There was an error processing your request.',
+    status = 400
+  ) {
     sentry.logError(message, status);
-    // Default message and status code if no custom error
-    !message ? this.res.status(status).send('There was an error processing your request.') :
-      // Custom error message and status code
-      this.res.status(status).send(message);
+    this.res.status(status).send(message);
   }
   invalidLogin() {
     this.res.status(400).json({ message: 'Invalid Username or Password' });

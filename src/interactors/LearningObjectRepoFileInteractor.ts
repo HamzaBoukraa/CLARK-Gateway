@@ -29,16 +29,19 @@ export class LearningObjectRepoFileInteractor {
     files,
     username: string
   ) {
-    this.uploadToS3(username, learningObjectID, files)
-      .then(learningObjectFiles => {
-        responder.sendLearningObjectFiles(learningObjectFiles);
-      })
-      .catch(error => {
-        responder.sendOperationError(
-          'There was an error uploading your files. Please try again.',
-          400
-        );
-      });
+    try {
+      let learningObjectFiles = await this.uploadToS3(
+        username,
+        learningObjectID,
+        files
+      );
+      responder.sendLearningObjectFiles(learningObjectFiles);
+    } catch (e) {
+      responder.sendOperationError(
+        `There was an error uploading your files. Please try again. Error: ${e}`,
+        400
+      );
+    }
   }
 
   /**
@@ -58,16 +61,15 @@ export class LearningObjectRepoFileInteractor {
     filename: string,
     username: string
   ) {
-    this.deleteFromS3(username, learningObjectID, filename)
-      .then(success => {
-        responder.sendOperationSuccess();
-      })
-      .catch(error => {
-        responder.sendOperationError(
-          'There was an error deleting your file. Please try again.',
-          400
-        );
-      });
+    try {
+      await this.deleteFromS3(username, learningObjectID, filename);
+      responder.sendOperationSuccess();
+    } catch (e) {
+      responder.sendOperationError(
+        `There was an error deleting your file. Error:${e}`,
+        400
+      );
+    }
   }
 
   async deleteAllFiles(
@@ -76,16 +78,14 @@ export class LearningObjectRepoFileInteractor {
     learningObjectID: string,
     username: string
   ) {
-    this.deleteFromS3(username, learningObjectID, null, true)
-      .then(success => {
-        responder.sendOperationSuccess();
-      })
-      .catch(error => {
-        responder.sendOperationError(
-          'There was an error deleting your files. Please try again.',
-          400
-        );
-      });
+    try {
+      await this.deleteFromS3(username, learningObjectID, null, true);
+      responder.sendOperationSuccess();
+    } catch (e) {
+      responder.sendOperationError(
+        `There was an error deleting your files. Error: ${e}`
+      );
+    }
   }
 
   /**
@@ -104,21 +104,18 @@ export class LearningObjectRepoFileInteractor {
     return Promise.all(
       files.map(file => {
         return new Promise((resolve, reject) => {
-          let name_desc = file.originalname.split(/!@!/g);
-          let tmp_path = file.path;
-          let originalname = name_desc[0];
-          let description = name_desc[1];
+          let name_id = file.originalname.split(/!@!/g);
+          let originalname = name_id[0];
+          let description = +name_id[1];
           let fileType = file.mimetype;
           let extension = originalname.match(/([A-Za-z]{1,})$/)[0];
           let date = Date.now().toString();
-
-          let fs_file = fs.createReadStream(tmp_path);
 
           let params = {
             Bucket: 'neutrino-file-uploads',
             Key: `${username}/${learningObjectID}/${originalname}`,
             ACL: 'public-read',
-            Body: fs_file
+            Body: file.buffer
           };
           this._s3.upload(params, (error, data) => {
             if (error) {

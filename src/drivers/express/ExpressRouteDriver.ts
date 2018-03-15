@@ -22,7 +22,7 @@ const LEARNING_OBJECT_SERVICE_URI =
  * @author Sean Donnelly
  */
 export default class ExpressRouteDriver {
-  upload = multer({ dest: 'tmp/' });
+  private upload = multer({ storage: multer.memoryStorage() });
 
   /**
    * Produces a configured express router
@@ -51,7 +51,9 @@ export default class ExpressRouteDriver {
    */
   setRoutes(router: Router) {
     router.get('/', function(req, res) {
-      res.json({ message: 'Welcome to the C.L.A.R.K. Gateway API' });
+      res.json({
+        message: 'Welcome to the C.L.A.R.K. Gateway API'
+      });
     });
     router.use('/users', this.buildUserRouter());
     router.use(

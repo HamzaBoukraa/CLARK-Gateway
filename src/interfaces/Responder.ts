@@ -3,7 +3,7 @@ import { Response } from 'express';
 export interface Responder {
   sendUser(user);
   sendOperationSuccess();
-  sendOperationError(message: string, status?: number): void;
+  sendOperationError(message?: string, status?: number): void;
   sendLearningObject(learningObject);
   /**
    * Sends serialized LearningObject or array of serialized LearningObjects in response
