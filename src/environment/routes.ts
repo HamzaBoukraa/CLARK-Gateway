@@ -14,6 +14,8 @@ export const LEARNING_OBJECT_ROUTES = {
   DELETE_LEARNING_OBJECT(learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
   },
+  PUBLISH_LEARNING_OBJECT: `/learning-objects/publish`,
+  UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
   DELETE_MULTIPLE_LEARNING_OBJECTS(learningObjectNames: string[]) {
     return `/learning-objects/${encodeURIComponent(
       learningObjectNames.toString()
