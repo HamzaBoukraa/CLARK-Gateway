@@ -241,6 +241,15 @@ export default class ExpressRouteDriver {
         }
       })
     );
+    router.get(
+      '/validate-captcha',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          console.log(`/validate-captcha?${querystring.stringify(req.query)}`);
+          return `/validate-captcha?${querystring.stringify(req.query)}`;
+        }
+      })
+    );
 
     return router;
   }
