@@ -1,13 +1,9 @@
 import * as express from 'express';
 import { Router } from 'express';
-import * as multer from 'multer';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
-import { LearningObjectRepoFileInteractor } from '../../interactors/LearningObjectRepoFileInteractor';
-import { sentry } from '../../logging/sentry';
 import * as querystring from 'querystring';
-import * as TokenManager from '../TokenManager';
 import * as dotenv from 'dotenv';
 import { LEARNING_OBJECT_ROUTES } from '../../environment/routes';
 dotenv.config();
@@ -22,8 +18,6 @@ const LEARNING_OBJECT_SERVICE_URI =
  * @author Sean Donnelly
  */
 export default class ExpressRouteDriver {
-  private upload = multer({ storage: multer.memoryStorage() });
-
   /**
    * Produces a configured express router
    *
@@ -296,7 +290,6 @@ export default class ExpressRouteDriver {
           }
         })
       )
-      // FIXME: Deletion should delete files as well
       .delete(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
@@ -323,7 +316,6 @@ export default class ExpressRouteDriver {
         }
       })
     );
-    // FIXME: Deletion should delete files as well
     router.delete(
       '/multiple/:names',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -333,42 +325,17 @@ export default class ExpressRouteDriver {
         }
       })
     );
-    router.post(
-      '/:learningObjectName/files',
-      this.upload.any(),
-      async (req, res) => {
-        try {
-          let responder = this.getResponder(res);
-          let learningObjectFile = new LearningObjectRepoFileInteractor();
-          let user = await TokenManager.decode(req.cookies.presence);
-          await learningObjectFile.storeFiles(
-            this.dataStore,
-            responder,
-            req.body.learningObjectID,
-            req['files'],
-            user.username
-          );
-        } catch (e) {
-          sentry.logError(e);
+    // FILE DELETION
+    router.delete(
+      '/:learningObjectID/files/:filename',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          let id = req.params.learningObjectID;
+          let filename = req.params.filename;
+          return LEARNING_OBJECT_ROUTES.DELETE_FILE(id, filename);
         }
-      }
+      })
     );
-    router.delete('/:learningObjectID/files/:filename', async (req, res) => {
-      try {
-        let responder = this.getResponder(res);
-        let learningObjectFile = new LearningObjectRepoFileInteractor();
-        let user = await TokenManager.decode(req.cookies.presence);
-        await learningObjectFile.deleteFile(
-          this.dataStore,
-          responder,
-          req.params.learningObjectID,
-          req.params.filename,
-          user.username
-        );
-      } catch (e) {
-        sentry.logError(e);
-      }
-    });
     return router;
   }
 

@@ -24,6 +24,11 @@ export const LEARNING_OBJECT_ROUTES = {
   FETCH_LEARNING_OBJECTS: '/learning-objects',
   FETCH_USERS_LEARNING_OBJECTS(username: string) {
     return `/users/${username}/learning-objects`;
+  },
+
+  UPLOAD_MATERIALS: `/files`,
+  DELETE_FILE(id: string, filename: string) {
+    return `/files/${id}/${encodeURIComponent(filename)}`;
   }
 };
 
