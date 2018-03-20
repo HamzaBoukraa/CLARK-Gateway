@@ -8,10 +8,8 @@
     "build": "node_modules/.bin/gulp tsc",
     "gulp-tsc": "node_modules/.bin/gulp start",
     "lint": "node_modules/.bin/tslint --project ./src/**",
-    "pack":
-      "npm run build && cp ./package.json ./dist  && cp -r ./.ebextensions ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
-    "deploy":
-      "eb deploy CLARK-Gateway-Production --profile clark --label $(node -p \"require('./package.json').version\")",
+    "pack": "npm run build && cp ./package.json ./dist  && cp -r ./.ebextensions ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
+    "deploy": "eb deploy CLARK-Gateway-Production --profile clark --label $(node -p \"require('./package.json').version\")",
     "document": "node_modules/.bin/typedoc --out ./docs/ ./src/"
   },
   "author": "",
@@ -34,7 +32,7 @@
     "typescript": "^2.3.4"
   },
   "dependencies": {
-    "@cyber4all/clark-entity": "^2.1.0-beta.0.1",
+    "@cyber4all/clark-entity": "^2.1.0-beta.0.2",
     "@cyber4all/clark-taxonomy": "^2.0.0",
     "aws-sdk": "^2.147.0",
     "body-parser": "^1.17.1",
@@ -51,7 +49,9 @@
     "ngx-cookie": "^2.0.1",
     "raven": "^2.3.0"
   },
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "prettier": {
     "singleQuote": true
   }
