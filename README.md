@@ -49,4 +49,4 @@ Response | []() | []()
 #### On Error
 status | body | statusText
 ---|---|---
-`400` | `{ message: 'Invalid username or password' }` | `Bad Request`
+`400` | `'Invalid username or password'` | `Bad Request`
