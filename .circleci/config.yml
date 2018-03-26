@@ -21,7 +21,10 @@ jobs:
             - ./node_modules
       - run:
           name: Build Application
-          command: yarn ng build --prod --aot=false && ls
+          command: npm run build
+      - run:
+          name: Check Directory
+          command: ls
       - persist_to_workspace: 
           root: dist
           paths: ./
@@ -31,6 +34,7 @@ jobs:
       - attach_workspace : 
           at: ~/CLARK-Gateway/dist
       - run: echo 'We need tests'
+      - run: ls
   deploy:
     <<: *defaults
     docker:
