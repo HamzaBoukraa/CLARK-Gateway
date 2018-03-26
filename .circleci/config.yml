@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: circleci/node:8.10.0
+    - image: cyber4all/circleci-aws:latest
 
 version: 2
 jobs:
@@ -39,8 +39,6 @@ jobs:
           command: ls
   deploy:
     <<: *defaults
-    docker:
-      - image: 'wilson208/circleci-awscli'
     steps:
       - attach_workspace : 
           at: ~/CLARK-Gateway
