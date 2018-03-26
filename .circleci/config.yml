@@ -51,7 +51,7 @@ jobs:
           command: npm run zip
       - run:
           name: Deploy to Elastic Beanstalk 
-          command: eb deploy CLARK-Gateway-Production --verbose --label CLARK-Gateway-v$(node -p "require('./package.json').version")
+          command: eb deploy CLARK-Gateway-Production --verbose
 workflows:
   version: 2
   build-and-test:
