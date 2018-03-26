@@ -1,6 +1,6 @@
 {
   "name": "clark-gateway",
-  "version": "1.0.0-beta.2.2",
+  "version": "1.0.0-beta.2.3",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -8,10 +8,8 @@
     "build": "node_modules/.bin/gulp tsc",
     "gulp-tsc": "node_modules/.bin/gulp start",
     "lint": "node_modules/.bin/tslint --project ./src/**",
-    "pack":
-      "npm run build && cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
-    "deploy":
-      "eb deploy CLARK-Gateway-Production --profile clark --label $(node -p \"require('./package.json').version\")",
+    "pack": "npm run build && cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
+    "deploy": "eb deploy CLARK-Gateway-Production --profile clark --label $(node -p \"require('./package.json').version\")",
     "document": "node_modules/.bin/typedoc --out ./docs/ ./src/"
   },
   "author": "",
@@ -52,7 +50,9 @@
     "raven": "^2.3.0",
     "serverless-http": "^1.5.3"
   },
-  "pre-commit": ["lint"],
+  "pre-commit": [
+    "lint"
+  ],
   "prettier": {
     "singleQuote": true
   }
