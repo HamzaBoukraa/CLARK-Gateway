@@ -78,9 +78,15 @@ export default class ExpressRouteDriver {
     );
 
     router.get('/status', async (req, res) => {
-      request(APP_STATUS, function (error, response, body) {
-        res.send(body);
-      });
+      try {
+        request(APP_STATUS, function(error, response, body) {
+          res.send(body);
+        });
+      } catch (e) {
+        this.getResponder(res).sendOperationError(
+          `Problem checking status. Error: ${e}.`
+        );
+      }
     });
   }
 
