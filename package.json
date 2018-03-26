@@ -11,7 +11,7 @@
     "pack":
       "npm run build && cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
     "deploy":
-      "eb deploy CLARK-Gateway-Production --profile clark --label CLARK-Gateway $(node -p \"require('./package.json').version\")",
+      "eb deploy CLARK-Gateway-Production --profile clark --label CLARK-Gateway-v$(node -p \"require('./package.json').version\")",
     "document": "node_modules/.bin/typedoc --out ./docs/ ./src/"
   },
   "author": "",
