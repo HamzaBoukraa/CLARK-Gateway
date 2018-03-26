@@ -9,16 +9,9 @@ jobs:
     <<: *defaults
     steps:
       - checkout
-      - restore_cache:
-          key: 'dependency-cache-{{ checksum "package.json" }}'
       - run:
           name: Install Dependencies
           command: npm install
-      - save_cache:
-          key: 'dependency-cache-{{ checksum "package.json" }}'
-          paths:
-            - ~/.cache/npm
-            - ./node_modules
       - run:
           name: Build Application
           command: npm run build
@@ -34,9 +27,6 @@ jobs:
       - attach_workspace : 
           at: ~/CLARK-Gateway
       - run: echo 'We need tests'
-      - run:
-          name: Check Directory
-          command: ls
   deploy:
     <<: *defaults
     steps:
