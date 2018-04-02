@@ -88,6 +88,9 @@ export default class ExpressRouteDriver {
         );
       }
     });
+
+    router.post('/learning-objects/:username/:learningObjectName/children', proxy(LEARNING_OBJECT_SERVICE_URI));
+    router.delete('/learning-objects/:username/:learningObjectName/children', proxy(LEARNING_OBJECT_SERVICE_URI));
   }
 
   /**
