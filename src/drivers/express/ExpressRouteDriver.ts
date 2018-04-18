@@ -7,6 +7,7 @@ import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
 import { LEARNING_OBJECT_ROUTES } from '../../environment/routes';
 import * as request from 'request';
+import { SocketInteractor } from '../../interactors/SocketInteractor';
 
 dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
@@ -135,6 +136,14 @@ export default class ExpressRouteDriver {
         }
       })
     );
+
+    // refresh token
+    router.get('/tokens/refresh', proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return '/users/tokens/refresh';
+        },
+      }),
+    );
     // Remove account
     router.route('/:username').delete(
       proxy(USERS_API, {
@@ -166,10 +175,23 @@ export default class ExpressRouteDriver {
     router.route('/ota-codes').all(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          console.log(`/users/ota-codes?${querystring.stringify(req.query)}`);
           return `/users/ota-codes?${querystring.stringify(req.query)}`;
-        }
-      })
+        },
+        userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
+          try {
+            let data = JSON.parse(proxyResData.toString('utf8'));
+            if (data.username) {
+              SocketInteractor.init().sendMessage(data.username, 'VERIFIED_EMAIL');
+              userRes.redirect('http://clark.center');
+              return '';
+            } else {
+              return proxyResData;
+            }
+          } catch (e) {
+            return proxyResData;
+          }
+        },
+      }),
     );
     router
       .route('/:username/cart')
