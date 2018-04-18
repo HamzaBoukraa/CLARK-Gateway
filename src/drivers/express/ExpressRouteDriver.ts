@@ -64,7 +64,7 @@ export default class ExpressRouteDriver {
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/collections/${encodeURIComponent(
-            req.params.name,
+            req.params.name
           )}/learning-objects`;
         },
       }),
@@ -182,7 +182,7 @@ export default class ExpressRouteDriver {
             let data = JSON.parse(proxyResData.toString('utf8'));
             if (data.username) {
               SocketInteractor.init().sendMessage(data.username, 'VERIFIED_EMAIL');
-              proxyRes.redirect('http://clark.center');
+              userRes.redirect('http://clark.center');
               return '';
             } else {
               return proxyResData;
