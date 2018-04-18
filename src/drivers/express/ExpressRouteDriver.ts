@@ -5,7 +5,10 @@ import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
-import { LEARNING_OBJECT_ROUTES } from '../../environment/routes';
+import {
+  LEARNING_OBJECT_ROUTES,
+  BUSINESS_CARD_ROUTES,
+} from '../../environment/routes';
 import * as request from 'request';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
 
@@ -14,6 +17,8 @@ const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
 const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
+const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
+
 const APP_STATUS = process.env.APP_STATUS_URI;
 
 /**
@@ -64,7 +69,7 @@ export default class ExpressRouteDriver {
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/collections/${encodeURIComponent(
-            req.params.name
+            req.params.name,
           )}/learning-objects`;
         },
       }),
@@ -90,8 +95,14 @@ export default class ExpressRouteDriver {
       }
     });
 
-    router.post('/learning-objects/:username/:learningObjectName/children', proxy(LEARNING_OBJECT_SERVICE_URI));
-    router.delete('/learning-objects/:username/:learningObjectName/children', proxy(LEARNING_OBJECT_SERVICE_URI));
+    router.post(
+      '/learning-objects/:username/:learningObjectName/children',
+      proxy(LEARNING_OBJECT_SERVICE_URI),
+    );
+    router.delete(
+      '/learning-objects/:username/:learningObjectName/children',
+      proxy(LEARNING_OBJECT_SERVICE_URI),
+    );
   }
 
   /**
@@ -138,7 +149,9 @@ export default class ExpressRouteDriver {
     );
 
     // refresh token
-    router.get('/tokens/refresh', proxy(USERS_API, {
+    router.get(
+      '/tokens/refresh',
+      proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return '/users/tokens/refresh';
         },
@@ -181,7 +194,10 @@ export default class ExpressRouteDriver {
           try {
             let data = JSON.parse(proxyResData.toString('utf8'));
             if (data.username) {
-              SocketInteractor.init().sendMessage(data.username, 'VERIFIED_EMAIL');
+              SocketInteractor.init().sendMessage(
+                data.username,
+                'VERIFIED_EMAIL',
+              );
               userRes.redirect('http://clark.center');
               return '';
             } else {
@@ -283,6 +299,21 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    // BUSINESS CARDS
+    router.get(
+      '/:username/cards',
+      proxy(BUSINESS_CARD_API, {
+        proxyReqPathResolver: req => {
+          const username = req.params.username;
+          return BUSINESS_CARD_ROUTES.CARD(username, req.query);
+        },
+      }),
+    );
+
+    router.get('/:username/cardss', (req, res) => {
+      res.send('hellooo');
+    });
 
     return router;
   }
