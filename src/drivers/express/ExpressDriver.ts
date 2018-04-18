@@ -62,7 +62,7 @@ export class ExpressDriver {
      */
     const server = http.createServer(this.app);
 
-    let io = socketio(server);
+    let io = socketio(server, {'pingInterval': 2000, 'pingTimeout': 5000});
     let socketInteractor = SocketInteractor.init(io);
 
     io.on('connect', socket => {
@@ -74,6 +74,7 @@ export class ExpressDriver {
       });
 
       socket.on('disconnect', (reason) => {
+        console.log('Unexpected disconnect! Reason: ', reason);
         socketInteractor.disconnectClient(socket.conn.id);
       });
     });
