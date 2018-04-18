@@ -69,7 +69,6 @@ export class ExpressDriver {
       socketInteractor.connectUser(socket.request._query.user, socket.conn.id);
 
       socket.on('close', () => {
-        console.log('emitted');
         socket.disconnect(true);
         socketInteractor.disconnectClient(socket.conn.id);
       });

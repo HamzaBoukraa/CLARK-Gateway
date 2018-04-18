@@ -175,16 +175,12 @@ export default class ExpressRouteDriver {
     router.route('/ota-codes').all(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          console.log('first this is called');
           return `/users/ota-codes?${querystring.stringify(req.query)}`;
         },
         userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
-          console.log('this is called');
-
           try {
             let data = JSON.parse(proxyResData.toString('utf8'));
             if (data.username) {
-              console.log('emitting');
               SocketInteractor.init().sendMessage(data.username, 'VERIFIED_EMAIL');
               userRes.redirect('http://clark.center');
               return '';
