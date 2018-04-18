@@ -1,14 +1,15 @@
+import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
   CREATE_UPDATE_LEARNING_OBJECT: '/learning-objects',
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${username}/${encodeURIComponent(
-      learningObjectName
+      learningObjectName,
     )}`;
   },
   LOAD_LEARNING_OBJECT_SUMARY: '/learning-objects/summary',
   FIND_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${username}/${encodeURIComponent(
-      learningObjectName
+      learningObjectName,
     )}/id`;
   },
   DELETE_LEARNING_OBJECT(learningObjectName: string) {
@@ -18,7 +19,7 @@ export const LEARNING_OBJECT_ROUTES = {
   UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
   DELETE_MULTIPLE_LEARNING_OBJECTS(learningObjectNames: string[]) {
     return `/learning-objects/${encodeURIComponent(
-      learningObjectNames.toString()
+      learningObjectNames.toString(),
     )}/multiple`;
   },
   FETCH_LEARNING_OBJECTS: '/learning-objects',
@@ -29,7 +30,12 @@ export const LEARNING_OBJECT_ROUTES = {
   UPLOAD_MATERIALS: `/files`,
   DELETE_FILE(id: string, filename: string) {
     return `/files/${id}/${encodeURIComponent(filename)}`;
-  }
+  },
+  FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
 };
 
-export const FETCH_MULTIPLE_LEARNING_OBJECTS = '/learning-objects/multiple';
+export const BUSINESS_CARD_ROUTES = {
+  CARD(username: string, query: any) {
+    return `/users/${username}/cards?${querystring.stringify(query)}`;
+  },
+};
