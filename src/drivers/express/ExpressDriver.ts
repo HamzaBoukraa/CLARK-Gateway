@@ -10,12 +10,16 @@ import { DataStore } from '../../interfaces/DataStore';
 import { ExpressRouteDriver } from '../drivers';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
+import * as socketio from 'socket.io';
+import { ConstructorOptions } from 'raven';
+import { SocketInteractor } from '../../interactors/SocketInteractor';
 
 /**
  * Handles serving the API through the express framework.
  */
 export class ExpressDriver {
   static app = express();
+  static connectedClients = new Map<string, string>();
 
   static start(dataStore: DataStore) {
     // Configure Helmet Security
@@ -43,6 +47,7 @@ export class ExpressDriver {
         res.status(401).send('Invalid Access Token');
       }
     });
+
     // Set our api routes
     this.app.use('/', ExpressRouteDriver.buildRouter(dataStore));
     this.linkClient();
@@ -57,11 +62,28 @@ export class ExpressDriver {
      */
     const server = http.createServer(this.app);
 
+    let io = socketio(server, {'pingInterval': 2000, 'pingTimeout': 5000});
+    let socketInteractor = SocketInteractor.init(io);
+
+    io.on('connect', socket => {
+      socketInteractor.connectUser(socket.request._query.user, socket.conn.id);
+
+      socket.on('close', () => {
+        socket.disconnect(true);
+        socketInteractor.disconnectClient(socket.conn.id);
+      });
+
+      socket.on('disconnect', (reason) => {
+        console.log('Unexpected disconnect! Reason: ', reason);
+        socketInteractor.disconnectClient(socket.conn.id);
+      });
+    });
+
     /**
      * Listen on provided port, on all network interfaces.
      */
     server.listen(port, () =>
-      console.log(`CLARK Gateway API running on localhost:${port}`)
+      console.log(`CLARK Gateway API running on localhost:${port}`),
     );
 
     return this.app;
