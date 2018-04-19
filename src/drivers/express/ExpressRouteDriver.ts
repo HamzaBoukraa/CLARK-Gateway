@@ -75,6 +75,14 @@ export default class ExpressRouteDriver {
       }),
     );
     router.get(
+      '/users/identifiers/active',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/identifiers/active?${querystring.stringify(req.query)}`;
+        }
+      })
+    );
+    router.get(
       '/count/:author',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
