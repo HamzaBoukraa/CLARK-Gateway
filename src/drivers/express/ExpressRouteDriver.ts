@@ -319,10 +319,6 @@ export default class ExpressRouteDriver {
       }),
     );
 
-    router.get('/:username/cardss', (req, res) => {
-      res.send('hellooo');
-    });
-
     return router;
   }
 
