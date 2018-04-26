@@ -10,7 +10,7 @@ export const enforceTokenAccess = jwt({
   issuer: process.env.ISSUER,
   getToken: req => {
     return req.cookies.presence;
-  }
+  },
 }).unless({
   // Routes that don't require authorization
   path: [
@@ -20,7 +20,7 @@ export const enforceTokenAccess = jwt({
     '/users/identifiers/active',
     '/users/tokens',
     '/users/search',
-    /\/users\/[A-Z,a-z,0-9,_]+\/tokens/i,
+    /\/users\/[0-z,.,-]+\/tokens/i,
     /\/learning-object/i,
     { url: '/users', methods: ['POST'] },
     '/users/ota-codes',
