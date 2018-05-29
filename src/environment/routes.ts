@@ -14,7 +14,7 @@ export const LEARNING_OBJECT_ROUTES = {
   PUBLISH_LEARNING_OBJECT: `/learning-objects/publish`,
   UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
   DELETE_MULTIPLE_LEARNING_OBJECTS(learningObjectNames: string[]) {
-    return `/learning-objects/${learningObjectNames}/multiple`;
+    return `/learning-objects/${learningObjectNames.toString()}/multiple`;
   },
   FETCH_LEARNING_OBJECTS: '/learning-objects',
   FETCH_USERS_LEARNING_OBJECTS(username: string) {
