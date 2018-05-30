@@ -68,7 +68,9 @@ export default class ExpressRouteDriver {
       '/collections/:name/learning-objects',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/collections/${req.params.name}/learning-objects`;
+          return `/collections/${encodeURIComponent(
+            req.params.name,
+          )}/learning-objects`;
         },
       }),
     );
@@ -77,14 +79,14 @@ export default class ExpressRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/identifiers/active?${querystring.stringify(req.query)}`;
-        },
-      }),
+        }
+      })
     );
     router.get(
       '/count/:author',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
-          return `/count/${req.params.author}`;
+          return `/count/${encodeURIComponent(req.params.author)}`;
         },
       }),
     );
@@ -167,7 +169,7 @@ export default class ExpressRouteDriver {
     router.route('/:username').delete(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return `/users/${req.params.username}`;
+          return `/users/${encodeURIComponent(req.params.username)}`;
         },
       }),
     );
@@ -187,7 +189,7 @@ export default class ExpressRouteDriver {
       '/:username/tokens',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return `/users/${req.params.username}/tokens`;
+          return `/users/${encodeURIComponent(req.params.username)}/tokens`;
         },
       }),
     );
@@ -222,8 +224,10 @@ export default class ExpressRouteDriver {
           // get cart
           proxyReqPathResolver: req => {
             return req.query.download
-              ? `/users/${req.params.username}/cart?download=true`
-              : `/users/${req.params.username}/cart`;
+              ? `/users/${encodeURIComponent(
+                  req.params.username,
+                )}/cart?download=true`
+              : `/users/${encodeURIComponent(req.params.username)}/cart`;
           },
         }),
       )
@@ -231,7 +235,7 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // clear cart
           proxyReqPathResolver: req => {
-            return `/users/${req.params.username}/cart`;
+            return `/users/${encodeURIComponent(req.params.username)}/cart`;
           },
         }),
       );
@@ -241,7 +245,11 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // download single object
           proxyReqPathResolver: req => {
-            return `/api/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+            return `/api/users/${encodeURIComponent(
+              req.params.username,
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}`;
           },
         }),
       )
@@ -249,7 +257,11 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // add learning object to cart
           proxyReqPathResolver: req => {
-            return `/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+            return `/users/${encodeURIComponent(
+              req.params.username,
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}`;
           },
         }),
       )
@@ -257,7 +269,11 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           // remove learning object from cart
           proxyReqPathResolver: req => {
-            return `/users/${req.params.username}/cart/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+            return `/users/${encodeURIComponent(
+              req.params.username,
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}`;
           },
         }),
       );
@@ -266,7 +282,11 @@ export default class ExpressRouteDriver {
       .post(
         proxy(CART_API, {
           proxyReqPathResolver: req => {
-            return `/users/${req.params.username}/library/learning-objects/${req.params.author}/${req.params.learningObjectName}`;
+            return `/users/${encodeURIComponent(
+              req.params.username,
+            )}/library/learning-objects/${
+              req.params.author
+            }/${encodeURIComponent(req.params.learningObjectName)}`;
           },
         }),
       );
