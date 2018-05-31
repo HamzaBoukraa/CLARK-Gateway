@@ -83,6 +83,14 @@ export default class ExpressRouteDriver {
       })
     );
     router.get(
+      '/users/password',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/password?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+    router.get(
       '/count/:author',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
