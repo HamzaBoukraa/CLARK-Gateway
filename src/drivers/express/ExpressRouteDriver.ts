@@ -80,6 +80,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.post(
+      '/users/password',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/password`;
+        },
+      }),
+    );
     router.get(
       '/count/:author',
       proxy(CART_API, {
