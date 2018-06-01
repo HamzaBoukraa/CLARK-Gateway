@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 import {
   ADMIN_LEARNING_OBJECT_ROUTES,
   ADMIN_USER_ROUTES,
+  ADMIN_MAILER_ROUTES,
 } from '../../environment/routes';
 
 dotenv.config();
@@ -156,6 +157,15 @@ export default class ExpressAdminRouteDriver {
             username,
             learningObjectIDs,
           );
+        },
+      }),
+    );
+    router.post(
+      '/mail',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          const route = ADMIN_MAILER_ROUTES.SEND_BASIC_EMAIL;
+          return route;
         },
       }),
     );

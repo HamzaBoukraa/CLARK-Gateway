@@ -87,3 +87,7 @@ export const ADMIN_USER_ROUTES = {
     return `/admin/users/${id}`;
   },
 };
+
+export const ADMIN_MAILER_ROUTES = {
+  SEND_BASIC_EMAIL: `/admin/mail`,
+};
