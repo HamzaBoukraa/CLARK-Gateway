@@ -45,26 +45,45 @@ export const BUSINESS_CARD_ROUTES = {
 export const ADMIN_LEARNING_OBJECT_ROUTES = {
   FETCH_LEARNING_OBJECTS: `/admin/learning-objects`,
   FETCH_LEARNING_OBJECTS_WITH_FILTER(query) {
-    return `/admin/learning-objects?${query}`;
+    return `/admin/learning-objects?${querystring.stringify(query)}`;
   },
-  PUBLISH_LEARNING_OBJECT(username, learningObjecID) {
+  PUBLISH_LEARNING_OBJECT(username, learningObjectName) {
     return `/admin/users/${encodeURIComponent(
       username,
-    )}/learning-objects/${learningObjecID}/publish`;
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/publish`;
   },
-  UNPUBLISH_LEARNING_OBJECT(username, learningObjecID) {
+  UNPUBLISH_LEARNING_OBJECT(username, learningObjectName) {
     return `/admin/users/${encodeURIComponent(
       username,
-    )}/learning-objects/${learningObjecID}/unpublish`;
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/unpublish`;
   },
-  DELETE_LEARNING_OBJECT(username, learningObjecID) {
+  LOCK_LEARNING_OBJECT(username, learningObjectName) {
     return `/admin/users/${encodeURIComponent(
       username,
-    )}/learning-objects/${learningObjecID}`;
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/lock`;
+  },
+  UNLOCK_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/unlock`;
+  },
+  DELETE_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}`;
   },
   DELETE_MULTIPLE_LEARNING_OBJECTS(username, learningObjectIDs) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/multiple/${learningObjectIDs}`;
+  },
+};
+
+export const ADMIN_USER_ROUTES = {
+  FETCH_USERS_WITH_FILTER(query) {
+    return `/admin/users?${querystring.stringify(query)}`;
+  },
+  DELETE_USER(id: string) {
+    return `/admin/users/${id}`;
   },
 };

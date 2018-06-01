@@ -4,7 +4,10 @@ import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
-import { ADMIN_LEARNING_OBJECT_ROUTES } from '../../environment/routes';
+import {
+  ADMIN_LEARNING_OBJECT_ROUTES,
+  ADMIN_USER_ROUTES,
+} from '../../environment/routes';
 
 dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
@@ -60,6 +63,24 @@ export default class ExpressAdminRouteDriver {
         },
       }),
     );
+    router.get(
+      '/users',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          const route = ADMIN_USER_ROUTES.FETCH_USERS_WITH_FILTER(req.query);
+          return route;
+        },
+      }),
+    );
+    router.delete(
+      '/users/:id',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          const route = ADMIN_USER_ROUTES.DELETE_USER(req.params.id);
+          return route;
+        },
+      }),
+    );
     router.patch(
       '/users/:username/learning-objects/:learningObjectName/publish',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -86,8 +107,34 @@ export default class ExpressAdminRouteDriver {
         },
       }),
     );
+    router.patch(
+      '/users/:username/learning-objects/:learningObjectName/lock',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const username = req.params.username;
+          const learningObjectName = req.params.learningObjectName;
+          return ADMIN_LEARNING_OBJECT_ROUTES.LOCK_LEARNING_OBJECT(
+            username,
+            learningObjectName,
+          );
+        },
+      }),
+    );
+    router.patch(
+      '/users/:username/learning-objects/:learningObjectName/unlock',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const username = req.params.username;
+          const learningObjectName = req.params.learningObjectName;
+          return ADMIN_LEARNING_OBJECT_ROUTES.UNLOCK_LEARNING_OBJECT(
+            username,
+            learningObjectName,
+          );
+        },
+      }),
+    );
     router.delete(
-      '/users/:username/learning-objects/:learningObjectName/publish',
+      '/users/:username/learning-objects/:learningObjectName',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           const username = req.params.username;
