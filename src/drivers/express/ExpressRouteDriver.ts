@@ -79,14 +79,22 @@ export default class ExpressRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/identifiers/active?${querystring.stringify(req.query)}`;
-        }
-      })
+        },
+      }),
     );
     router.get(
       '/users/password',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/password?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+    router.get(
+      '/users/update',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/update?${querystring.stringify(req.query)}`;
         },
       }),
     );
