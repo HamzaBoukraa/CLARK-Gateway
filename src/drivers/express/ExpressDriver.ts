@@ -7,12 +7,13 @@ import * as http from 'http';
 import { enforceTokenAccess } from '../../middleware/jwt.config';
 import { sentry } from '../../logging/sentry';
 import { DataStore } from '../../interfaces/DataStore';
-import { ExpressRouteDriver } from '../drivers';
+import { ExpressRouteDriver, ExpressAdminRouteDriver } from '../drivers';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as socketio from 'socket.io';
 import { ConstructorOptions } from 'raven';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
+import { enforceAdminAccess } from '../../middleware/admin-acess';
 
 /**
  * Handles serving the API through the express framework.
@@ -50,7 +51,11 @@ export class ExpressDriver {
 
     // Set our api routes
     this.app.use('/', ExpressRouteDriver.buildRouter(dataStore));
-    this.linkClient();
+
+    // SET MIDDLEWARE
+    this.app.use(enforceAdminAccess);
+    this.app.use('/admin', ExpressAdminRouteDriver.buildRouter());
+
     /**
      * Get port from environment and store in Express.
      */
@@ -62,7 +67,7 @@ export class ExpressDriver {
      */
     const server = http.createServer(this.app);
 
-    let io = socketio(server, {'pingInterval': 2000, 'pingTimeout': 5000});
+    let io = socketio(server, { pingInterval: 2000, pingTimeout: 5000 });
     let socketInteractor = SocketInteractor.init(io);
 
     io.on('connect', socket => {
@@ -73,7 +78,7 @@ export class ExpressDriver {
         socketInteractor.disconnectClient(socket.conn.id);
       });
 
-      socket.on('disconnect', (reason) => {
+      socket.on('disconnect', reason => {
         console.log('Unexpected disconnect! Reason: ', reason);
         socketInteractor.disconnectClient(socket.conn.id);
       });
@@ -87,15 +92,5 @@ export class ExpressDriver {
     );
 
     return this.app;
-  }
-
-  static linkClient() {
-    // Point static path to dist
-    this.app.use(express.static(path.join(__dirname, '../client')));
-
-    // Catch all other routes and return the index file
-    this.app.get('*', (req, res) => {
-      res.sendFile(path.join(__dirname, '../client/index.html'));
-    });
   }
 }
