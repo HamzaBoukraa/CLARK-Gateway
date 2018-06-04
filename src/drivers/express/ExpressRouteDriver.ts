@@ -78,7 +78,9 @@ export default class ExpressRouteDriver {
       '/users/identifiers/active',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return `/users/identifiers/active?${querystring.stringify(req.query)}`;
+          return `/users/identifiers/active?${querystring.stringify(
+            req.query,
+          )}`;
         },
       }),
     );
@@ -162,6 +164,13 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+    router.route('/:username').get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${req.params.username}`;
+        },
+      }),
+    );
     // Login
     router.post(
       '/tokens',
