@@ -13,6 +13,7 @@ import * as cookieParser from 'cookie-parser';
 import * as socketio from 'socket.io';
 import { ConstructorOptions } from 'raven';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
+import { enforceAdminAccess } from '../../middleware/admin-acess';
 
 /**
  * Handles serving the API through the express framework.
@@ -52,6 +53,7 @@ export class ExpressDriver {
     this.app.use('/', ExpressRouteDriver.buildRouter(dataStore));
 
     // SET MIDDLEWARE
+    this.app.use(enforceAdminAccess);
     this.app.use('/admin', ExpressAdminRouteDriver.buildRouter());
 
     /**
