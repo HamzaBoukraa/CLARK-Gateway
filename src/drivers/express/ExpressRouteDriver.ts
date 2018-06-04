@@ -164,19 +164,20 @@ export default class ExpressRouteDriver {
           },
         }),
       );
-    router.route('/:username').get(
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return `/users/${req.params.username}`;
-        },
-      }),
-    );
     // Login
     router.post(
       '/tokens',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return '/users/tokens';
+        },
+      }),
+    );
+
+    router.route('/:username').get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${req.params.username}`;
         },
       }),
     );
