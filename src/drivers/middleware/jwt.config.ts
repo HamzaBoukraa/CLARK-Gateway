@@ -1,5 +1,6 @@
 import * as jwt from 'express-jwt';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 /**
  * Configuration for JWT middleware.
  *
@@ -15,6 +16,7 @@ export const enforceTokenAccess = jwt({
   // Routes that don't require authorization
   path: [
     '/',
+    { url: /\/users\/[0-z,.,-]+/i, methods: ['GET'] },
     '/users/ota-codes',
     '/users/validate-captcha',
     '/users/identifiers/active',
@@ -28,5 +30,5 @@ export const enforceTokenAccess = jwt({
     '/status',
     /\/users\/[0-z,.,-]+\/cards/i,
   ],
-}); // register // all ota-code routes do their own verifcation outsides of JWT // login
+}); // register // all ota-code routes do their own verification outsides of JWT // login
 // TODO: Whitelist user routes
