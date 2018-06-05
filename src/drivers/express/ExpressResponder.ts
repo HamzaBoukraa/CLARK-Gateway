@@ -1,6 +1,5 @@
 import { Responder } from '../../interfaces/interfaces';
 import { Response } from 'express';
-import { sentry } from '../../logging/sentry';
 
 export class ExpressResponder implements Responder {
   constructor(public res: Response) {}
@@ -22,9 +21,8 @@ export class ExpressResponder implements Responder {
   }
   sendOperationError(
     message = 'There was an error processing your request.',
-    status = 400
+    status = 400,
   ) {
-    sentry.logError(message, status);
     this.res.status(status).send(message);
   }
   invalidLogin() {
