@@ -1,17 +1,13 @@
 import { Client, ConstructorOptions } from 'raven';
-import { SENTRY_URI } from './../config/config';
 import * as dotenv from 'dotenv';
-//import * as fs from 'fs';
+
+dotenv.config();
+
 /**
  * Singleton class for Sentry Error Logging
  *
  * @author Tyler Howard
  */
-dotenv.config();
-// const envConfig = dotenv.parse(fs.readFileSync('.env'))
-// for (var k in envConfig) {
-//     process.env[k] = envConfig[k]
-// }
 class Sentry {
     config: ConstructorOptions = {};
     client: Client;
@@ -19,20 +15,15 @@ class Sentry {
         this.isProduction() ? this.configure() : this.client = new Client('', this.config);
     }
     isProduction(): boolean {
-        console.log(process.env.NODE_ENV);
-        if (process.env.NODE_ENV === 'production') {
-            return true;
-        } else {
-            return false;
-        }
+        return process.env.NODE_ENV === 'production';
     }
     configure() {
-        this.client = new Client(SENTRY_URI, this.config);
+        this.client = new Client(process.env.SENTRY_URI, this.config);
         this.client.install();
     }
     logError(error, status?) {
         status ? error = 'Return Code: ' + status + ' (' + error + ')' : error = 'Message: ' + error;
-        console.log('Error: ' + error);
+        console.log(`Error at ${Date.now()}`, error);
         this.client.captureException(error);
     }
     logErrorWrapper(func) {
@@ -41,4 +32,4 @@ class Sentry {
         });
     }
 }
-export let sentry = new Sentry();
+export const sentry = new Sentry();
