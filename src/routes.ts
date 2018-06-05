@@ -2,11 +2,15 @@ import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
   CREATE_UPDATE_LEARNING_OBJECT: '/learning-objects',
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
-    return `/learning-objects/${username}/${encodeURIComponent(learningObjectName)}`;
+    return `/learning-objects/${encodeURIComponent(
+      username,
+    )}/${encodeURIComponent(learningObjectName)}`;
   },
   LOAD_LEARNING_OBJECT_SUMARY: '/learning-objects/summary',
   FIND_LEARNING_OBJECT(username: string, learningObjectName: string) {
-    return `/learning-objects/${username}/${encodeURIComponent(learningObjectName)}/id`;
+    return `/learning-objects/${encodeURIComponent(
+      username,
+    )}/${encodeURIComponent(learningObjectName)}/id`;
   },
   DELETE_LEARNING_OBJECT(learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
@@ -30,6 +34,58 @@ export const LEARNING_OBJECT_ROUTES = {
 
 export const BUSINESS_CARD_ROUTES = {
   CARD(username: string, query: any) {
-    return `/users/${encodeURIComponent(username)}/cards?${querystring.stringify(query)}`;
+    return `/users/${encodeURIComponent(
+      username,
+    )}/cards?${querystring.stringify(query)}`;
   },
+};
+
+export const ADMIN_LEARNING_OBJECT_ROUTES = {
+  FETCH_LEARNING_OBJECTS: `/admin/learning-objects`,
+  FETCH_LEARNING_OBJECTS_WITH_FILTER(query) {
+    return `/admin/learning-objects?${querystring.stringify(query)}`;
+  },
+  PUBLISH_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/publish`;
+  },
+  UNPUBLISH_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/unpublish`;
+  },
+  LOCK_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/lock`;
+  },
+  UNLOCK_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}/unlock`;
+  },
+  DELETE_LEARNING_OBJECT(username, learningObjectName) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectName)}`;
+  },
+  DELETE_MULTIPLE_LEARNING_OBJECTS(username, learningObjectIDs) {
+    return `/admin/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/multiple/${learningObjectIDs}`;
+  },
+};
+
+export const ADMIN_USER_ROUTES = {
+  FETCH_USERS_WITH_FILTER(query) {
+    return `/admin/users?${querystring.stringify(query)}`;
+  },
+  DELETE_USER(id: string) {
+    return `/admin/users/${id}`;
+  },
+};
+
+export const ADMIN_MAILER_ROUTES = {
+  SEND_BASIC_EMAIL: `/admin/mail`,
 };
