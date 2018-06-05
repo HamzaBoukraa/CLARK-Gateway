@@ -8,7 +8,14 @@ const JSON_FILES = ['src/*.json', 'src/**/*.json'];
 const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('tsc', () => {
-  const tsResult = tsProject.src().pipe(tsProject());
+  let failed = false;
+
+  const tsResult = tsProject.src()
+    .pipe(tsProject())
+    .once("error", function () {
+      this.once("finish", () => process.exit(1));
+    });
+
   return tsResult.js.pipe(gulp.dest('dist'));
 });
 
