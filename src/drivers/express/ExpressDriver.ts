@@ -1,18 +1,21 @@
 import * as express from 'express';
-import * as path from 'path';
 import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 import * as http from 'http';
 import { enforceTokenAccess } from '../middleware/jwt.config';
-import { sentry } from '../middleware/logging/sentry';
 import { DataStore } from '../../interfaces/DataStore';
 import { ExpressRouteDriver, ExpressAdminRouteDriver } from '../drivers';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as socketio from 'socket.io';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
-import { enforceAdminAccess } from '../../middleware/admin-acess';
+import { enforceAdminAccess } from '../middleware/admin-acess';
+import { config, errorHandler, requestHandler } from 'raven';
+import * as dotenv from 'dotenv';
+
+
+dotenv.config();
 
 /**
  * Handles serving the API through the express framework.
@@ -22,12 +25,20 @@ export class ExpressDriver {
   static connectedClients = new Map<string, string>();
 
   static start(dataStore: DataStore) {
-    // Configure Helmet Security
-    helmetConfig.setup(this.app);
+
+    if (process.env.NODE_ENV === 'production') {
+      // Configure error handler - MUST BE THE FIRST ERROR HANDLER IN CALL ORDER
+      config(process.env.SENTRY_URI).install();
+      this.app.use(errorHandler());
+
+      // Configure Sentry Route Handler - MUST BE FIRST ROUTE HANDLER
+      this.app.use(requestHandler());
+
+      // Configure Helmet Security
+      helmetConfig.setup(this.app);
+    }
 
     // Configure app to log requests
-    this.app.use(sentry.client.requestHandler());
-    this.app.use(sentry.client.errorHandler());
     this.app.use(logger('dev'));
 
     // configure app to use bodyParser()
@@ -50,7 +61,7 @@ export class ExpressDriver {
     // Set our api routes
     this.app.use('/', ExpressRouteDriver.buildRouter(dataStore));
 
-    // SET MIDDLEWARE
+    // Set Admin Middleware
     this.app.use(enforceAdminAccess);
     this.app.use('/admin', ExpressAdminRouteDriver.buildRouter());
 
