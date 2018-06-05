@@ -8,7 +8,7 @@ import {
   ADMIN_LEARNING_OBJECT_ROUTES,
   ADMIN_USER_ROUTES,
   ADMIN_MAILER_ROUTES,
-} from '../../environment/routes';
+} from '../../routes';
 
 dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
