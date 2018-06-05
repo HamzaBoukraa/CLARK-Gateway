@@ -5,10 +5,7 @@ import { ExpressResponder } from '../drivers';
 import { DataStore } from '../../interfaces/interfaces';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
-import {
-  LEARNING_OBJECT_ROUTES,
-  BUSINESS_CARD_ROUTES,
-} from '../../environment/routes';
+import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
 import * as request from 'request';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
 
