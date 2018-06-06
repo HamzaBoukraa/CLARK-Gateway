@@ -18,7 +18,9 @@ export const LEARNING_OBJECT_ROUTES = {
   PUBLISH_LEARNING_OBJECT: `/learning-objects/publish`,
   UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
   DELETE_MULTIPLE_LEARNING_OBJECTS(learningObjectNames: string[]) {
-    return `/learning-objects/${encodeURIComponent(learningObjectNames.toString())}/multiple`;
+    return `/learning-objects/${encodeURIComponent(
+      learningObjectNames.toString(),
+    )}/multiple`;
   },
   FETCH_LEARNING_OBJECTS: '/learning-objects',
   FETCH_USERS_LEARNING_OBJECTS(username: string) {
@@ -88,4 +90,6 @@ export const ADMIN_USER_ROUTES = {
 
 export const ADMIN_MAILER_ROUTES = {
   SEND_BASIC_EMAIL: `/admin/mail`,
+  GET_AVAILABLE_TEMPLATES: `/admin/mail/templates`,
+  SEND_TEMPLATE_EMAIL: `/admin/mail/templates`,
 };
