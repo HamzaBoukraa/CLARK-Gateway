@@ -53,17 +53,7 @@ export default class ExpressAdminRouteDriver {
       });
     });
 
-    router.get(
-      '/learning-objects',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          const route = `${
-            ADMIN_LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS
-          }?${querystring.stringify(req.query)}`;
-          return route;
-        },
-      }),
-    );
+    // User Routes
     router.get(
       '/users',
       proxy(USERS_API, {
@@ -78,6 +68,19 @@ export default class ExpressAdminRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           const route = ADMIN_USER_ROUTES.DELETE_USER(req.params.id);
+          return route;
+        },
+      }),
+    );
+
+    // Learning Object Routes
+    router.get(
+      '/learning-objects',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const route = `${
+            ADMIN_LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS
+          }?${querystring.stringify(req.query)}`;
           return route;
         },
       }),
@@ -160,6 +163,8 @@ export default class ExpressAdminRouteDriver {
         },
       }),
     );
+
+    // Mailer Routes
     router.post(
       '/mail',
       proxy(USERS_API, {
@@ -169,5 +174,23 @@ export default class ExpressAdminRouteDriver {
         },
       }),
     );
+    router
+      .route('/mail/templates')
+      .get(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            const route = ADMIN_MAILER_ROUTES.GET_AVAILABLE_TEMPLATES;
+            return route;
+          },
+        }),
+      )
+      .post(
+        proxy(USERS_API, {
+          proxyReqPathResolver: req => {
+            const route = ADMIN_MAILER_ROUTES.SEND_TEMPLATE_EMAIL;
+            return route;
+          },
+        }),
+      );
   }
 }
