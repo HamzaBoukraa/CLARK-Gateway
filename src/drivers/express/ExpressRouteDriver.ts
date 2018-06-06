@@ -171,10 +171,10 @@ export default class ExpressRouteDriver {
       }),
     );
 
-    router.route('/:username').get(
+    router.route('/:username/profile').get(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return `/users/${req.params.username}`;
+          return `/users/${req.params.username}/profile`;
         },
       }),
     );
