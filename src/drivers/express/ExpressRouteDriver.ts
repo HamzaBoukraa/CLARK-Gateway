@@ -342,6 +342,15 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get(
+      '/:username/notifications',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/notifications`;
+        },
+      }),
+    );
+
     return router;
   }
 
