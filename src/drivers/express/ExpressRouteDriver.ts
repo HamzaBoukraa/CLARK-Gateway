@@ -302,7 +302,7 @@ export default class ExpressRouteDriver {
       );
     router
       .route('/:username/library/learning-objects/:author/:learningObjectName')
-      .post(
+      .get(
         proxy(CART_API, {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
