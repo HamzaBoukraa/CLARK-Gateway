@@ -62,6 +62,26 @@ export default class ExpressRouteDriver {
     );
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
     router.get(
+      '/collections/:name',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/collections/${encodeURIComponent(
+            req.params.name,
+          )}`;
+        },
+      }),
+    );
+    router.get(
+      '/collections/:name/meta',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/collections/${encodeURIComponent(
+            req.params.name,
+          )}/meta`;
+        },
+      }),
+    );
+    router.get(
       '/collections/:name/learning-objects',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
