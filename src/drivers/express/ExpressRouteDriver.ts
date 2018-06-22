@@ -217,6 +217,17 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    // Get organizations for typeahead
+    router
+    .route('/organizations')
+    .get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return '/users/organizations';
+        },
+      }),
+    );
+
     router
       .route('/tokens')
       // Validate Token
