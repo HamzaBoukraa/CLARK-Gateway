@@ -223,7 +223,18 @@ export default class ExpressRouteDriver {
     .get(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return '/users/organizations';
+          return `/users/organizations?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+
+    // Verify that organization matches at least one document within collection
+    router
+    .route('/verifyorganization')
+    .get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/verifyorganization?${querystring.stringify(req.query)}`;
         },
       }),
     );
