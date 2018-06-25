@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as helmetConfig from '../middleware/helmet';
+// import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 import * as http from 'http';
@@ -14,7 +14,6 @@ import { enforceAdminAccess } from '../middleware/admin-acess';
 import { config, errorHandler, requestHandler } from 'raven';
 import * as dotenv from 'dotenv';
 
-
 dotenv.config();
 
 /**
@@ -25,7 +24,6 @@ export class ExpressDriver {
   static connectedClients = new Map<string, string>();
 
   static start(dataStore: DataStore) {
-
     if (process.env.NODE_ENV === 'production') {
       // Configure error handler - MUST BE THE FIRST ERROR HANDLER IN CALL ORDER
       config(process.env.SENTRY_URI).install();
@@ -35,7 +33,7 @@ export class ExpressDriver {
       this.app.use(requestHandler());
 
       // Configure Helmet Security
-      helmetConfig.setup(this.app);
+      // helmetConfig.setup(this.app);
     }
 
     // Configure app to log requests
