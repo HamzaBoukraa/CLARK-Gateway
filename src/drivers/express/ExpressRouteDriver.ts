@@ -101,6 +101,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
     router.get(
       '/users/password',
       proxy(USERS_API, {

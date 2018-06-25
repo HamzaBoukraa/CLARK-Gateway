@@ -20,6 +20,8 @@ export const enforceTokenAccess = jwt({
     '/users/ota-codes',
     '/users/validate-captcha',
     '/users/identifiers/active',
+    '/users/organizations',
+    '/users/verifyorganization',
     '/users/tokens',
     '/users/search',
     /\/users\/[0-z,.,-]+\/tokens/i,
