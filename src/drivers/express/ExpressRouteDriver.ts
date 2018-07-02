@@ -322,7 +322,7 @@ export default class ExpressRouteDriver {
       );
     router
       .route('/:username/library/learning-objects/:author/:learningObjectName')
-      .post(
+      .get(
         proxy(CART_API, {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
@@ -358,6 +358,15 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           const username = req.params.username;
           return BUSINESS_CARD_ROUTES.CARD(username, req.query);
+        },
+      }),
+    );
+
+    router.get(
+      '/:username/notifications',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/notifications`;
         },
       }),
     );
