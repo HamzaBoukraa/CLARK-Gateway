@@ -58,16 +58,14 @@ export default class ExpressRouteDriver {
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
-      this.buildUserLearningObjectRouter(),
+      this.buildUserLearningObjectRouter,
     );
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
     router.get(
       '/collections/:name',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/collections/${encodeURIComponent(
-            req.params.name,
-          )}`;
+          return `/collections/${encodeURIComponent(req.params.name)}`;
         },
       }),
     );
@@ -75,9 +73,7 @@ export default class ExpressRouteDriver {
       '/collections/:name/meta',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/collections/${encodeURIComponent(
-            req.params.name,
-          )}/meta`;
+          return `/collections/${encodeURIComponent(req.params.name)}/meta`;
         },
       }),
     );
@@ -389,7 +385,9 @@ export default class ExpressRouteDriver {
       '/:username/notifications',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/notifications`;
+          return `/users/${encodeURIComponent(
+            req.params.username,
+          )}/notifications`;
         },
       }),
     );
@@ -402,14 +400,15 @@ export default class ExpressRouteDriver {
    *
    * @returns {Router}
    */
-  private buildUserLearningObjectRouter() {
-    let router: Router = express.Router();
+  private buildUserLearningObjectRouter(_req, res, next) {
+    let router: Router = express.Router({ mergeParams: true });
+    const parentParams = _req.params;
     router
       .route('')
       .get(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMARY;
+            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY;
           },
         }),
       )
@@ -426,8 +425,9 @@ export default class ExpressRouteDriver {
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             let learningObjectName = req.params.learningObjectName;
+            const username = parentParams.username;
             return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT(
-              null,
+              username,
               learningObjectName,
             );
           },
@@ -486,7 +486,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    return router;
+    return router(_req, res, next);
   }
 
   /**
