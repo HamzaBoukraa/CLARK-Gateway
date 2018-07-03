@@ -97,6 +97,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
     router.get(
       '/users/password',
       proxy(USERS_API, {
@@ -209,6 +210,28 @@ export default class ExpressRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}`;
+        },
+      }),
+    );
+
+    // Get organizations for typeahead
+    router
+    .route('/organizations')
+    .get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/organizations?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+
+    // Verify that organization matches at least one document within collection
+    router
+    .route('/verifyorganization')
+    .get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/verifyorganization?${querystring.stringify(req.query)}`;
         },
       }),
     );
