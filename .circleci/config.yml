@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: mesosphere/aws-cli:latest
+    - image: cyber4all/circleci-aws:2.0
 
 version: 2
 jobs:
@@ -9,6 +9,52 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - setup_remote_docker
       - run:
           name: Build Image
-          command: docker build -t clark-gateway:$CIRCLE_SHA1
+          command: | 
+            docker build -t clark-gateway:$CIRCLE_SHA1 .
+            mkdir -p docker-cache
+            docker save -o docker-cache/built-image.tar clark-gateway:$CIRCLE_SHA1
+      - save_cache:
+          key: *docker_cache_key
+          paths:
+            - docker-cache
+
+  test:
+    <<: *defaults
+    steps:
+      - *restore_docker_cache
+      - setup_remote_docker
+      - run:
+          name: Unit Test Image
+          command: |
+            docker load < docker-cache/built-image.tar
+            echo We need tests
+
+workflows:
+  version: 2
+  build-and-test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+  build-test-and-deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: /master/
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: /master/
+      - deploy:
+          requires:
+            - test
+          filters:
+            branches:
+              only: /master/
