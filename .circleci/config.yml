@@ -2,8 +2,6 @@ defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
     - image: docker:17.05.0-ce-git
-    - image: mesosphere/aws-cli:latest
-
 version: 2
 jobs:
   build:
@@ -24,6 +22,8 @@ jobs:
 
   test:
     <<: *defaults
+    docker:
+      - image: mesosphere/aws-cli:latest
     steps:
       - restore_cache:
           key: clark-gateway-build
