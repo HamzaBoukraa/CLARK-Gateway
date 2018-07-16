@@ -1,7 +1,8 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: cyber4all/circleci-aws:2.0
+    - image: docker:17.05.0-ce-git
+    - image: mesosphere/aws-cli:latest
 
 version: 2
 jobs:
