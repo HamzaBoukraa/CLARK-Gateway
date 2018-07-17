@@ -14,7 +14,7 @@ jobs:
           command: | 
             docker build -t clark-gateway:$CIRCLE_SHA1 .
             mkdir -p docker-cache
-            docker save -o docker-cache/built-image.tar clark-gateway:$CIRCLE_SHA1
+            docker save -o "docker-cache/clark-gateway:${CIRCLE_SHA1}.tar" clark-gateway:$CIRCLE_SHA1
       - save_cache:
           key: "clark-gateway:${CIRCLE_SHA1}"
           paths:
