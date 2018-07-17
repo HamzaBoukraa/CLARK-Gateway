@@ -25,7 +25,7 @@ jobs:
   unit-test:
     <<: *defaults
     steps:
-      - attach_workspace : 
+      - attach_workspace: 
           at: ~/CLARK-Gateway
       - setup_remote_docker
       - run:
@@ -45,7 +45,7 @@ jobs:
   integration-test:
     <<: *defaults
     steps:
-      - attach_workspace : 
+      - attach_workspace: 
           at: ~/CLARK-Gateway
       - setup_remote_docker
       - run:
@@ -61,9 +61,8 @@ jobs:
     docker:
       - image: mesosphere/aws-cli:latest
     steps:
-      - attach_workspace : 
+      - attach_workspace: 
           at: ~/CLARK-Gateway
-      - setup_remote_docker
       - run:
           name: Login to docker
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
