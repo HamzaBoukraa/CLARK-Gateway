@@ -63,8 +63,8 @@ jobs:
       - run:
           name: Publish Image 
           command: |
-            docker tag clark-gateway:$(node -p "require('./package.json').version") "${DOCKER_USER_ORG}/clark-gateway:${(node -p "require('./package.json').version")}"
-            docker push "${DOCKER_USER_ORG}/clark-gateway:${(node -p "require('./package.json').version")}"
+            docker tag clark-gateway:$(node -p "require('./package.json').version") "${DOCKER_USER_ORG}/clark-gateway:${$(node -p "require('./package.json').version")}"
+            docker push "${DOCKER_USER_ORG}/clark-gateway:${$s(node -p "require('./package.json').version")}"
 
 workflows:
   version: 2
