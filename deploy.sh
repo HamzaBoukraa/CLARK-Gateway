@@ -1,5 +1,5 @@
 #!/bin/bash
-expr='.serviceArns[]|select(contains(${ECS_SERVICE_NAME}))|split("/")|.[1]'
+expr='.serviceArns[]|select(contains("'$ECS_SERVICE_NAME'"))|split("/")|.[1]'
 SNAME=$(aws ecs list-services --region $ECS_CLUSTER_REGION --output json --cluster $ECS_CLUSTER_NAME | jq -r $expr)
 
 # Create a new task definition for this build
