@@ -19,8 +19,12 @@ jobs:
           key: "clark-gateway:${CIRCLE_SHA1}"
           paths:
             - docker-cache
+      - persist_to_workspace: 
+          root: ./
+          paths: 
+              - ./package.json
 
-  test:
+  unit-test:
     <<: *defaults
     steps:
       - restore_cache:
@@ -40,29 +44,65 @@ jobs:
             docker tag clark-gateway:$CIRCLE_SHA1 "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
             docker push "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
 
+  integration-test:
+    <<: *defaults
+    docker:
+      - image: docker:17.05.0-ce-git
+      - image: node:8-alpine
+    steps:
+      - attach_workspace : 
+          at: *working_directory
+      - setup_remote_docker
+      - run:
+          name: Pull Image
+          command: docker pull "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+      - run:
+          name: Run Integration Test
+          command: |
+            docker build -t clark-gateway:${CIRCLE_SHA1}
+            echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
+      - run:
+          name: Login to docker
+          command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+      - run:
+          name: Publish Image 
+          command: |
+            docker tag clark-gateway:$(node -p "require('./package.json').version") "${DOCKER_USER_ORG}/clark-gateway:${(node -p "require('./package.json').version")}"
+            docker push "${DOCKER_USER_ORG}/clark-gateway:${(node -p "require('./package.json').version")}"
+
 workflows:
   version: 2
   build-and-test:
     jobs:
       - build
-      - test:
+      - unit-test:
           requires:
             - build
+      - integration-test:
+          requires:
+            - unit-test
+
   build-test-and-deploy:
     jobs:
       - build:
           filters:
             branches:
               only: /master/
-      - test:
+      - unit-test:
           requires:
             - build
           filters:
             branches:
               only: /master/
+      - integration-test:
+          requires:
+            - unit-test
+          filters:
+            branches:
+              only: /master/
       - deploy:
           requires:
-            - test
+            - integration-test
           filters:
             branches:
               only: /master/
