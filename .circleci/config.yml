@@ -22,8 +22,6 @@ jobs:
 
   test:
     <<: *defaults
-    docker:
-      - image: mesosphere/aws-cli:latest
     steps:
       - restore_cache:
           key: clark-gateway-build
@@ -32,7 +30,7 @@ jobs:
           name: Unit Test Image
           command: |
             docker load < docker-cache/built-image.tar
-            echo We need tests
+            echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
 
 workflows:
   version: 2
