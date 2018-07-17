@@ -55,6 +55,9 @@ jobs:
           command: |
             echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
       - run:
+          name: Print Images
+          command: docker images
+      - run:
           name: Login to docker
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
       - run:
