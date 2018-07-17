@@ -9,4 +9,5 @@ FINAL_TASK=$(echo $NEW_TASK_DEF | jq '.taskDefinition|{family: .family, volumes:
 
 # Update the service with the new task definition and desired count
 aws ecs register-task-definition  --region $ECS_CLUSTER_REGION --family $ECS_TASK_NAME --cli-input-json "$(echo $FINAL_TASK)"
+echo $SNAME
 aws ecs update-service  --region $ECS_CLUSTER_REGION --service $SNAME --task-definition $ECS_TASK_NAME --cluster $ECS_CLUSTER_NAME
