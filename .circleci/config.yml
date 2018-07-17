@@ -75,7 +75,7 @@ jobs:
             docker push "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
       - run:
           name: Deploy to ECS
-          commands: |
+          command: |
             export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
             ./deploy.sh          
 
