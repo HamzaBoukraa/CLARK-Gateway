@@ -90,6 +90,9 @@ workflows:
       - integration-test:
           requires:
             - unit-test
+      - deploy-production:
+          requires:
+            - integration-test
 
   build-test-and-deploy-production:
     jobs:
