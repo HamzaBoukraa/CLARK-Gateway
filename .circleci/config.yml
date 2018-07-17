@@ -34,7 +34,7 @@ jobs:
       - run:
           name: Publish Image 
           command: |
-            docker login -u $DOCKER_USER -p $DOCKER_PASS
+            docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
             docker tag clark-gateway:$CIRCLE_SHA1 "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
             docker push "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
 
