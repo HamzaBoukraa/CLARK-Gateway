@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: docker:17.05.0-ce-git
+    - image: alpine:latest
 version: 2
 jobs:
   build:
@@ -20,6 +20,7 @@ jobs:
           paths: 
               - ./docker-image
               - ./package.json
+              - ./deploy.sh
 
   unit-test:
     <<: *defaults
@@ -54,9 +55,15 @@ jobs:
           name: Run Integration Test
           command: |
             echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
-      - run:
-          name: Print Images
-          command: docker images
+
+  deploy-production:
+    <<: *defaults
+    docker:
+      - image: mesosphere/aws-cli:latest
+    steps:
+      - attach_workspace : 
+          at: ~/CLARK-Gateway
+      - setup_remote_docker
       - run:
           name: Login to docker
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
@@ -66,7 +73,11 @@ jobs:
             export SEMVER=$(cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
             docker tag "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}" "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
             docker push "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
-          
+      - run:
+          name: Deploy to ECS
+          commands: |
+            export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
+            ./deploy.sh          
 
 workflows:
   version: 2
@@ -80,7 +91,7 @@ workflows:
           requires:
             - unit-test
 
-  build-test-and-deploy:
+  build-test-and-deploy-production:
     jobs:
       - build:
           filters:
@@ -98,7 +109,7 @@ workflows:
           filters:
             branches:
               only: /master/
-      - deploy:
+      - deploy-production:
           requires:
             - integration-test
           filters:
