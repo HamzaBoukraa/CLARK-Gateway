@@ -13,27 +13,22 @@ jobs:
           name: Build Image
           command: | 
             docker build -t clark-gateway:$CIRCLE_SHA1 .
-            mkdir -p docker-cache
-            docker save -o "docker-cache/clark-gateway:${CIRCLE_SHA1}.tar" clark-gateway:$CIRCLE_SHA1
-      - save_cache:
-          key: "clark-gateway:${CIRCLE_SHA1}"
-          paths:
-            - docker-cache
+            mkdir -p docker-image
+            docker save -o "docker-image/clark-gateway:${CIRCLE_SHA1}.tar" clark-gateway:$CIRCLE_SHA1
       - persist_to_workspace: 
           root: ./
           paths: 
+              - ./docker-image
               - ./package.json
 
   unit-test:
     <<: *defaults
     steps:
-      - restore_cache:
-          key: "clark-gateway:${CIRCLE_SHA1}"
       - setup_remote_docker
       - run:
           name: Unit Test Image
           command: |
-            docker load < "docker-cache/clark-gateway:${CIRCLE_SHA1}.tar"
+            docker load < "docker-image/clark-gateway:${CIRCLE_SHA1}.tar"
             echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
       - run:
           name: Login to docker
