@@ -1,7 +1,7 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: alpine:latest
+    - image: docker:17.05.0-ce-git
 version: 2
 jobs:
   build:
