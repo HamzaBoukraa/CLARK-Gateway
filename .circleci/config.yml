@@ -16,7 +16,7 @@ jobs:
             mkdir -p docker-cache
             docker save -o docker-cache/built-image.tar clark-gateway:$CIRCLE_SHA1
       - save_cache:
-          key: clark-gateway-build
+          key: "clark-gateway:${CIRCLE_SHA1}"
           paths:
             - docker-cache
 
@@ -24,7 +24,7 @@ jobs:
     <<: *defaults
     steps:
       - restore_cache:
-          key: clark-gateway-build
+          key: "clark-gateway:${CIRCLE_SHA1}"
       - setup_remote_docker
       - run:
           name: Unit Test Image
