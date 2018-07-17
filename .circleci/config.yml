@@ -51,7 +51,7 @@ jobs:
       - image: node:8-alpine
     steps:
       - attach_workspace : 
-          at: *working_directory
+          at: ~/CLARK-Gateway
       - setup_remote_docker
       - run:
           name: Pull Image
