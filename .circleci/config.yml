@@ -81,6 +81,7 @@ jobs:
             export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
             chmod +x ./deploy.sh
             sh ./deploy.sh
+            
 workflows:
   version: 2
   build-and-test:
@@ -92,9 +93,6 @@ workflows:
       - integration-test:
           requires:
             - unit-test
-      - deploy-production:
-          requires:
-            - integration-test
 
   build-test-and-deploy-production:
     jobs:
