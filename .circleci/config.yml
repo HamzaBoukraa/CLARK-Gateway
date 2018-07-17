@@ -43,6 +43,8 @@ jobs:
 
   integration-test:
     <<: *defaults
+    environment:
+      SEMVER: $(cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
     steps:
       - attach_workspace : 
           at: ~/CLARK-Gateway
@@ -57,12 +59,6 @@ jobs:
       - run:
           name: Login to docker
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
-      - run:
-          name: Set SEMVER
-          command: |
-            SEMVER=$(cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]');
-            echo $SEMVER;
-            ls;
       - run:
           name: Publish Image 
           command: |
