@@ -1,8 +1,7 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: docker:17.05.0-ce-git
-    - image: mesosphere/aws-cli:latest
+    - image: cyber4all/circleci-aws:2.0
 version: 2
 jobs:
   build:
@@ -79,7 +78,6 @@ jobs:
           name: Deploy to ECS
           command: |
             export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
-            ls
             sh ./deploy.sh
 
 workflows:
