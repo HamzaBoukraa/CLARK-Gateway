@@ -58,8 +58,6 @@ jobs:
 
   deploy-production:
     <<: *defaults
-    docker:
-      - image: mesosphere/aws-cli:latest
     steps:
       - attach_workspace: 
           at: ~/CLARK-Gateway
