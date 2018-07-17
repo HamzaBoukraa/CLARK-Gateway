@@ -61,6 +61,7 @@ jobs:
     steps:
       - attach_workspace: 
           at: ~/CLARK-Gateway
+      - setup_remote_docker
       - run:
           name: Login to docker
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
