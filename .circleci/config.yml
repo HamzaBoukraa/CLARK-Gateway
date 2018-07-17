@@ -80,7 +80,7 @@ jobs:
           command: |
             export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
             ls
-            ./deploy.sh 
+            sh .circleci/deploy.sh
 
 workflows:
   version: 2
