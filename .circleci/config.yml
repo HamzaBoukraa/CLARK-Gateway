@@ -63,7 +63,7 @@ jobs:
             docker tag clark-gateway:$CIRCLE_SHA1 "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
             docker push "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
           environment:
-            SEMVER: cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]'
+            SEMVER: "${$(cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')}"
 
 workflows:
   version: 2
