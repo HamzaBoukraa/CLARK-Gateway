@@ -43,9 +43,6 @@ jobs:
 
   integration-test:
     <<: *defaults
-    docker:
-      - image: docker:17.05.0-ce-git
-      - image: node:8-alpine
     steps:
       - attach_workspace : 
           at: ~/CLARK-Gateway
@@ -62,7 +59,11 @@ jobs:
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
       - run:
           name: Set SEMVER
-          command: SEMVER=$(node -p "require('./package.json').version")
+          command: SEMVER=$(cat package.json \
+                    | grep version \
+                    | head -1 \
+                    | awk -F: '{ print $2 }' \
+                    | sed 's/[",\t ]//g')
       - run:
           name: Publish Image 
           command: |
