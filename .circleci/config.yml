@@ -33,7 +33,7 @@ jobs:
       - run:
           name: Unit Test Image
           command: |
-            docker load < docker-cache/built-image.tar
+            docker load < "docker-cache/clark-gateway:${CIRCLE_SHA1}.tar"
             echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
       - run:
           name: Login to docker
