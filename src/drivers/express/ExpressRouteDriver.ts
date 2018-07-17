@@ -225,17 +225,6 @@ export default class ExpressRouteDriver {
       }),
     );
 
-    // Verify that organization matches at least one document within collection
-    router
-    .route('/verifyorganization')
-    .get(
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return `/users/verifyorganization?${querystring.stringify(req.query)}`;
-        },
-      }),
-    );
-
     router
       .route('/tokens')
       // Validate Token
