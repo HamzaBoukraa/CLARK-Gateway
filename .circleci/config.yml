@@ -2,6 +2,7 @@ defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
     - image: docker:17.05.0-ce-git
+    - image: node:8-alpine
 version: 2
 jobs:
   build:
@@ -43,9 +44,6 @@ jobs:
 
   integration-test:
     <<: *defaults
-    docker:
-      - image: docker:17.05.0-ce-git
-      - image: node:8-alpine
     steps:
       - attach_workspace : 
           at: ~/CLARK-Gateway
