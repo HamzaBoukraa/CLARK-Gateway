@@ -78,7 +78,8 @@ jobs:
           name: Deploy to ECS
           command: |
             export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
-            sh ./deploy.
+            chmod +x ./deploy.sh
+            sh ./deploy.sh
 workflows:
   version: 2
   build-and-test:
