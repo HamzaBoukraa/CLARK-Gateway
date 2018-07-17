@@ -31,6 +31,12 @@ jobs:
           command: |
             docker load < docker-cache/built-image.tar
             echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
+      - run:
+          name: Publish Image 
+          command: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASS
+          docker tag clark-gateway:$CIRCLE_SHA1 "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+          docker push "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
 
 workflows:
   version: 2
