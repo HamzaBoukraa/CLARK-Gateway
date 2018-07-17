@@ -32,7 +32,7 @@ jobs:
           name: Unit Test Image
           command: |
             docker load < "docker-image/clark-gateway:${CIRCLE_SHA1}.tar"
-            echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
+            echo docker run -it clark-gateway:$CIRCLE_SHA1 npm test
       - run:
           name: Login to docker
           command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Run Integration Test
           command: |
-            echo docker run-it -d clark-gateway:$CIRCLE_SHA1 npm test
+            echo docker run -it clark-gateway:$CIRCLE_SHA1 npm test
 
   deploy-production:
     <<: *defaults
@@ -78,8 +78,7 @@ jobs:
           name: Deploy to ECS
           command: |
             export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
-            sh ./deploy.sh
-
+            sh ./deploy.
 workflows:
   version: 2
   build-and-test:
