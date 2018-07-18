@@ -215,9 +215,7 @@ export default class ExpressRouteDriver {
     );
 
     // Get organizations for typeahead
-    router
-    .route('/organizations')
-    .get(
+    router.route('/organizations').get(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return `/users/organizations?${querystring.stringify(req.query)}`;
@@ -294,13 +292,12 @@ export default class ExpressRouteDriver {
       .route('/:username/cart/learning-objects/:author/:learningObjectName')
       .get(
         proxy(CART_API, {
-          // download single object
           proxyReqPathResolver: req => {
-            return `/api/users/${encodeURIComponent(
+            return `/users/${encodeURIComponent(
               req.params.username,
-            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
-              req.params.learningObjectName,
-            )}`;
+            )}/library/learning-objects/${
+              req.params.author
+            }/${encodeURIComponent(req.params.learningObjectName)}`;
           },
         }),
       )
@@ -325,19 +322,6 @@ export default class ExpressRouteDriver {
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName,
             )}`;
-          },
-        }),
-      );
-    router
-      .route('/:username/library/learning-objects/:author/:learningObjectName')
-      .get(
-        proxy(CART_API, {
-          proxyReqPathResolver: req => {
-            return `/users/${encodeURIComponent(
-              req.params.username,
-            )}/library/learning-objects/${
-              req.params.author
-            }/${encodeURIComponent(req.params.learningObjectName)}`;
           },
         }),
       );
