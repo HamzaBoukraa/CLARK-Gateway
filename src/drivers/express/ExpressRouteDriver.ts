@@ -290,17 +290,6 @@ export default class ExpressRouteDriver {
       );
     router
       .route('/:username/cart/learning-objects/:author/:learningObjectName')
-      .get(
-        proxy(CART_API, {
-          proxyReqPathResolver: req => {
-            return `/users/${encodeURIComponent(
-              req.params.username,
-            )}/library/learning-objects/${
-              req.params.author
-            }/${encodeURIComponent(req.params.learningObjectName)}`;
-          },
-        }),
-      )
       .post(
         proxy(CART_API, {
           // add learning object to cart
@@ -322,6 +311,20 @@ export default class ExpressRouteDriver {
             )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName,
             )}`;
+          },
+        }),
+      );
+
+    router
+      .route('/:username/library/learning-objects/:author/:learningObjectName')
+      .get(
+        proxy(CART_API, {
+          proxyReqPathResolver: req => {
+            return `/users/${encodeURIComponent(
+              req.params.username,
+            )}/library/learning-objects/${
+              req.params.author
+            }/${encodeURIComponent(req.params.learningObjectName)}`;
           },
         }),
       );
