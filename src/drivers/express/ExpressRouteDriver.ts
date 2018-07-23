@@ -143,6 +143,7 @@ export default class ExpressRouteDriver {
       '/learning-objects/:username/:learningObjectName/children',
       proxy(LEARNING_OBJECT_SERVICE_URI),
     );
+    router.get('/learning-objects/:author/:id/subscribers', proxy(CART_API))
   }
 
   /**
