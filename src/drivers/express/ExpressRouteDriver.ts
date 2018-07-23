@@ -12,6 +12,7 @@ import { SocketInteractor } from '../../interactors/SocketInteractor';
 dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
+const RATING_API = process.env.RATING_API || 'localhost:3004';
 const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
@@ -142,6 +143,54 @@ export default class ExpressRouteDriver {
     router.delete(
       '/learning-objects/:username/:learningObjectName/children',
       proxy(LEARNING_OBJECT_SERVICE_URI),
+    );
+    // GET RATING
+    router.route('/ratings/:ratingId').get(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/ratings/${encodeURIComponent(req.params.ratingId)}`;
+        },
+      }),
+    );
+    // EDIT RATING
+    router.route('/learning-objects/:learningObjectName/ratings/:ratingId').patch(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}`;
+        },
+      }),
+    );
+    // DELETE RATING
+    router.route('/learning-objects/:learningObjectName/ratings/:ratingId').delete(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}`;
+        },
+      }),
+    );
+    // CREATE RATING
+    router.route('/users/:username/learning-objects/:learningObjectName/ratings').post(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/ratings`;
+        },
+      }),
+    );
+    // GET RATINGS FOR LEARNING OBJECT
+    router.route('/users/:username/learning-objects/:learningObjectName/ratings').get(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/ratings`;
+        },
+      }),
+    );
+    // GET RATINGS FOR USER
+    router.route('/users/:username/ratings').get(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/ratings`;
+        },
+      }),
     );
   }
 
