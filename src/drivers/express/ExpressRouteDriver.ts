@@ -184,6 +184,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    // FLAG A RATING
+    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId/flag').post(
+      proxy(RATING_API, {
+        proxyReqPathResolver: req => {
+          return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}/flag`;
+        },
+      }),
+    );
     // GET RATINGS FOR USER
     router.route('/users/:username/ratings').get(
       proxy(RATING_API, {
