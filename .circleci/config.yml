@@ -41,6 +41,18 @@ jobs:
             docker tag clark-gateway:$CIRCLE_SHA1 "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
             docker push "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
 
+  deploy-staging:
+    <<: *defaults
+    steps:
+      - attach_workspace: 
+          at: ~/CLARK-Gateway
+      - run:
+          name: Deploy to ECS
+          command: |
+            export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+            chmod +x ./deploy.staging.sh
+            sh ./deploy.staging.sh
+
   deploy-production:
     <<: *defaults
     steps:
@@ -69,12 +81,24 @@ jobs:
             
 workflows:
   version: 2
-  build-and-publish:
+  build-publish-and-deploy-staging:
     jobs:
-      - build
+      - build:
+          filters:
+            branches:
+              only: /^((?!master).)*$/
       - publish:
           requires:
             - build
+          filters:
+            branches:
+              only: /^((?!master).)*$/
+      - deploy-staging:
+          requires:
+            - publish
+          filters:
+            branches:
+              only: /^((?!master).)*$/
 
   build-and-deploy-production:
     jobs:
