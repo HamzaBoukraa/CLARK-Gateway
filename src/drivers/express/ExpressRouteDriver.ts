@@ -185,7 +185,7 @@ export default class ExpressRouteDriver {
       }),
     );
     // FLAG A RATING
-    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId/flag').post(
+    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId/flags').post(
       proxy(RATING_API, {
         proxyReqPathResolver: req => {
           return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}/flag`;
