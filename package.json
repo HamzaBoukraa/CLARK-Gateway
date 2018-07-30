@@ -26,6 +26,7 @@
     "gulp": "^3.9.1",
     "gulp-nodemon": "^2.2.1",
     "gulp-typescript": "^3.1.7",
+    "gulp-watch": "5.0.1",
     "pre-commit": "^1.2.2",
     "tslint": "^5.7.0",
     "tslint-config-airbnb": "^5.3.0",
