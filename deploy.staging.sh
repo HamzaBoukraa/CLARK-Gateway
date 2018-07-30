@@ -9,7 +9,7 @@ ECS_SERVICE_NAME_LOWER=$(echo "$ECS_SERVICE_NAME" | sed -e 's/\(.*\)/\L\1/')
 expr='.serviceArns[]|select(contains("'$ECS_SERVICE_NAME_JOINED'"))|split("/")|.[1]'
 SNAME=$(aws ecs list-services --region $ECS_CLUSTER_REGION --output json --cluster $ECS_STAGING_CLUSTER_NAME | jq -r $expr)
 
-if [ -n $SNAME]
+if [ ! -z $SNAME -a $SNAME != " "]
 then
     OLD_TASK_DEF=$(aws ecs describe-task-definition --region $ECS_CLUSTER_REGION --task-definition $ECS_SERVICE_NAME_LOWER --output json)
     # Create a new task definition for this build
