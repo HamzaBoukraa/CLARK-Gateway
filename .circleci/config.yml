@@ -1,73 +1,120 @@
 defaults: &defaults
   working_directory: ~/CLARK-Gateway
   docker:
-    - image: cyber4all/circleci-aws:latest
-
+    - image: cyber4all/circleci-aws:docker-git
 version: 2
 jobs:
   build:
     <<: *defaults
     steps:
       - checkout
+      - setup_remote_docker
       - run:
-          name: Install Dependencies
-          command: npm install
-      - run:
-          name: Build Application
-          command: npm run build
+          name: Build Image
+          command: | 
+            docker build -t clark-gateway:$CIRCLE_SHA1 .
+            mkdir -p docker-image
+            docker save -o "docker-image/clark-gateway:${CIRCLE_SHA1}.tar" clark-gateway:$CIRCLE_SHA1
       - persist_to_workspace: 
           root: ./
           paths: 
-              - ./dist
+              - ./docker-image
               - ./package.json
-              - ./.elasticbeanstalk
-  test:
+              - ./deploy.sh
+
+  publish:
     <<: *defaults
     steps:
-      - attach_workspace : 
+      - attach_workspace: 
           at: ~/CLARK-Gateway
-      - run: echo 'We need tests'
-  deploy:
-    <<: *defaults
-    steps:
-      - attach_workspace : 
-          at: ~/CLARK-Gateway
+      - setup_remote_docker
       - run:
-          name: Setup AWS credentials
+          name: Load Image
           command: |
-            mkdir ~/.aws && printf "[profile default]\naws_access_key_id = ${AWS_ACCESS_KEY_ID}\naws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}" > ~/.aws/config
-      - run: 
-          name: Copy package.json
-          command: cp ./package.json ./dist
-      - run: 
-          name: Zip dist
-          command: cd ./dist; zip -r ../dist.zip . *; cd ..
+            docker load < "docker-image/clark-gateway:${CIRCLE_SHA1}.tar"
       - run:
-          name: Deploy to Elastic Beanstalk 
-          command: eb deploy CLARK-Gateway-Production --verbose --label CLARK-Gateway-v$(node -p "require('./package.json').version")
+          name: Login to docker
+          command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+      - run:
+          name: Publish Image 
+          command: |
+            docker tag clark-gateway:$CIRCLE_SHA1 "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+            docker push "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+
+  deploy-staging:
+    <<: *defaults
+    steps:
+      - attach_workspace: 
+          at: ~/CLARK-Gateway
+      - run:
+          name: Deploy to ECS
+          command: |
+            export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+            chmod +x ./deploy.staging.sh
+            sh ./deploy.staging.sh
+
+  deploy-production:
+    <<: *defaults
+    steps:
+      - attach_workspace: 
+          at: ~/CLARK-Gateway
+      - setup_remote_docker
+      - run:
+          name: Login to docker
+          command: docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+      - run:
+          name: Pull Image
+          command: docker pull "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}"
+      - run:
+          name: Publish Image 
+          command: |
+            export SEMVER=$(cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+            docker tag "${DOCKER_USER_ORG}/clark-gateway:${CIRCLE_SHA1}" "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
+            docker push "${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
+      - run:
+          name: Deploy to ECS
+          command: |
+            export SEMVER=$(cat ./package.json | grep version | head -1 | awk -F= "{ print $2 }" | sed 's/[version:,\",]//g' | tr -d '[[:space:]]')
+            export DOCKER_IMAGE="${DOCKER_USER_ORG}/clark-gateway:${SEMVER}"
+            chmod +x ./deploy.sh
+            sh ./deploy.sh
+            
 workflows:
   version: 2
-  build-and-test:
+  build-publish-and-deploy-staging:
     jobs:
-      - build
-      - test:
+      - build:
+          filters:
+            branches:
+              only: /^((?!master).)*$/
+      - publish:
           requires:
             - build
-  build-test-and-deploy:
+          filters:
+            branches:
+              only: /^((?!master).)*$/
+      - deploy-staging:
+          requires:
+            - publish
+          filters:
+            branches:
+              only: /^((?!master).)*$/
+
+  build-and-deploy-production:
     jobs:
       - build:
           filters:
             branches:
               only: /master/
-      - test:
+      - publish:
           requires:
             - build
           filters:
             branches:
               only: /master/
-      - deploy:
+      - deploy-production:
           requires:
-            - test
+            - publish
           filters:
             branches:
               only: /master/
