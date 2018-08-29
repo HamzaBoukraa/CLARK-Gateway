@@ -1,8 +1,8 @@
 global:
-  application_name: CLARK
+  application_name: CLARK-Gateway
   default_ec2_keyname: null
   default_platform: arn:aws:elasticbeanstalk:us-east-1::platform/Node.js running on
-    64bit Amazon Linux/4.3.0
+    64bit Amazon Linux/4.5.1
   default_region: us-east-1
   instance_profile: null
   platform_name: null
