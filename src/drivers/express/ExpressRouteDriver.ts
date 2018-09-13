@@ -106,6 +106,16 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    router.post(
+      '/collections/learning-objects/:id',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/collections/learning-objects/${encodeURIComponent(req.params.id)}?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+
     router.get(
       '/users/update',
       proxy(USERS_API, {
