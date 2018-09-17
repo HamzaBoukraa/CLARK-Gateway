@@ -2,7 +2,6 @@ import * as express from 'express';
 import { Router } from 'express';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
-import { DataStore } from '../../interfaces/interfaces';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
 import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
@@ -27,17 +26,15 @@ const APP_STATUS = process.env.APP_STATUS_URI;
 export default class ExpressRouteDriver {
   /**
    * Produces a configured express router
-   *
-   * @param dataStore the data store that the routes should utilize
    */
-  public static buildRouter(dataStore) {
-    let e = new ExpressRouteDriver(dataStore);
+  public static buildRouter() {
+    let e = new ExpressRouteDriver();
     let router: Router = express.Router();
     e.setRoutes(router);
     return router;
   }
 
-  private constructor(public dataStore: DataStore) {}
+  private constructor() {}
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
