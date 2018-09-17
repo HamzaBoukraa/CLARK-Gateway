@@ -108,11 +108,11 @@ export default class ExpressRouteDriver {
       }),
     );
 
-    router.post(
-      '/collections/learning-objects/:id',
+    router.patch(
+      '/learning-objects/:learningObjectId/collections',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/collections/learning-objects/${encodeURIComponent(req.params.id)}?${querystring.stringify(req.query)}`;
+          return `/learning-objects/${encodeURIComponent(req.params.learningObjectId)}/collections`;
         },
       }),
     );
