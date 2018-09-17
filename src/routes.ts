@@ -32,6 +32,9 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/files/${id}/${encodeURIComponent(filename)}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
+  ADD_LEARNING_OBJECT_TO_COLLECTION(id, query) {
+    return `/collections/learning-objects/${encodeURIComponent(id)}?${querystring.stringify(query)}`;
+  },
 };
 
 export const BUSINESS_CARD_ROUTES = {

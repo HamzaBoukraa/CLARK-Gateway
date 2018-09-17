@@ -112,7 +112,7 @@ export default class ExpressRouteDriver {
       '/collections/learning-objects/:id',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/collections/learning-objects/${encodeURIComponent(req.params.id)}?${querystring.stringify(req.query)}`;
+          return LEARNING_OBJECT_ROUTES.ADD_LEARNING_OBJECT_TO_COLLECTION(req.params.id, req.query);
         },
       }),
     );
