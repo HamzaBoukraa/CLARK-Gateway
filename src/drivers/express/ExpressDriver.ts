@@ -4,7 +4,6 @@ import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 import * as http from 'http';
 import { enforceTokenAccess } from '../middleware/jwt.config';
-import { DataStore } from '../../interfaces/DataStore';
 import { ExpressRouteDriver, ExpressAdminRouteDriver } from '../drivers';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
@@ -23,7 +22,7 @@ export class ExpressDriver {
   static app = express();
   static connectedClients = new Map<string, string>();
 
-  static start(dataStore: DataStore) {
+  static start() {
     if (process.env.NODE_ENV === 'production') {
       // Configure error handler - MUST BE THE FIRST ERROR HANDLER IN CALL ORDER
       config(process.env.SENTRY_URI).install();
@@ -57,7 +56,7 @@ export class ExpressDriver {
     });
 
     // Set our api routes
-    this.app.use('/', ExpressRouteDriver.buildRouter(dataStore));
+    this.app.use('/', ExpressRouteDriver.buildRouter());
 
     // Set Admin Middleware
     this.app.use(enforceAdminAccess);
