@@ -23,8 +23,6 @@ const LEARNING_OBJECT_SERVICE_URI =
 export default class ExpressAdminRouteDriver {
   /**
    * Produces a configured express router
-   *
-   * @param dataStore the data store that the routes should utilize
    */
   public static buildRouter() {
     let e = new ExpressAdminRouteDriver();

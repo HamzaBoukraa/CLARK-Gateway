@@ -35,6 +35,9 @@ export const LEARNING_OBJECT_ROUTES = {
   ADD_LEARNING_OBJECT_TO_COLLECTION(id) {
     return `/learning-objects/${encodeURIComponent(id)}/collections`;
   },
+  UPDATE_PDF(id: string) {
+    return `/learning-objects/${id}/pdf`;
+  },
 };
 
 export const BUSINESS_CARD_ROUTES = {

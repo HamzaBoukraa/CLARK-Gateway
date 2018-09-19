@@ -2,7 +2,6 @@ import * as express from 'express';
 import { Router } from 'express';
 import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
-import { DataStore } from '../../interfaces/interfaces';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
 import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
@@ -27,17 +26,15 @@ const APP_STATUS = process.env.APP_STATUS_URI;
 export default class ExpressRouteDriver {
   /**
    * Produces a configured express router
-   *
-   * @param dataStore the data store that the routes should utilize
    */
-  public static buildRouter(dataStore) {
-    let e = new ExpressRouteDriver(dataStore);
+  public static buildRouter() {
+    let e = new ExpressRouteDriver();
     let router: Router = express.Router();
     e.setRoutes(router);
     return router;
   }
 
-  private constructor(public dataStore: DataStore) {}
+  private constructor() {}
 
   getResponder(res) {
     // TODO: Should this be some sort of factory pattern?
@@ -163,45 +160,81 @@ export default class ExpressRouteDriver {
       }),
     );
     // EDIT RATING
-    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId').patch(
-      proxy(RATING_API, {
-        proxyReqPathResolver: req => {
-          return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}`;
-        },
-      }),
-    );
+    router
+      .route(
+        '/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId',
+      )
+      .patch(
+        proxy(RATING_API, {
+          proxyReqPathResolver: req => {
+            return `/learning-objects/${encodeURIComponent(
+              req.params.learningObjectAuthor,
+            )}/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}/ratings/${encodeURIComponent(req.params.ratingId)}`;
+          },
+        }),
+      );
     // DELETE RATING
-    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId').delete(
-      proxy(RATING_API, {
-        proxyReqPathResolver: req => {
-          return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}`;
-        },
-      }),
-    );
+    router
+      .route(
+        '/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId',
+      )
+      .delete(
+        proxy(RATING_API, {
+          proxyReqPathResolver: req => {
+            return `/learning-objects/${encodeURIComponent(
+              req.params.learningObjectAuthor,
+            )}/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}/ratings/${encodeURIComponent(req.params.ratingId)}`;
+          },
+        }),
+      );
     // CREATE RATING
-    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings').post(
-      proxy(RATING_API, {
-        proxyReqPathResolver: req => {
-          return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings`;
-        },
-      }),
-    );
+    router
+      .route(
+        '/learning-objects/:learningObjectAuthor/:learningObjectName/ratings',
+      )
+      .post(
+        proxy(RATING_API, {
+          proxyReqPathResolver: req => {
+            return `/learning-objects/${encodeURIComponent(
+              req.params.learningObjectAuthor,
+            )}/${encodeURIComponent(req.params.learningObjectName)}/ratings`;
+          },
+        }),
+      );
     // GET RATINGS FOR LEARNING OBJECT
-    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings').get(
-      proxy(RATING_API, {
-        proxyReqPathResolver: req => {
-          return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings`;
-        },
-      }),
-    );
+    router
+      .route(
+        '/learning-objects/:learningObjectAuthor/:learningObjectName/ratings',
+      )
+      .get(
+        proxy(RATING_API, {
+          proxyReqPathResolver: req => {
+            return `/learning-objects/${encodeURIComponent(
+              req.params.learningObjectAuthor,
+            )}/${encodeURIComponent(req.params.learningObjectName)}/ratings`;
+          },
+        }),
+      );
     // FLAG A RATING
-    router.route('/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId/flags').post(
-      proxy(RATING_API, {
-        proxyReqPathResolver: req => {
-          return `/learning-objects/${encodeURIComponent(req.params.learningObjectAuthor)}/${encodeURIComponent(req.params.learningObjectName)}/ratings/${encodeURIComponent(req.params.ratingId)}/flags`;
-        },
-      }),
-    );
+    router
+      .route(
+        '/learning-objects/:learningObjectAuthor/:learningObjectName/ratings/:ratingId/flags',
+      )
+      .post(
+        proxy(RATING_API, {
+          proxyReqPathResolver: req => {
+            return `/learning-objects/${encodeURIComponent(
+              req.params.learningObjectAuthor,
+            )}/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}/ratings/${encodeURIComponent(req.params.ratingId)}/flags`;
+          },
+        }),
+      );
     // GET RATINGS FOR USER
     router.route('/users/:username/ratings').get(
       proxy(RATING_API, {
@@ -451,7 +484,11 @@ export default class ExpressRouteDriver {
       .get(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY + '?' + querystring.stringify(req.query);
+            return (
+              LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY +
+              '?' +
+              querystring.stringify(req.query)
+            );
           },
         }),
       )
@@ -527,6 +564,13 @@ export default class ExpressRouteDriver {
           let filename = req.params.filename;
           return LEARNING_OBJECT_ROUTES.DELETE_FILE(id, filename);
         },
+      }),
+    );
+    router.patch(
+      '/:id/pdf',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req =>
+          LEARNING_OBJECT_ROUTES.UPDATE_PDF(req.params.id),
       }),
     );
     return router(_req, res, next);
