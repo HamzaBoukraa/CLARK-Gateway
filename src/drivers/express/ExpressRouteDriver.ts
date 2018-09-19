@@ -104,6 +104,16 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    router.patch(
+      '/learning-objects/:learningObjectId/collections',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.ADD_LEARNING_OBJECT_TO_COLLECTION(req.params.learningObjectId);
+        },
+      }),
+    );
+
     router.get(
       '/users/update',
       proxy(USERS_API, {
