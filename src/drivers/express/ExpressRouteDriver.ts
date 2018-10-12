@@ -53,6 +53,7 @@ export default class ExpressRouteDriver {
         message: 'Welcome to the C.L.A.R.K. Gateway API',
       });
     });
+
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
@@ -140,6 +141,15 @@ export default class ExpressRouteDriver {
         this.getResponder(res).sendOperationError(
           `Problem checking status. Error: ${e}.`,
         );
+      }
+    });
+
+    router.get('/clientversion/:clientVersion', function(req, res) {
+      if (req.params.clientVersion === process.env.CLIENT_VERSION) {
+        res.sendStatus(200);
+      } else {
+        // Http 426 - Upgrade Required
+        res.status(426).send('A new version of the CLARK client is availble. Please refresh your page.');
       }
     });
 
