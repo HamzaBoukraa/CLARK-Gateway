@@ -86,6 +86,11 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.get('/collections', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return LEARNING_OBJECT_ROUTES.GET_COLLECTIONS;
+      }
+    }))
     router.get(
       '/users/identifiers/active',
       proxy(USERS_API, {

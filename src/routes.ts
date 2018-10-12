@@ -35,6 +35,7 @@ export const LEARNING_OBJECT_ROUTES = {
   ADD_LEARNING_OBJECT_TO_COLLECTION(id) {
     return `/learning-objects/${encodeURIComponent(id)}/collections`;
   },
+  GET_COLLECTIONS: '/collections',
   UPDATE_PDF(id: string) {
     return `/learning-objects/${id}/pdf`;
   },
