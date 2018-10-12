@@ -578,6 +578,20 @@ export default class ExpressRouteDriver {
           LEARNING_OBJECT_ROUTES.UPDATE_PDF(req.params.id),
       }),
     );
+    router.get(
+      '/:id/files/:fileId/download',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          return LEARNING_OBJECT_ROUTES.DOWNLOAD_FILE({
+            username,
+            id: req.params.id,
+            fileId: req.params.fileId,
+            query: req.query,
+          });
+        },
+      }),
+    );
     return router(_req, res, next);
   }
 
