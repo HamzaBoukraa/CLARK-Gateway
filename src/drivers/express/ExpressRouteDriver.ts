@@ -248,6 +248,17 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router
+      .route('/learning-objects/:learningObjectId/learning-outcomes/:outcomeId')
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return `/learning-objects/${encodeURIComponent(
+              req.params.learningObjectId,
+            )}/learning-outcomes/${encodeURIComponent(req.params.outcomeId)}`;
+          },
+        }),
+      );
   }
 
   /**
