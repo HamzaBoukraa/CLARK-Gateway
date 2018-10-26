@@ -33,6 +33,7 @@ export const enforceTokenAccess = jwt({
     /\/collections\/.+\/learning-objects/i,
     /\/collections\/.+\/meta/i,
     '/status',
+    '/collections',
     /\/users\/[0-z,.,-]+\/cards/i,
   ],
 }); // register // all ota-code routes do their own verification outsides of JWT // login
