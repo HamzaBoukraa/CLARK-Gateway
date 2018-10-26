@@ -159,7 +159,7 @@ export default class ExpressRouteDriver {
           res.sendStatus(200);
         } else {
           // Http 426 - Upgrade Required
-          res.status(426).send('A new version of the CLARK client is availble. Please refresh your page.');
+          res.status(426).send('A new version of CLARK is available! . Refresh your page to see our latest changes');
         }
       } catch (e) {
         res.status(500).send('Could not recover the client version');
