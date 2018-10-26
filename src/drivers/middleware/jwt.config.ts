@@ -17,6 +17,7 @@ export const enforceTokenAccess = jwt({
   path: [
     '/',
     { url: /\/users\/[0-z,.,-]+/i, methods: ['GET'] },
+    /\/clientversion\/[0-z,.,-]/,
     '/users/ota-codes',
     '/users/validate-captcha',
     '/users/identifiers/active',
