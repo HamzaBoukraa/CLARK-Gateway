@@ -6,6 +6,7 @@ import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
 import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
 import * as request from 'request';
+import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
 
 dotenv.config();
@@ -53,6 +54,7 @@ export default class ExpressRouteDriver {
         message: 'Welcome to the C.L.A.R.K. Gateway API',
       });
     });
+
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
@@ -150,6 +152,22 @@ export default class ExpressRouteDriver {
         this.getResponder(res).sendOperationError(
           `Problem checking status. Error: ${e}.`,
         );
+      }
+    });
+
+    router.get('/clientversion/:clientVersion', async (req, res) => {
+      try {
+        const response = await fetch(process.env.CLIENTVERSIONURL);
+        const object = await response.json();
+        const version: string = object.version;
+        if (req.params.clientVersion === version) {
+          res.sendStatus(200);
+        } else {
+          // Http 426 - Upgrade Required
+          res.status(426).send('A new version of CLARK is available! . Refresh your page to see our latest changes');
+        }
+      } catch (e) {
+        res.status(500).send('Could not recover the client version');
       }
     });
 
