@@ -54,6 +54,12 @@ export const ADMIN_LEARNING_OBJECT_ROUTES = {
   FETCH_LEARNING_OBJECTS_WITH_FILTER(query) {
     return `/admin/learning-objects?${querystring.stringify(query)}`;
   },
+  UPDATE_OBJECT() {
+    return `/admin/learning-objects`;
+  },
+  GET_FULL_OBJECT(learningObjectId) {
+    return `/admin/learning-objects/${encodeURIComponent(learningObjectId)}`;
+  },
   PUBLISH_LEARNING_OBJECT(username, learningObjectName) {
     return `/admin/users/${encodeURIComponent(
       username,
