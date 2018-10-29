@@ -9,7 +9,7 @@ import * as jwt from 'jsonwebtoken';
 export function verifyJWT(
   token: string,
   res: any,
-  callback: Function
+  callback: Function,
 ): boolean {
   try {
     const decoded = jwt.verify(token, process.env.KEY, {});
@@ -30,11 +30,11 @@ export function decode(token: string): Promise<any> {
       token,
       process.env.KEY,
       {
-        issuer: process.env.ISSUER
+        issuer: process.env.ISSUER,
       },
       (err: any, decoded: any) => {
         err ? reject(err) : resolve(decoded);
-      }
+      },
     );
   });
 }
