@@ -595,14 +595,24 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    // FILE DELETION
-    router.delete(
-      '/:learningObjectID/files/:filename',
+    // FILE OPERATIONS
+    router
+      .route('/:learningObjectID/files/:fileId')
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            const id = req.params.learningObjectID;
+            const fileId = req.params.fileId;
+            return LEARNING_OBJECT_ROUTES.UPDATE_FILE(id, fileId);
+          },
+        }),
+      )
+      .delete(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          let id = req.params.learningObjectID;
-          let filename = req.params.filename;
-          return LEARNING_OBJECT_ROUTES.DELETE_FILE(id, filename);
+            const id = req.params.learningObjectID;
+            const fileId = req.params.fileId;
+            return LEARNING_OBJECT_ROUTES.DELETE_FILE(id, fileId);
         },
       }),
     );
