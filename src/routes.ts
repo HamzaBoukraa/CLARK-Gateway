@@ -28,8 +28,11 @@ export const LEARNING_OBJECT_ROUTES = {
   },
 
   UPLOAD_MATERIALS: `/files`,
-  DELETE_FILE(id: string, filename: string) {
-    return `/files/${id}/${encodeURIComponent(filename)}`;
+  UPDATE_FILE(id: string, fileId: string) {
+    return `/files/${id}/${encodeURIComponent(fileId)}`;
+  },
+  DELETE_FILE(id: string, fileId: string) {
+    return `/files/${id}/${encodeURIComponent(fileId)}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
   ADD_LEARNING_OBJECT_TO_COLLECTION(id) {
