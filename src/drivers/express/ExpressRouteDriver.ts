@@ -525,7 +525,7 @@ export default class ExpressRouteDriver {
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             return (
-              LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY +
+              LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY(_req.params.username) +
               '?' +
               querystring.stringify(req.query)
             );
