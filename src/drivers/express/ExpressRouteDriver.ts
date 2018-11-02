@@ -87,14 +87,11 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router.get(
-      '/collections',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.GET_COLLECTIONS;
-        },
-      }),
-    );
+    router.get('/collections', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return LEARNING_OBJECT_ROUTES.GET_COLLECTIONS;
+      }
+    }))
     router.get(
       '/users/identifiers/active',
       proxy(USERS_API, {
@@ -119,9 +116,7 @@ export default class ExpressRouteDriver {
       '/learning-objects/:learningObjectId/collections',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.ADD_LEARNING_OBJECT_TO_COLLECTION(
-            req.params.learningObjectId,
-          );
+          return LEARNING_OBJECT_ROUTES.ADD_LEARNING_OBJECT_TO_COLLECTION(req.params.learningObjectId);
         },
       }),
     );
@@ -271,7 +266,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
     router
       .route('/learning-objects/:learningObjectId/learning-outcomes/:outcomeId')
       .patch(
@@ -650,16 +644,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router.route('/:learningObjectId')
-      .get(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}`;
-          },
-        }),
-      );
     router.get(
       '/:author/:learningObjectName',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
