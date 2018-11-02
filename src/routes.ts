@@ -54,6 +54,9 @@ export const LEARNING_OBJECT_ROUTES = {
       params.fileId
     }/download?${querystring.stringify(params.query)}`;
   },
+  GET_MATERIALS(id: string) {
+    return `/learning-objects/${id}/materials/all`;
+  },
 };
 
 export const BUSINESS_CARD_ROUTES = {

@@ -164,7 +164,11 @@ export default class ExpressRouteDriver {
           res.sendStatus(200);
         } else {
           // Http 426 - Upgrade Required
-          res.status(426).send('A new version of CLARK is available! . Refresh your page to see our latest changes');
+          res
+            .status(426)
+            .send(
+              'A new version of CLARK is available! . Refresh your page to see our latest changes',
+            );
         }
       } catch (e) {
         res.status(500).send('Could not recover the client version');
@@ -525,7 +529,9 @@ export default class ExpressRouteDriver {
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             return (
-              LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY(_req.params.username) +
+              LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT_SUMMARY(
+                _req.params.username,
+              ) +
               '?' +
               querystring.stringify(req.query)
             );
@@ -608,14 +614,14 @@ export default class ExpressRouteDriver {
         }),
       )
       .delete(
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
             const id = req.params.learningObjectID;
             const fileId = req.params.fileId;
             return LEARNING_OBJECT_ROUTES.DELETE_FILE(id, fileId);
-        },
-      }),
-    );
+          },
+        }),
+      );
     router.patch(
       '/:id/pdf',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -634,6 +640,14 @@ export default class ExpressRouteDriver {
             fileId: req.params.fileId,
             query: req.query,
           });
+        },
+      }),
+    );
+    router.route('/:id/materials').get(
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const id = req.params.id;
+          return LEARNING_OBJECT_ROUTES.GET_MATERIALS(id);
         },
       }),
     );
@@ -660,16 +674,15 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router.route('/:learningObjectId')
-      .get(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}`;
-          },
-        }),
-      );
+    router.route('/:learningObjectId').get(
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/learning-objects/${encodeURIComponent(
+            req.params.learningObjectId,
+          )}`;
+        },
+      }),
+    );
     router.get(
       '/:author/:learningObjectName',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
