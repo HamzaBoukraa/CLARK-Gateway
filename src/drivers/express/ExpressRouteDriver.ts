@@ -614,6 +614,28 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router
+      .route('/:objectId/files/:fileId/multipart')
+      .post(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return FILE_UPLOAD_ROUTES.INIT_MULTIPART({
+              objectId: req.params.objectId,
+              fileId: req.params.fileId,
+            });
+          },
+        }),
+      )
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return FILE_UPLOAD_ROUTES.FINALIZE_MULTIPART({
+              objectId: req.params.objectId,
+              fileId: req.params.fileId,
+            });
+          },
+        }),
+      );
     return router(_req, res, next);
   }
 
