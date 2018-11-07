@@ -4,7 +4,11 @@ import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
-import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
+import {
+  LEARNING_OBJECT_ROUTES,
+  BUSINESS_CARD_ROUTES,
+  FILE_UPLOAD_ROUTES,
+} from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
