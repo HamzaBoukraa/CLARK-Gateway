@@ -84,6 +84,25 @@ export default class ExpressAdminRouteDriver {
       }),
     );
     router.patch(
+      '/learning-objects',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        console.log(req.body);
+        const route = ADMIN_LEARNING_OBJECT_ROUTES.UPDATE_OBJECT();
+        return route;
+      },
+     }),
+    );
+    router.get(
+      '/learning-objects/:learningObjectId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const route = ADMIN_LEARNING_OBJECT_ROUTES.GET_FULL_OBJECT(req.params.learningObjectId);
+          return route;
+        },
+      }),
+    );
+    router.patch(
       '/users/:username/learning-objects/:learningObjectName/publish',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
