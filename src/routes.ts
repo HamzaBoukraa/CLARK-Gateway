@@ -39,6 +39,16 @@ export const LEARNING_OBJECT_ROUTES = {
   UPDATE_PDF(id: string) {
     return `/learning-objects/${id}/pdf`;
   },
+  DOWNLOAD_FILE(params: {
+    username: string;
+    id: string;
+    fileId: string;
+    query: any;
+  }) {
+    return `/users/${params.username}/learning-objects/${params.id}/files/${
+      params.fileId
+    }/download?${querystring.stringify(params.query)}`;
+  },
 };
 
 export const BUSINESS_CARD_ROUTES = {
