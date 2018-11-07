@@ -4,7 +4,11 @@ import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
-import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
+import {
+  LEARNING_OBJECT_ROUTES,
+  BUSINESS_CARD_ROUTES,
+  FILE_UPLOAD_ROUTES,
+} from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
@@ -275,18 +279,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    router
-      .route('/learning-objects/:learningObjectId/learning-outcomes/:outcomeId')
-      .patch(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}/learning-outcomes/${encodeURIComponent(req.params.outcomeId)}`;
-          },
-        }),
-      );
   }
 
   /**
@@ -651,6 +643,28 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router
+      .route('/:objectId/files/:fileId/multipart')
+      .post(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return FILE_UPLOAD_ROUTES.INIT_MULTIPART({
+              objectId: req.params.objectId,
+              fileId: req.params.fileId,
+            });
+          },
+        }),
+      )
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            return FILE_UPLOAD_ROUTES.FINALIZE_MULTIPART({
+              objectId: req.params.objectId,
+              fileId: req.params.fileId,
+            });
+          },
+        }),
+      );
     return router(_req, res, next);
   }
 
