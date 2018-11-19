@@ -1,6 +1,9 @@
 import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
-  CREATE_UPDATE_LEARNING_OBJECT: '/learning-objects',
+  CREATE_LEARNING_OBJECT: '/learning-objects',
+  UPDATE_LEARNING_OBJECT(id: string) {
+    return '/learning-objects/' + encodeURIComponent(id);
+  },
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
       username,

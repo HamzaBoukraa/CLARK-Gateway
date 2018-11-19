@@ -276,9 +276,20 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.post(
+      '/learning-objects/:learningObjectId/learning-outcomes',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/learning-objects/${encodeURIComponent(
+            req.params.learningObjectId,
+          )}/learning-outcomes`;
+        },
+      }),
+    );
+
     router
       .route('/learning-objects/:learningObjectId/learning-outcomes/:outcomeId')
-      .patch(
+      .all(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             return `/learning-objects/${encodeURIComponent(
@@ -541,31 +552,12 @@ export default class ExpressRouteDriver {
       .post(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            return LEARNING_OBJECT_ROUTES.CREATE_UPDATE_LEARNING_OBJECT;
+            return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT;
           },
         }),
       );
     router
       .route('/:learningObjectName')
-      .get(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            let learningObjectName = req.params.learningObjectName;
-            const username = parentParams.username;
-            return LEARNING_OBJECT_ROUTES.LOAD_LEARNING_OBJECT(
-              username,
-              learningObjectName,
-            );
-          },
-        }),
-      )
-      .patch(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            return LEARNING_OBJECT_ROUTES.CREATE_UPDATE_LEARNING_OBJECT;
-          },
-        }),
-      )
       .delete(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
@@ -576,6 +568,12 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+
+    router.patch('/:learningObjectId', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT(encodeURIComponent(req.params.learningObjectId));
+      },
+    }));
     router.patch(
       '/:learningObjectName/publish',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -709,17 +707,3 @@ export default class ExpressRouteDriver {
     return router;
   }
 }
-
-// /api/users/:username/learning-objects (require auth check for ownership or public viewing)
-// /api/learning-objects
-
-// POST /users/tokens          = login
-// POST /users                 = register
-// POST /users/:username/tokens      = validateToken
-// DELETE /users/:username/tokens    = logout
-// DELETE /users/:username           = remove account
-
-// GET /users/:username/cart         = get user's cart
-// DELETE /users/:username/cart      = clear user's cart
-// DELETE /users/:username/cart/learning-objects/:author/:learningObjectName  = delete Learning Object from user's cart
-// POST /users/:username/cart/learning-objects/:author/:learningObjectName  = add Learning Object to user's cart
