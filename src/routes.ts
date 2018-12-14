@@ -62,6 +62,14 @@ export const LEARNING_OBJECT_ROUTES = {
   },
 };
 
+export const FILE_UPLOAD_ROUTES = {
+  HANDLE_MULTIPART(params: { objectId: string; fileId: string }) {
+    return `/learning-objects/${params.objectId}/files/${
+      params.fileId
+    }/multipart`;
+  },
+};
+
 export const BUSINESS_CARD_ROUTES = {
   CARD(username: string, query: any) {
     return `/users/${encodeURIComponent(
