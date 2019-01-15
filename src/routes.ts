@@ -116,3 +116,8 @@ export const ADMIN_MAILER_ROUTES = {
   GET_AVAILABLE_TEMPLATES: `/admin/mail/templates`,
   SEND_TEMPLATE_EMAIL: `/admin/mail/templates`,
 };
+
+export const STATS_ROUTE = {
+  USER_STATS: '/users/stats',
+  LEARNING_OBJECT_STATS: '/learning-objects/stats',
+};

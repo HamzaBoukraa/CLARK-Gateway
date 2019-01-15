@@ -4,7 +4,11 @@ import * as proxy from 'express-http-proxy';
 import { ExpressResponder } from '../drivers';
 import * as querystring from 'querystring';
 import * as dotenv from 'dotenv';
-import { LEARNING_OBJECT_ROUTES, BUSINESS_CARD_ROUTES } from '../../routes';
+import {
+  LEARNING_OBJECT_ROUTES,
+  BUSINESS_CARD_ROUTES,
+  STATS_ROUTE,
+} from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
@@ -87,11 +91,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router.get('/collections', proxy(LEARNING_OBJECT_SERVICE_URI, {
-      proxyReqPathResolver: req => {
-        return LEARNING_OBJECT_ROUTES.GET_COLLECTIONS;
-      }
-    }))
+    router.get(
+      '/collections',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_COLLECTIONS;
+        },
+      }),
+    );
     router.get(
       '/users/identifiers/active',
       proxy(USERS_API, {
@@ -116,7 +123,9 @@ export default class ExpressRouteDriver {
       '/learning-objects/:learningObjectId/collections',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.ADD_LEARNING_OBJECT_TO_COLLECTION(req.params.learningObjectId);
+          return LEARNING_OBJECT_ROUTES.ADD_LEARNING_OBJECT_TO_COLLECTION(
+            req.params.learningObjectId,
+          );
         },
       }),
     );
@@ -159,7 +168,11 @@ export default class ExpressRouteDriver {
           res.sendStatus(200);
         } else {
           // Http 426 - Upgrade Required
-          res.status(426).send('A new version of CLARK is available! . Refresh your page to see our latest changes.');
+          res
+            .status(426)
+            .send(
+              'A new version of CLARK is available! . Refresh your page to see our latest changes.',
+            );
         }
       } catch (e) {
         res.status(500).send('Could not recover the client version');
@@ -301,6 +314,14 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+    router.get(
+      '/stats',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return STATS_ROUTE.USER_STATS;
+        },
+      }),
+    );
     // Login
     router.post(
       '/tokens',
@@ -630,6 +651,14 @@ export default class ExpressRouteDriver {
             LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS
           }?${querystring.stringify(req.query)}`;
           return route;
+        },
+      }),
+    );
+    router.get(
+      '/stats',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return STATS_ROUTE.LEARNING_OBJECT_STATS;
         },
       }),
     );
