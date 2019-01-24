@@ -1,5 +1,4 @@
 import * as express from 'express';
-// import * as helmetConfig from '../middleware/helmet';
 import * as bodyParser from 'body-parser';
 import * as logger from 'morgan';
 import * as http from 'http';
@@ -9,7 +8,6 @@ import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
 import * as socketio from 'socket.io';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
-import { enforceAdminAccess } from '../middleware/admin-acess';
 import { config, errorHandler, requestHandler } from 'raven';
 import * as dotenv from 'dotenv';
 
@@ -59,7 +57,6 @@ export class ExpressDriver {
     this.app.use('/', ExpressRouteDriver.buildRouter());
 
     // Set Admin Middleware
-    this.app.use(enforceAdminAccess);
     this.app.use('/admin', ExpressAdminRouteDriver.buildRouter());
 
     /**
