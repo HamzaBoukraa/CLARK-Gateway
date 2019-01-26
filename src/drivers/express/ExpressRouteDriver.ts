@@ -723,7 +723,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router.post(
+    router.all(
       '/:learningObjectId/submission',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
