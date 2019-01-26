@@ -64,6 +64,7 @@ export default class ExpressRouteDriver {
       '/users/:username/learning-objects',
       this.buildUserLearningObjectRouter,
     );
+
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
     router.get(
       '/collections/:name',
@@ -560,24 +561,27 @@ export default class ExpressRouteDriver {
           },
         }),
       );
-    router
-      .route('/:learningObjectName')
-      .delete(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            let learningObjectName = req.params.learningObjectName;
-            return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
-              learningObjectName,
-            );
-          },
-        }),
-      );
+    router.route('/:learningObjectName').delete(
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          let learningObjectName = req.params.learningObjectName;
+          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
+            learningObjectName,
+          );
+        },
+      }),
+    );
 
-    router.patch('/:learningObjectId', proxy(LEARNING_OBJECT_SERVICE_URI, {
-      proxyReqPathResolver: req => {
-        return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT(encodeURIComponent(req.params.learningObjectId));
-      },
-    }));
+    router.patch(
+      '/:learningObjectId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT(
+            encodeURIComponent(req.params.learningObjectId),
+          );
+        },
+      }),
+    );
     router.patch(
       '/:learningObjectName/publish',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -675,6 +679,7 @@ export default class ExpressRouteDriver {
    */
   private buildPublicLearningObjectRouter() {
     let router: Router = express.Router();
+
     router.get(
       '',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -714,6 +719,16 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.FETCH_USERS_LEARNING_OBJECTS(
             req.params.author,
+          );
+        },
+      }),
+    );
+    router.post(
+      '/:learningObjectId/submission',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
+            req.params.learningObjectId,
           );
         },
       }),
