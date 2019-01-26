@@ -8,6 +8,7 @@ import {
   LEARNING_OBJECT_ROUTES,
   BUSINESS_CARD_ROUTES,
   FILE_UPLOAD_ROUTES,
+  STATS_ROUTE,
 } from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
@@ -172,7 +173,7 @@ export default class ExpressRouteDriver {
           res
             .status(426)
             .send(
-              'A new version of CLARK is available! . Refresh your page to see our latest changes',
+              'A new version of CLARK is available! . Refresh your page to see our latest changes.',
             );
         }
       } catch (e) {
@@ -338,6 +339,14 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+    router.get(
+      '/stats',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return STATS_ROUTE.USER_STATS;
+        },
+      }),
+    );
     // Login
     router.post(
       '/tokens',
@@ -697,6 +706,14 @@ export default class ExpressRouteDriver {
           return `/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
           )}`;
+        },
+      }),
+    );
+    router.get(
+      '/stats',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return STATS_ROUTE.LEARNING_OBJECT_STATS;
         },
       }),
     );

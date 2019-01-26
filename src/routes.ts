@@ -86,6 +86,12 @@ export const ADMIN_LEARNING_OBJECT_ROUTES = {
   FETCH_LEARNING_OBJECTS_WITH_FILTER(query) {
     return `/admin/learning-objects?${querystring.stringify(query)}`;
   },
+  UPDATE_OBJECT() {
+    return `/admin/learning-objects`;
+  },
+  GET_FULL_OBJECT(learningObjectId) {
+    return `/admin/learning-objects/${encodeURIComponent(learningObjectId)}`;
+  },
   PUBLISH_LEARNING_OBJECT(username, learningObjectName) {
     return `/admin/users/${encodeURIComponent(
       username,
@@ -131,4 +137,9 @@ export const ADMIN_MAILER_ROUTES = {
   SEND_BASIC_EMAIL: `/admin/mail`,
   GET_AVAILABLE_TEMPLATES: `/admin/mail/templates`,
   SEND_TEMPLATE_EMAIL: `/admin/mail/templates`,
+};
+
+export const STATS_ROUTE = {
+  USER_STATS: '/users/stats',
+  LEARNING_OBJECT_STATS: '/learning-objects/stats',
 };
