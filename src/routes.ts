@@ -1,12 +1,17 @@
 import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
-  CREATE_UPDATE_LEARNING_OBJECT: '/learning-objects',
+  CREATE_LEARNING_OBJECT: '/learning-objects',
+  UPDATE_LEARNING_OBJECT(id: string) {
+    return '/learning-objects/' + encodeURIComponent(id);
+  },
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
       username,
     )}/${encodeURIComponent(learningObjectName)}`;
   },
-  LOAD_LEARNING_OBJECT_SUMMARY: '/learning-objects/summary',
+  LOAD_LEARNING_OBJECT_SUMMARY(username: string) {
+    return `/users/${encodeURIComponent(username)}/learning-objects`;
+  },
   FIND_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
       username,
@@ -26,10 +31,16 @@ export const LEARNING_OBJECT_ROUTES = {
   FETCH_USERS_LEARNING_OBJECTS(username: string) {
     return `/users/${encodeURIComponent(username)}/learning-objects`;
   },
+  SUBMIT_FOR_REVIEW(id: string) {
+    return `/learning-objects/${encodeURIComponent(id)}/submission`;
+  },
 
   UPLOAD_MATERIALS: `/files`,
-  DELETE_FILE(id: string, filename: string) {
-    return `/files/${id}/${encodeURIComponent(filename)}`;
+  UPDATE_FILE(id: string, fileId: string) {
+    return `/files/${id}/${encodeURIComponent(fileId)}`;
+  },
+  DELETE_FILE(id: string, fileId: string) {
+    return `/files/${id}/${encodeURIComponent(fileId)}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
   ADD_LEARNING_OBJECT_TO_COLLECTION(id) {
@@ -48,6 +59,17 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/users/${params.username}/learning-objects/${params.id}/files/${
       params.fileId
     }/download?${querystring.stringify(params.query)}`;
+  },
+  GET_MATERIALS(id: string) {
+    return `/learning-objects/${id}/materials/all`;
+  },
+};
+
+export const FILE_UPLOAD_ROUTES = {
+  HANDLE_MULTIPART(params: { objectId: string; fileId: string }) {
+    return `/learning-objects/${params.objectId}/files/${
+      params.fileId
+    }/multipart`;
   },
 };
 
@@ -115,4 +137,9 @@ export const ADMIN_MAILER_ROUTES = {
   SEND_BASIC_EMAIL: `/admin/mail`,
   GET_AVAILABLE_TEMPLATES: `/admin/mail/templates`,
   SEND_TEMPLATE_EMAIL: `/admin/mail/templates`,
+};
+
+export const STATS_ROUTE = {
+  USER_STATS: '/users/stats',
+  LEARNING_OBJECT_STATS: '/learning-objects/stats',
 };
