@@ -50,6 +50,12 @@ export const LEARNING_OBJECT_ROUTES = {
   UPDATE_PDF(id: string) {
     return `/learning-objects/${id}/pdf`;
   },
+  CREATE_CHANGELOG(learningObjectId: string) {
+    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`
+  },
+  GET_RECENT_CHANGELOG(learningObjectId: string, changelogId: string) {
+    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog/${encodeURIComponent(changelogId)}`
+  },
   DOWNLOAD_FILE(params: {
     username: string;
     id: string;
