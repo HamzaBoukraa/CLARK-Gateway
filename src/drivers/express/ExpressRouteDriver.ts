@@ -766,7 +766,7 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
             req.params.learningObjectId,
-            req.params.changelogId
+            req.params.changelogId,
           );
         },
       }),

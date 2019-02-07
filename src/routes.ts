@@ -51,10 +51,10 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/learning-objects/${id}/pdf`;
   },
   CREATE_CHANGELOG(learningObjectId: string) {
-    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`
+    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
   GET_RECENT_CHANGELOG(learningObjectId: string, changelogId: string) {
-    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog/${encodeURIComponent(changelogId)}`
+    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog/${encodeURIComponent(changelogId)}`;
   },
   DOWNLOAD_FILE(params: {
     username: string;
