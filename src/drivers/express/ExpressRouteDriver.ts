@@ -750,6 +750,27 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.post(
+      '/:learningObjectId/changelog',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+    router.get(
+      '/:learningObjectId/changelog/:changelogId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
+            req.params.learningObjectId,
+            req.params.changelogId,
+          );
+        },
+      }),
+    );
     return router;
   }
 }
