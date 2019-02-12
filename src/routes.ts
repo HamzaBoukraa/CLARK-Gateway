@@ -69,6 +69,11 @@ export const LEARNING_OBJECT_ROUTES = {
   GET_MATERIALS(id: string) {
     return `/learning-objects/${id}/materials/all`;
   },
+  GET_LEARNING_OBJECT_CHILDREN(learningObjectID: string) {
+    return `/learning-objects/${encodeURIComponent(
+      learningObjectID
+    )}/children/summary`; 
+  }
 };
 
 export const FILE_UPLOAD_ROUTES = {
