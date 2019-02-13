@@ -616,7 +616,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    
     // FILE OPERATIONS
     router
       .route('/:learningObjectID/files/:fileId')
@@ -773,7 +772,7 @@ export default class ExpressRouteDriver {
       }),
     );
     router.get(
-      '/:id/children/summary', 
+      '/:id/children/summary',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.GET_LEARNING_OBJECT_CHILDREN(
@@ -781,7 +780,7 @@ export default class ExpressRouteDriver {
           );
         },
       }),
-    ); 
+    );
     return router;
   }
 }

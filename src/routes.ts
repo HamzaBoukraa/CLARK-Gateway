@@ -72,7 +72,7 @@ export const LEARNING_OBJECT_ROUTES = {
   GET_LEARNING_OBJECT_CHILDREN(learningObjectID: string) {
     return `/learning-objects/${encodeURIComponent(
       learningObjectID
-    )}/children/summary`; 
+    )}/children/summary`;
   }
 };
 
