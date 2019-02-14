@@ -12,6 +12,9 @@ export const LEARNING_OBJECT_ROUTES = {
   LOAD_LEARNING_OBJECT_SUMMARY(username: string) {
     return `/users/${encodeURIComponent(username)}/learning-objects`;
   },
+  LOAD_USER_PROFILE(username: string) {
+    return `/users/${encodeURIComponent(username)}/learning-objects/profile`;
+  },
   FIND_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
       username,
