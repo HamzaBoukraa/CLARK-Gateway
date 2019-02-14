@@ -570,12 +570,24 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+
     router.route('/:learningObjectName').delete(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           let learningObjectName = req.params.learningObjectName;
           return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
             learningObjectName,
+          );
+        },
+      }),
+    );
+
+    router.get(
+      '/profile',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.LOAD_USER_PROFILE(
+            encodeURIComponent(req.params.username),
           );
         },
       }),
