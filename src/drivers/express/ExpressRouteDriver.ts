@@ -60,6 +60,15 @@ export default class ExpressRouteDriver {
       });
     });
 
+    router.get(
+      '/library/stats',
+      proxy(CART_API, {
+        proxyReqPathResolver: req => {
+          return `/library/stats`;
+        },
+      }),
+    );
+
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
