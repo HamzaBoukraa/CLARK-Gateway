@@ -2,7 +2,7 @@ const gulp = require('gulp');
 const nodemon = require('gulp-nodemon');
 const ts = require('gulp-typescript');
 const spawn = require('child_process').spawn;
-const exec = require('child_process').exec;
+
 const path = require('path');
 const JSON_FILES = ['src/*.json', 'src/**/*.json'];
 
@@ -10,8 +10,6 @@ const JSON_FILES = ['src/*.json', 'src/**/*.json'];
 const tsProject = ts.createProject('tsconfig.json');
 
 const compileTypeScript = () => {
-  let failed = false;
-
   const tsResult = tsProject
     .src()
     .pipe(tsProject())
