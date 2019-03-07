@@ -4,7 +4,7 @@ const ts = require('gulp-typescript');
 const spawn = require('child_process').spawn;
 
 const path = require('path');
-const JSON_FILES = ['src/*.json', 'src/**/*.json'];
+const JSON_FILES = ['src/*.json', 'src/**/*.json', 'package.json'];
 
 // pull in the project TypeScript config
 const tsProject = ts.createProject('tsconfig.json');
@@ -34,15 +34,16 @@ gulp.task('clean', function() {
   return spawn('rm', ['-rf', path.join(__dirname, 'dist')]);
 });
 
-gulp.task('tsc', gulp.series('clean', compileTypeScript));
+gulp.task('assets', function() {
+  return gulp.src(JSON_FILES).pipe(gulp.dest('dist'));
+});
+
+gulp.task('tsc', gulp.series('clean', compileTypeScript, 'assets'));
 
 gulp.task('watch', () => {
   return gulp.watch('src/**/*.ts', compileTypeScript);
 });
 
-gulp.task('assets', function() {
-  return gulp.src(JSON_FILES).pipe(gulp.dest('dist'));
-});
 
 gulp.task('start', gulp.series('tsc', gulp.parallel('watch', runDevelopmentServer)));
 
