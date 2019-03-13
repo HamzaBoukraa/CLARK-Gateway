@@ -74,9 +74,9 @@ export const LEARNING_OBJECT_ROUTES = {
   },
   GET_LEARNING_OBJECT_CHILDREN(learningObjectID: string) {
     return `/learning-objects/${encodeURIComponent(
-      learningObjectID
+      learningObjectID,
     )}/children/summary`;
-  }
+  },
 };
 
 export const FILE_UPLOAD_ROUTES = {
@@ -144,6 +144,11 @@ export const ADMIN_USER_ROUTES = {
   },
   DELETE_USER(id: string) {
     return `/admin/users/${id}`;
+  },
+  FETCH_COLLECTION_REVIEWERS(collectionName: string) {
+    return `/users/${encodeURIComponent(
+      collectionName,
+    )}/reviewers`;
   },
 };
 

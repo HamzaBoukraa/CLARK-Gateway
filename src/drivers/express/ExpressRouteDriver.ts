@@ -9,6 +9,7 @@ import {
   BUSINESS_CARD_ROUTES,
   FILE_UPLOAD_ROUTES,
   STATS_ROUTE,
+  ADMIN_USER_ROUTES,
 } from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
@@ -205,6 +206,14 @@ export default class ExpressRouteDriver {
 
     router.use('/learning-objects', this.buildPublicLearningObjectRouter());
     router.get(
+      '/collections/stats',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/collections/stats`;
+        },
+      }),
+    );
+    router.get(
       '/collections/:name',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
@@ -277,6 +286,18 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    router.get(
+      '/users/:collectionName/reviewers',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return ADMIN_USER_ROUTES.FETCH_COLLECTION_REVIEWERS(
+            req.params.collectionName,
+          );
+        },
+      }),
+    );
+
     router.get(
       '/count/:author',
       proxy(CART_API, {
