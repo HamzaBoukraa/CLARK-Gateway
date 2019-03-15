@@ -747,7 +747,9 @@ export default class ExpressRouteDriver {
     router.route('/:objectId/files/:fileId/multipart').all(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
+          const username = parentParams.username;
           return FILE_UPLOAD_ROUTES.HANDLE_MULTIPART({
+            username,
             objectId: req.params.objectId,
             fileId: req.params.fileId,
           });

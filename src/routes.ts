@@ -80,10 +80,14 @@ export const LEARNING_OBJECT_ROUTES = {
 };
 
 export const FILE_UPLOAD_ROUTES = {
-  HANDLE_MULTIPART(params: { objectId: string; fileId: string }) {
-    return `/learning-objects/${params.objectId}/files/${
-      params.fileId
-    }/multipart`;
+  HANDLE_MULTIPART(params: {
+    username: string;
+    objectId: string;
+    fileId: string;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      params.objectId
+    }/files/${params.fileId}/multipart`;
   },
 };
 
