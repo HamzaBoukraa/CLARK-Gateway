@@ -154,6 +154,30 @@ export const ADMIN_USER_ROUTES = {
       collectionName,
     )}/reviewers`;
   },
+  ASSIGN_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
+    return `/users/${encodeURIComponent(
+      collectionName,
+    )}/members/
+    ${encodeURIComponent(
+      memberId,
+    )}`;
+  },
+  EDIT_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
+    return `/users/${encodeURIComponent(
+      collectionName,
+    )}/members/
+    ${encodeURIComponent(
+      memberId,
+    )}`;
+  },
+  REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
+    return `/users/${encodeURIComponent(
+      collectionName,
+    )}/members/
+    ${encodeURIComponent(
+      memberId,
+    )}`;
+  },
 };
 
 export const ADMIN_MAILER_ROUTES = {
