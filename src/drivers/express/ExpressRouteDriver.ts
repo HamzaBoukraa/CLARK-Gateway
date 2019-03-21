@@ -299,7 +299,7 @@ export default class ExpressRouteDriver {
     );
 
     router.put(
-      '/users/:collectionName/members/:memberId',
+      '/collections/:collectionName/members/:memberId',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return ADMIN_USER_ROUTES.ASSIGN_COLLECTION_MEMBERSHIP(
@@ -311,7 +311,7 @@ export default class ExpressRouteDriver {
     );
     
     router.patch(
-      '/users/:collectionName/members/:memberId',
+      '/collections/:collectionName/members/:memberId',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return ADMIN_USER_ROUTES.EDIT_COLLECTION_MEMBERSHIP(
@@ -323,7 +323,7 @@ export default class ExpressRouteDriver {
     );
 
     router.delete(
-      '/users/:collectionName/members/:memberId',
+      '/collections/:collectionName/members/:memberId',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return ADMIN_USER_ROUTES.REMOVE_COLLECTION_MEMBERSHIP (

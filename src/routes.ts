@@ -155,7 +155,7 @@ export const ADMIN_USER_ROUTES = {
     )}/reviewers`;
   },
   ASSIGN_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/users/${encodeURIComponent(
+    return `/collections/${encodeURIComponent(
       collectionName,
     )}/members/
     ${encodeURIComponent(
@@ -163,7 +163,7 @@ export const ADMIN_USER_ROUTES = {
     )}`;
   },
   EDIT_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/users/${encodeURIComponent(
+    return `/collections/${encodeURIComponent(
       collectionName,
     )}/members/
     ${encodeURIComponent(
@@ -171,7 +171,7 @@ export const ADMIN_USER_ROUTES = {
     )}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/users/${encodeURIComponent(
+    return `/collections/${encodeURIComponent(
       collectionName,
     )}/members/
     ${encodeURIComponent(
