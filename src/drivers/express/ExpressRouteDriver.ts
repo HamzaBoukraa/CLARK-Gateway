@@ -298,6 +298,42 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.put(
+      '/collections/:collectionName/members/:memberId',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return ADMIN_USER_ROUTES.ASSIGN_COLLECTION_MEMBERSHIP(
+            req.params.collectionName,
+            req.params.memberId,
+          );
+        },
+      }),
+    );
+    
+    router.patch(
+      '/collections/:collectionName/members/:memberId',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return ADMIN_USER_ROUTES.EDIT_COLLECTION_MEMBERSHIP(
+            req.params.collectionName,
+            req.params.memberId,
+          );
+        },
+      }),
+    );
+
+    router.delete(
+      '/collections/:collectionName/members/:memberId',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return ADMIN_USER_ROUTES.REMOVE_COLLECTION_MEMBERSHIP (
+            req.params.collectionName,
+            req.params.memberId,
+          );
+        },
+      }),
+    );
+
     router.get(
       '/count/:author',
       proxy(CART_API, {
