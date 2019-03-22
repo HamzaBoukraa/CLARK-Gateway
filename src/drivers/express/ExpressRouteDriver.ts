@@ -288,11 +288,12 @@ export default class ExpressRouteDriver {
     );
 
     router.get(
-      '/users/:collectionName/reviewers',
+      '/collections/:collectionName/members',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return ADMIN_USER_ROUTES.FETCH_COLLECTION_REVIEWERS(
+          return ADMIN_USER_ROUTES.FETCH_COLLECTION_MEMBERS(
             req.params.collectionName,
+            req.query,
           );
         },
       }),

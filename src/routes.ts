@@ -149,32 +149,29 @@ export const ADMIN_USER_ROUTES = {
   DELETE_USER(id: string) {
     return `/admin/users/${id}`;
   },
-  FETCH_COLLECTION_REVIEWERS(collectionName: string) {
-    return `/users/${encodeURIComponent(
+  FETCH_COLLECTION_MEMBERS(collectionName: string, query: string) {
+    return `/collections/${encodeURIComponent(
       collectionName,
-    )}/reviewers`;
+    )}/members?${querystring.stringify(query)}`;
   },
   ASSIGN_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/
-    ${encodeURIComponent(
+    )}/members/${encodeURIComponent(
       memberId,
     )}`;
   },
   EDIT_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/
-    ${encodeURIComponent(
+    )}/members/${encodeURIComponent(
       memberId,
     )}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/
-    ${encodeURIComponent(
+    )}/members/${encodeURIComponent(
       memberId,
     )}`;
   },
