@@ -157,24 +157,21 @@ export const ADMIN_USER_ROUTES = {
   ASSIGN_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/
-    ${encodeURIComponent(
+    )}/members/${encodeURIComponent(
       memberId,
     )}`;
   },
   EDIT_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/
-    ${encodeURIComponent(
+    )}/members/${encodeURIComponent(
       memberId,
     )}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/
-    ${encodeURIComponent(
+    )}/members/${encodeURIComponent(
       memberId,
     )}`;
   },
