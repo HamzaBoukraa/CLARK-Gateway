@@ -639,6 +639,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.get(
+      '/:id/roles',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return ADMIN_USER_ROUTES.FETCH_USER_ROLES(req.params.id);
+        },
+      }),
+    );
 
     return router;
   }
