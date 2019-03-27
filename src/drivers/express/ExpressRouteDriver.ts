@@ -593,10 +593,10 @@ export default class ExpressRouteDriver {
         proxy(CART_API, {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
-              req.params.username,
-            )}/library/learning-objects/${
-              req.params.author
-            }/${encodeURIComponent(req.params.learningObjectName)}`;
+              req.params.author,
+            )}/learning-objects/${encodeURIComponent(
+              req.params.learningObjectName,
+            )}/bundle?${querystring.stringify(req.query)}`;
           },
         }),
       );
