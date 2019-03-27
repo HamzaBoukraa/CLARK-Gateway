@@ -169,8 +169,7 @@ export const ADMIN_USER_ROUTES = {
     )}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/collections/${encodeURIComponent(
-      collectionName,
+    return `/collections/${encodeURIComponent(collectionName)}`;
   },
   FETCH_USER_ROLES(id: string) {
     return `/users/${id}/roles`;
