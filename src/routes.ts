@@ -169,11 +169,10 @@ export const ADMIN_USER_ROUTES = {
     )}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/collections/${encodeURIComponent(
-      collectionName,
-    )}/members/${encodeURIComponent(
-      memberId,
-    )}`;
+    return `/collections/${encodeURIComponent(collectionName)}/members/${encodeURIComponent(memberId)}`;
+  },
+  FETCH_USER_ROLES(id: string) {
+    return `/users/${id}/roles`;
   },
 };
 
