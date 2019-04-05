@@ -47,7 +47,12 @@ export class ExpressDriver {
 
     // Set Validation Middleware
     this.app.use(enforceTokenAccess);
-    this.app.use(function(error, req, res, next) {
+    this.app.use(function(
+      error: Error,
+      req: express.Request,
+      res: express.Response,
+      next: express.NextFunction,
+    ) {
       if (error.name === 'UnauthorizedError') {
         res.status(401).send('Invalid Access Token');
       }

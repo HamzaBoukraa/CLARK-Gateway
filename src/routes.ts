@@ -46,7 +46,7 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/files/${id}/${encodeURIComponent(fileId)}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
-  ADD_LEARNING_OBJECT_TO_COLLECTION(id) {
+  ADD_LEARNING_OBJECT_TO_COLLECTION(id: string) {
     return `/learning-objects/${encodeURIComponent(id)}/collections`;
   },
   GET_COLLECTIONS: '/collections',
@@ -101,41 +101,41 @@ export const BUSINESS_CARD_ROUTES = {
 
 export const ADMIN_LEARNING_OBJECT_ROUTES = {
   FETCH_LEARNING_OBJECTS: `/admin/learning-objects`,
-  FETCH_LEARNING_OBJECTS_WITH_FILTER(query) {
+  FETCH_LEARNING_OBJECTS_WITH_FILTER(query: any) {
     return `/admin/learning-objects?${querystring.stringify(query)}`;
   },
   UPDATE_OBJECT() {
     return `/admin/learning-objects`;
   },
-  GET_FULL_OBJECT(learningObjectId) {
+  GET_FULL_OBJECT(learningObjectId: string) {
     return `/admin/learning-objects/${encodeURIComponent(learningObjectId)}`;
   },
-  PUBLISH_LEARNING_OBJECT(username, learningObjectName) {
+  PUBLISH_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/${encodeURIComponent(learningObjectName)}/publish`;
   },
-  UNPUBLISH_LEARNING_OBJECT(username, learningObjectName) {
+  UNPUBLISH_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/${encodeURIComponent(learningObjectName)}/unpublish`;
   },
-  LOCK_LEARNING_OBJECT(username, learningObjectName) {
+  LOCK_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/${encodeURIComponent(learningObjectName)}/lock`;
   },
-  UNLOCK_LEARNING_OBJECT(username, learningObjectName) {
+  UNLOCK_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/${encodeURIComponent(learningObjectName)}/unlock`;
   },
-  DELETE_LEARNING_OBJECT(username, learningObjectName) {
+  DELETE_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/${encodeURIComponent(learningObjectName)}`;
   },
-  DELETE_MULTIPLE_LEARNING_OBJECTS(username, learningObjectIDs) {
+  DELETE_MULTIPLE_LEARNING_OBJECTS(username: string, learningObjectIDs: string) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/multiple/${learningObjectIDs}`;
@@ -143,7 +143,7 @@ export const ADMIN_LEARNING_OBJECT_ROUTES = {
 };
 
 export const ADMIN_USER_ROUTES = {
-  FETCH_USERS_WITH_FILTER(query) {
+  FETCH_USERS_WITH_FILTER(query: any) {
     return `/admin/users?${querystring.stringify(query)}`;
   },
   DELETE_USER(id: string) {

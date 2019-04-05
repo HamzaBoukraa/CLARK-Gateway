@@ -1,16 +1,15 @@
 import * as express from 'express';
 import { Router } from 'express';
-import * as proxy from 'express-http-proxy';
-import { ExpressResponder } from '../drivers';
+// tslint:disable-next-line:no-require-imports
+import proxy = require('express-http-proxy');
 import * as querystring from 'querystring';
-import * as dotenv from 'dotenv';
+import 'dotenv/config';
 import {
   ADMIN_LEARNING_OBJECT_ROUTES,
   ADMIN_USER_ROUTES,
   ADMIN_MAILER_ROUTES,
 } from '../../routes';
 
-dotenv.config();
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
@@ -32,11 +31,6 @@ export default class ExpressAdminRouteDriver {
   }
 
   private constructor() {}
-
-  getResponder(res) {
-    // TODO: Should this be some sort of factory pattern?
-    return new ExpressResponder(res);
-  }
 
   /**
    * Defines the active routes for the API. Routes take an async callback function that contains a request and response object.
@@ -86,18 +80,20 @@ export default class ExpressAdminRouteDriver {
     router.patch(
       '/learning-objects',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
-      proxyReqPathResolver: req => {
-        console.log(req.body);
-        const route = ADMIN_LEARNING_OBJECT_ROUTES.UPDATE_OBJECT();
-        return route;
-      },
-     }),
+        proxyReqPathResolver: req => {
+          console.log(req.body);
+          const route = ADMIN_LEARNING_OBJECT_ROUTES.UPDATE_OBJECT();
+          return route;
+        },
+      }),
     );
     router.get(
       '/learning-objects/:learningObjectId',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          const route = ADMIN_LEARNING_OBJECT_ROUTES.GET_FULL_OBJECT(req.params.learningObjectId);
+          const route = ADMIN_LEARNING_OBJECT_ROUTES.GET_FULL_OBJECT(
+            req.params.learningObjectId,
+          );
           return route;
         },
       }),
