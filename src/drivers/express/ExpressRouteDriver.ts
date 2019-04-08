@@ -20,6 +20,7 @@ const CART_API = process.env.CART_API || 'localhost:3006';
 const RATING_API = process.env.RATING_API || 'localhost:3004';
 const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
+const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
 
 const APP_STATUS = process.env.APP_STATUS_URI;
@@ -770,14 +771,58 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    /**
+     * FIXME: This route should be removed when the API is tested and  client is updated
+     */
     router.route('/:objectId/files/:fileId/multipart').all(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           const username = parentParams.username;
-          return FILE_UPLOAD_ROUTES.HANDLE_MULTIPART({
+          return FILE_UPLOAD_ROUTES.INIT_MULTIPART({
             username,
             objectId: req.params.objectId,
             fileId: req.params.fileId,
+          });
+        },
+      }),
+    );
+
+    /**
+     * FIXME: The admin suffix should be remove when API is tested and client is updated
+     */
+    router.route('/:objectId/files/:fileId/multipart/admin').post(
+      proxy(FILE_UPLOAD_API, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          return FILE_UPLOAD_ROUTES.INIT_MULTIPART({
+            username,
+            objectId: req.params.objectId,
+            fileId: req.params.fileId,
+          });
+        },
+      }),
+    );
+    router.route('/:objectId/files/:fileId/multipart/:uploadId/admin').patch(
+      proxy(FILE_UPLOAD_API, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          return FILE_UPLOAD_ROUTES.FINALIZE_MULTIPART({
+            username,
+            objectId: req.params.objectId,
+            fileId: req.params.fileId,
+            uploadId: req.params.uploadId,
+          });
+        },
+      }),
+    ).delete(
+      proxy(FILE_UPLOAD_API, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          return FILE_UPLOAD_ROUTES.ABORT_MULTIPART({
+            username,
+            objectId: req.params.objectId,
+            fileId: req.params.fileId,
+            uploadId: req.params.uploadId,
           });
         },
       }),
