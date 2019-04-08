@@ -1,10 +1,10 @@
 import { Response } from 'express';
 
 export interface Responder {
-  sendUser(user);
-  sendOperationSuccess();
+  sendUser(user: any): any;
+  sendOperationSuccess(): any;
   sendOperationError(message?: string, status?: number): void;
-  sendLearningObject(learningObject);
+  sendLearningObject(learningObject: any): any;
   /**
    * Sends serialized LearningObject or array of serialized LearningObjects in response
    *
@@ -12,10 +12,10 @@ export interface Responder {
    * @memberof Responder
    */
   sendLearningObjects(learningObjects: string | string[]): void;
-  sendLearningObjectFiles(LearningObjectFiles);
-  invalidLogin();
-  invalidRegistration();
-  invalidAccess();
+  sendLearningObjectFiles(LearningObjectFiles: any): any;
+  invalidLogin(): any;
+  invalidRegistration(): any;
+  invalidAccess(): any;
 
   /**
    * Returns current Writable Response Stream
