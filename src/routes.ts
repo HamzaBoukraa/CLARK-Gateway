@@ -80,7 +80,7 @@ export const LEARNING_OBJECT_ROUTES = {
 };
 
 export const FILE_UPLOAD_ROUTES = {
-  HANDLE_MULTIPART(params: {
+  INIT_MULTIPART(params: {
     username: string;
     objectId: string;
     fileId: string;
@@ -88,6 +88,26 @@ export const FILE_UPLOAD_ROUTES = {
     return `/users/${encodeURIComponent(params.username)}/learning-objects/${
       params.objectId
     }/files/${params.fileId}/multipart`;
+  },
+  FINALIZE_MULTIPART(params: {
+    username: string;
+    objectId: string;
+    fileId: string;
+    uploadId: string;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      params.objectId
+    }/files/${params.fileId}/multipart/${params.uploadId}`;
+  },
+  ABORT_MULTIPART(params: {
+    username: string;
+    objectId: string;
+    fileId: string;
+    uploadId: string;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      params.objectId
+    }/files/${params.fileId}/multipart/${params.uploadId}`;
   },
 };
 
