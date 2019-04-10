@@ -418,6 +418,40 @@ export default class ExpressRouteDriver {
   private buildUserRouter() {
     let router: Router = express.Router();
 
+    router.post(
+      '/:userId/learning-objects/:learningObjectId/changelog',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
+            req.params.userId,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+    router.get(
+      '/:userId/learning-objects/:learningObjectId/changelog',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
+            req.params.userId,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+    router.get(
+      '/:userId/learning-objects/:learningObjectId/changelogs',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_ALL_CHANGELOGS(
+            req.params.userId,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+
     // Welcome page
     router
       .route('')
@@ -918,27 +952,6 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.FETCH_USERS_LEARNING_OBJECTS(
             req.params.author,
-          );
-        },
-      }),
-    );
-    router.post(
-      '/:learningObjectId/changelog',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
-            req.params.learningObjectId,
-          );
-        },
-      }),
-    );
-    router.get(
-      '/:learningObjectId/changelog/:changelogId',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
-            req.params.learningObjectId,
-            req.params.changelogId,
           );
         },
       }),
