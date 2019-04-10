@@ -478,6 +478,18 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.all(
+      '/:userId/learning-objects/:learningObjectId/submissions',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
+            req.params.userId,
+            req.params.learningObjectId,
+            req.query
+          );
+        },
+      }),
+    );
     // Remove account
     router.route('/:username').delete(
       proxy(USERS_API, {
@@ -906,16 +918,6 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.FETCH_USERS_LEARNING_OBJECTS(
             req.params.author,
-          );
-        },
-      }),
-    );
-    router.all(
-      '/:learningObjectId/submission',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
-            req.params.learningObjectId,
           );
         },
       }),
