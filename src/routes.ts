@@ -34,8 +34,8 @@ export const LEARNING_OBJECT_ROUTES = {
   FETCH_USERS_LEARNING_OBJECTS(username: string) {
     return `/users/${encodeURIComponent(username)}/learning-objects`;
   },
-  SUBMIT_FOR_REVIEW(id: string) {
-    return `/learning-objects/${encodeURIComponent(id)}/submission`;
+  SUBMIT_FOR_REVIEW(userId: string, learningObjectId: string, query: {}) {
+    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/submissions?${querystring.stringify(query)}`;
   },
 
   UPLOAD_MATERIALS: `/files`,
