@@ -53,11 +53,14 @@ export const LEARNING_OBJECT_ROUTES = {
   UPDATE_PDF(id: string) {
     return `/learning-objects/${id}/pdf`;
   },
-  CREATE_CHANGELOG(learningObjectId: string) {
-    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
+  CREATE_CHANGELOG(userId: string, learningObjectId: string) {
+    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
-  GET_RECENT_CHANGELOG(learningObjectId: string, changelogId: string) {
-    return `/learning-objects/${encodeURIComponent(learningObjectId)}/changelog/${encodeURIComponent(changelogId)}`;
+  GET_RECENT_CHANGELOG(userId: string, learningObjectId: string) {
+    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
+  },
+  GET_ALL_CHANGELOGS(userId: string, learningObjectId: string) {
+    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelogs`;
   },
   DOWNLOAD_FILE(params: {
     username: string;
@@ -80,7 +83,7 @@ export const LEARNING_OBJECT_ROUTES = {
 };
 
 export const FILE_UPLOAD_ROUTES = {
-  HANDLE_MULTIPART(params: {
+  INIT_MULTIPART(params: {
     username: string;
     objectId: string;
     fileId: string;
@@ -88,6 +91,26 @@ export const FILE_UPLOAD_ROUTES = {
     return `/users/${encodeURIComponent(params.username)}/learning-objects/${
       params.objectId
     }/files/${params.fileId}/multipart`;
+  },
+  FINALIZE_MULTIPART(params: {
+    username: string;
+    objectId: string;
+    fileId: string;
+    uploadId: string;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      params.objectId
+    }/files/${params.fileId}/multipart/${params.uploadId}`;
+  },
+  ABORT_MULTIPART(params: {
+    username: string;
+    objectId: string;
+    fileId: string;
+    uploadId: string;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      params.objectId
+    }/files/${params.fileId}/multipart/${params.uploadId}`;
   },
 };
 
@@ -169,11 +192,10 @@ export const ADMIN_USER_ROUTES = {
     )}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/collections/${encodeURIComponent(
-      collectionName,
-    )}/members/${encodeURIComponent(
-      memberId,
-    )}`;
+    return `/collections/${encodeURIComponent(collectionName)}/members/${encodeURIComponent(memberId)}`;
+  },
+  FETCH_USER_ROLES(id: string) {
+    return `/users/${id}/roles`;
   },
 };
 
