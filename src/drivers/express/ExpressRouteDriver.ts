@@ -603,9 +603,7 @@ export default class ExpressRouteDriver {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
               req.params.username,
-            )}/cart/learning-objects/${encodeURIComponent(
-              req.params.author,
-              )}/${encodeURIComponent(
+            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
               req.params.learningObjectName,
             )}`;
           },
@@ -625,13 +623,15 @@ export default class ExpressRouteDriver {
       );
 
     router
-      .route('/:username/learning-objects/:learningObjectName/bundle')
+      .route('/:username/library/learning-objects/:author/:learningObjectName')
       .get(
         proxy(CART_API, {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
               req.params.username,
-            )}/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/bundle?${querystring.stringify(req.query)}`;
+            )}/library/learning-objects/${
+              req.params.author
+            }/${encodeURIComponent(req.params.learningObjectName)}`;
           },
         }),
       );
