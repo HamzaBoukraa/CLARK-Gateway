@@ -495,6 +495,15 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get(
+      '/:id/tokens',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${req.params.id}/tokens?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+
     router.route('/:username/profile').get(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
