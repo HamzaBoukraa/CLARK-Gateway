@@ -845,6 +845,15 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.route('/:id/materials/files').post(
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          const id = req.params.id;
+          return LEARNING_OBJECT_ROUTES.ADD_MATERIALS(username, id);
+        },
+      }),
+    );
     /**
      * FIXME: This route should be removed when the API is tested and  client is updated
      */
