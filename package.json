@@ -1,6 +1,10 @@
 {
   "name": "clark-gateway",
+<<<<<<< HEAD
   "version": "2.9.0",
+=======
+  "version": "2.9.1",
+>>>>>>> aafce480e274849c1770b3ff860c7cd128ca0371
   "description": "",
   "main": "app.js",
   "scripts": {

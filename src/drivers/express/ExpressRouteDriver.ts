@@ -495,6 +495,15 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get(
+      '/:id/tokens',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${req.params.id}/tokens?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+
     router.route('/:username/profile').get(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
@@ -509,6 +518,18 @@ export default class ExpressRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return '/users/tokens/refresh';
+        },
+      }),
+    );
+    router.all(
+      '/:userId/learning-objects/:learningObjectId/submissions',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
+            req.params.userId,
+            req.params.learningObjectId,
+            req.query
+          );
         },
       }),
     );
@@ -824,6 +845,15 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.route('/:id/materials/files').post(
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          const id = req.params.id;
+          return LEARNING_OBJECT_ROUTES.ADD_MATERIALS(username, id);
+        },
+      }),
+    );
     /**
      * FIXME: This route should be removed when the API is tested and  client is updated
      */
@@ -940,16 +970,6 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.FETCH_USERS_LEARNING_OBJECTS(
             req.params.author,
-          );
-        },
-      }),
-    );
-    router.all(
-      '/:learningObjectId/submission',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
-            req.params.learningObjectId,
           );
         },
       }),
