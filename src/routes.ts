@@ -76,7 +76,7 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/learning-objects/${id}/materials/all`;
   },
   ADD_MATERIALS(username: string, id: string) {
-    return `users/${encodeURIComponent(username)}/learning-objects/${id}/materials/files`;
+    return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials/files`;
   },
   GET_LEARNING_OBJECT_CHILDREN(learningObjectID: string) {
     return `/learning-objects/${encodeURIComponent(
