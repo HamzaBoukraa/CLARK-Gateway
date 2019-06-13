@@ -394,6 +394,40 @@ export default class ExpressRouteDriver {
   private buildUserRouter() {
     let router: Router = express.Router();
 
+    router.post(
+      '/:userId/learning-objects/:learningObjectId/changelog',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
+            req.params.userId,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+    router.get(
+      '/:userId/learning-objects/:learningObjectId/changelog',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
+            req.params.userId,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+    router.get(
+      '/:userId/learning-objects/:learningObjectId/changelogs',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_ALL_CHANGELOGS(
+            req.params.userId,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+
     // Welcome page
     router
       .route('')
@@ -437,6 +471,15 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get(
+      '/:id/tokens',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${req.params.id}/tokens?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
+
     router.route('/:username/profile').get(
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
@@ -451,6 +494,18 @@ export default class ExpressRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return '/users/tokens/refresh';
+        },
+      }),
+    );
+    router.all(
+      '/:userId/learning-objects/:learningObjectId/submissions',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
+            req.params.userId,
+            req.params.learningObjectId,
+            req.query
+          );
         },
       }),
     );
@@ -546,7 +601,9 @@ export default class ExpressRouteDriver {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
               req.params.username,
-            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
+            )}/cart/learning-objects/${encodeURIComponent(
+              req.params.author,
+              )}/${encodeURIComponent(
               req.params.learningObjectName,
             )}`;
           },
@@ -566,15 +623,13 @@ export default class ExpressRouteDriver {
       );
 
     router
-      .route('/:username/library/learning-objects/:author/:learningObjectName')
+      .route('/:username/learning-objects/:learningObjectName/bundle')
       .get(
         proxy(CART_API, {
           proxyReqPathResolver: req => {
             return `/users/${encodeURIComponent(
               req.params.username,
-            )}/library/learning-objects/${
-              req.params.author
-            }/${encodeURIComponent(req.params.learningObjectName)}`;
+            )}/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/bundle?${querystring.stringify(req.query)}`;
           },
         }),
       );
@@ -771,6 +826,15 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.route('/:id/materials/files').post(
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const username = parentParams.username;
+          const id = req.params.id;
+          return LEARNING_OBJECT_ROUTES.ADD_MATERIALS(username, id);
+        },
+      }),
+    );
     /**
      * FIXME: This route should be removed when the API is tested and  client is updated
      */
@@ -887,37 +951,6 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.FETCH_USERS_LEARNING_OBJECTS(
             req.params.author,
-          );
-        },
-      }),
-    );
-    router.all(
-      '/:learningObjectId/submission',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
-            req.params.learningObjectId,
-          );
-        },
-      }),
-    );
-    router.post(
-      '/:learningObjectId/changelog',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
-            req.params.learningObjectId,
-          );
-        },
-      }),
-    );
-    router.get(
-      '/:learningObjectId/changelog/:changelogId',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
-            req.params.learningObjectId,
-            req.params.changelogId,
           );
         },
       }),
