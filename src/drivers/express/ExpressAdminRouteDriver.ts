@@ -81,7 +81,6 @@ export default class ExpressAdminRouteDriver {
       '/learning-objects',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          console.log(req.body);
           const route = ADMIN_LEARNING_OBJECT_ROUTES.UPDATE_OBJECT();
           return route;
         },
