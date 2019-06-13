@@ -1,9 +1,8 @@
+import 'dotenv/config';
 import * as express from 'express';
 import { Router } from 'express';
-// tslint:disable-next-line:no-require-imports
-import proxy = require('express-http-proxy');
+import * as proxy from 'express-http-proxy';
 import * as querystring from 'querystring';
-import 'dotenv/config';
 import {
   ADMIN_LEARNING_OBJECT_ROUTES,
   ADMIN_USER_ROUTES,
