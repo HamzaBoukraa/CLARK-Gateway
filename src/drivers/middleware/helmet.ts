@@ -30,7 +30,7 @@ import * as helmet from 'helmet';
     upgradeInsecureRequests: true
   }});*/
 
-export function setup(app) {
+export function setup(app: any) {
   app.use(helmet());
 
   // app.use(csp);

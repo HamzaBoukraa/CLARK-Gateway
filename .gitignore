@@ -10,3 +10,8 @@ src/entity
 .env
 dist.zip
 .env
+.vscode/*
+
+# Include Launch Config for Debugging
+!/.vscode/launch.json
+
