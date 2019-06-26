@@ -821,8 +821,9 @@ export default class ExpressRouteDriver {
     router.route('/:id/materials').get(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
+          const username = parentParams.username;
           const id = req.params.id;
-          return LEARNING_OBJECT_ROUTES.GET_MATERIALS(id);
+          return LEARNING_OBJECT_ROUTES.GET_MATERIALS(username, id);
         },
       }),
     );

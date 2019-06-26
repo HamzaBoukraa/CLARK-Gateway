@@ -72,8 +72,8 @@ export const LEARNING_OBJECT_ROUTES = {
       params.fileId
     }/download?${querystring.stringify(params.query)}`;
   },
-  GET_MATERIALS(id: string) {
-    return `/learning-objects/${id}/materials/all`;
+  GET_MATERIALS(username: string, id: string) {
+    return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials`;
   },
   ADD_MATERIALS(username: string, id: string) {
     return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials/files`;
