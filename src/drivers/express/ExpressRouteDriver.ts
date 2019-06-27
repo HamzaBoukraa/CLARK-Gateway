@@ -823,7 +823,11 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           const username = parentParams.username;
           const id = req.params.id;
-          return LEARNING_OBJECT_ROUTES.GET_MATERIALS(username, id);
+          return LEARNING_OBJECT_ROUTES.GET_MATERIALS({
+            username,
+            id,
+            query: req.query,
+          });
         },
       }),
     );
