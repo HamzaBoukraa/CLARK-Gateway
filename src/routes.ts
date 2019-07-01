@@ -39,11 +39,11 @@ export const LEARNING_OBJECT_ROUTES = {
   },
 
   UPLOAD_MATERIALS: `/files`,
-  UPDATE_FILE(id: string, fileId: string) {
-    return `/files/${id}/${encodeURIComponent(fileId)}`;
+  UPDATE_FILE({ username, learningObjectId, fileId }: { username: string; learningObjectId: string; fileId: string; }) {
+    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(fileId)}`;
   },
-  DELETE_FILE(id: string, fileId: string) {
-    return `/files/${id}/${encodeURIComponent(fileId)}`;
+  DELETE_FILE({ username, learningObjectId, fileId }: { username: string; learningObjectId: string; fileId: string; }) {
+    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(fileId)}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
   ADD_LEARNING_OBJECT_TO_COLLECTION(id: string) {
