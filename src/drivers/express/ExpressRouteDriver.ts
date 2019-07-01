@@ -777,23 +777,66 @@ export default class ExpressRouteDriver {
       }),
     );
     // FILE OPERATIONS
+    /**
+     * TODO: Deprecate in favor of more RESTful `/:learningObjectId/materials/files/:fileId` when clients have updated
+     */
     router
       .route('/:learningObjectID/files/:fileId')
       .patch(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            const id = req.params.learningObjectID;
+            const username = parentParams.username;
+            const learningObjectId = req.params.learningObjectID;
             const fileId = req.params.fileId;
-            return LEARNING_OBJECT_ROUTES.UPDATE_FILE(id, fileId);
+            return LEARNING_OBJECT_ROUTES.UPDATE_FILE({
+              username,
+              learningObjectId,
+              fileId,
+            });
           },
         }),
       )
       .delete(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            const id = req.params.learningObjectID;
+            const username = parentParams.username;
+            const learningObjectId = req.params.learningObjectID;
             const fileId = req.params.fileId;
-            return LEARNING_OBJECT_ROUTES.DELETE_FILE(id, fileId);
+            return LEARNING_OBJECT_ROUTES.UPDATE_FILE({
+              username,
+              learningObjectId,
+              fileId,
+            });
+          },
+        }),
+      );
+    router
+      .route('/:learningObjectId/materials/files/:fileId')
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            const username = parentParams.username;
+            const learningObjectId = req.params.learningObjectId;
+            const fileId = req.params.fileId;
+            return LEARNING_OBJECT_ROUTES.UPDATE_FILE({
+              username,
+              learningObjectId,
+              fileId,
+            });
+          },
+        }),
+      )
+      .delete(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            const username = parentParams.username;
+            const learningObjectId = req.params.learningObjectID;
+            const fileId = req.params.fileId;
+            return LEARNING_OBJECT_ROUTES.UPDATE_FILE({
+              username,
+              learningObjectId,
+              fileId,
+            });
           },
         }),
       );
