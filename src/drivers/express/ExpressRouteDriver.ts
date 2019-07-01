@@ -830,7 +830,7 @@ export default class ExpressRouteDriver {
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             const username = parentParams.username;
-            const learningObjectId = req.params.learningObjectID;
+            const learningObjectId = req.params.learningObjectId;
             const fileId = req.params.fileId;
             return LEARNING_OBJECT_ROUTES.UPDATE_FILE({
               username,
