@@ -714,17 +714,32 @@ export default class ExpressRouteDriver {
       .post(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT;
+            const authorUsername = parentParams.username;
+            return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT(authorUsername);
           },
         }),
       );
 
-    router.route('/:learningObjectName').delete(
+    router
+      .route('/:learningObjectId')
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            const authorUsername = parentParams.username;
+            const learningObjectId = req.params.learningObjectId;
+            return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT(
+              { authorUsername, id: learningObjectId },
+            );
+          },
+        }),
+      )
+      .delete(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          let learningObjectName = req.params.learningObjectName;
+            const authorUsername = parentParams.username;
+            const learningObjectId = req.params.learningObjectId;
           return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
-            learningObjectName,
+              { authorUsername, id: learningObjectId },
           );
         },
       }),
@@ -736,17 +751,6 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.LOAD_USER_PROFILE(
             encodeURIComponent(req.params.username),
-          );
-        },
-      }),
-    );
-
-    router.patch(
-      '/:learningObjectId',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT(
-            encodeURIComponent(req.params.learningObjectId),
           );
         },
       }),

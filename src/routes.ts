@@ -1,8 +1,10 @@
 import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
-  CREATE_LEARNING_OBJECT: '/learning-objects',
-  UPDATE_LEARNING_OBJECT(id: string) {
-    return '/learning-objects/' + encodeURIComponent(id);
+  CREATE_LEARNING_OBJECT(authorUsername: string) {
+    return `/users/${encodeURIComponent(authorUsername)}/learning-objects`;
+  },
+  UPDATE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
+    return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
   },
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
@@ -20,8 +22,8 @@ export const LEARNING_OBJECT_ROUTES = {
       username,
     )}/${encodeURIComponent(learningObjectName)}/id`;
   },
-  DELETE_LEARNING_OBJECT(learningObjectName: string) {
-    return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
+  DELETE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
+    return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
   },
   PUBLISH_LEARNING_OBJECT: `/learning-objects/publish`,
   UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
