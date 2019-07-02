@@ -504,7 +504,7 @@ export default class ExpressRouteDriver {
           return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
             req.params.userId,
             req.params.learningObjectId,
-            req.query
+            req.query,
           );
         },
       }),
@@ -738,7 +738,7 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
             const authorUsername = parentParams.username;
             const learningObjectId = req.params.learningObjectId;
-          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
+            return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
               { authorUsername, id: learningObjectId },
           );
         },
