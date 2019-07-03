@@ -715,7 +715,14 @@ export default class ExpressRouteDriver {
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             const authorUsername = parentParams.username;
-            return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT(authorUsername);
+      );
+
+    router.delete(
+      '/:learningObjectName',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          const learningObjectName = req.params.learningObjectName;
+          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT_BY_NAME(learningObjectName);
           },
         }),
       );

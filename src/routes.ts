@@ -22,6 +22,9 @@ export const LEARNING_OBJECT_ROUTES = {
       username,
     )}/${encodeURIComponent(learningObjectName)}/id`;
   },
+  DELETE_LEARNING_OBJECT_BY_NAME(learningObjectName: string) {
+    return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
+  },
   DELETE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
     return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
   },
