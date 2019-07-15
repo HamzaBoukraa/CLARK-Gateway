@@ -475,7 +475,9 @@ export default class ExpressRouteDriver {
       '/:id/tokens',
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
-          return `/users/${req.params.id}/tokens?${querystring.stringify(req.query)}`;
+          return `/users/${req.params.id}/tokens?${querystring.stringify(
+            req.query,
+          )}`;
         },
       }),
     );
@@ -504,7 +506,7 @@ export default class ExpressRouteDriver {
           return LEARNING_OBJECT_ROUTES.SUBMIT_FOR_REVIEW(
             req.params.userId,
             req.params.learningObjectId,
-            req.query
+            req.query,
           );
         },
       }),
@@ -553,21 +555,21 @@ export default class ExpressRouteDriver {
         },
         // @ts-ignore
         userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
-        try {
-          let data = JSON.parse(proxyResData.toString('utf8'));
-          if (data.username) {
-            SocketInteractor.init().sendMessage(
-              data.username,
-              'VERIFIED_EMAIL',
-            );
-            userRes.redirect('http://clark.center');
-            return '';
-          } else {
+          try {
+            let data = JSON.parse(proxyResData.toString('utf8'));
+            if (data.username) {
+              SocketInteractor.init().sendMessage(
+                data.username,
+                'VERIFIED_EMAIL',
+              );
+              userRes.redirect('http://clark.center');
+              return '';
+            } else {
+              return proxyResData;
+            }
+          } catch (e) {
             return proxyResData;
           }
-        } catch (e) {
-          return proxyResData;
-        }
         },
       }),
     );
@@ -603,9 +605,7 @@ export default class ExpressRouteDriver {
               req.params.username,
             )}/cart/learning-objects/${encodeURIComponent(
               req.params.author,
-              )}/${encodeURIComponent(
-              req.params.learningObjectName,
-            )}`;
+            )}/${encodeURIComponent(req.params.learningObjectName)}`;
           },
         }),
       )
@@ -622,17 +622,17 @@ export default class ExpressRouteDriver {
         }),
       );
 
-    router
-      .route('/:username/learning-objects/:learningObjectName/bundle')
-      .get(
-        proxy(CART_API, {
-          proxyReqPathResolver: req => {
-            return `/users/${encodeURIComponent(
-              req.params.username,
-            )}/learning-objects/${encodeURIComponent(req.params.learningObjectName)}/bundle?${querystring.stringify(req.query)}`;
-          },
-        }),
-      );
+    router.route('/:username/learning-objects/:learningObjectName/bundle').get(
+      proxy(CART_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(
+            req.params.username,
+          )}/learning-objects/${encodeURIComponent(
+            req.params.learningObjectName,
+          )}/bundle?${querystring.stringify(req.query)}`;
+        },
+      }),
+    );
 
     router.get(
       '/search',
@@ -714,21 +714,50 @@ export default class ExpressRouteDriver {
       .post(
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
-            return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT;
+            const authorUsername = parentParams.username;
+            return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT(
+              authorUsername,
+            );
           },
         }),
       );
 
-    router.route('/:learningObjectName').delete(
+    router.delete(
+      '/:learningObjectName',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          let learningObjectName = req.params.learningObjectName;
-          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT(
-            learningObjectName,
-          );
+          const learningObjectName = req.params.learningObjectName;
+          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT_BY_NAME(learningObjectName);
         },
       }),
     );
+
+    router
+      .route('/:learningObjectId')
+      .patch(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            const authorUsername = parentParams.username;
+            const learningObjectId = req.params.learningObjectId;
+            return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT({
+              authorUsername,
+              id: learningObjectId,
+            });
+          },
+        }),
+      )
+      .delete(
+        proxy(LEARNING_OBJECT_SERVICE_URI, {
+          proxyReqPathResolver: req => {
+            const authorUsername = parentParams.username;
+            const learningObjectId = req.params.learningObjectId;
+            return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT({
+              authorUsername,
+              id: learningObjectId,
+            });
+          },
+        }),
+      );
 
     router.get(
       '/profile',
@@ -736,17 +765,6 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.LOAD_USER_PROFILE(
             encodeURIComponent(req.params.username),
-          );
-        },
-      }),
-    );
-
-    router.patch(
-      '/:learningObjectId',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.UPDATE_LEARNING_OBJECT(
-            encodeURIComponent(req.params.learningObjectId),
           );
         },
       }),
@@ -830,7 +848,7 @@ export default class ExpressRouteDriver {
         proxy(LEARNING_OBJECT_SERVICE_URI, {
           proxyReqPathResolver: req => {
             const username = parentParams.username;
-            const learningObjectId = req.params.learningObjectID;
+            const learningObjectId = req.params.learningObjectId;
             const fileId = req.params.fileId;
             return LEARNING_OBJECT_ROUTES.UPDATE_FILE({
               username,
@@ -864,8 +882,13 @@ export default class ExpressRouteDriver {
     router.route('/:id/materials').get(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
+          const username = parentParams.username;
           const id = req.params.id;
-          return LEARNING_OBJECT_ROUTES.GET_MATERIALS(id);
+          return LEARNING_OBJECT_ROUTES.GET_MATERIALS({
+            username,
+            id,
+            query: req.query,
+          });
         },
       }),
     );
@@ -909,31 +932,34 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router.route('/:objectId/files/:fileId/multipart/:uploadId/admin').patch(
-      proxy(FILE_UPLOAD_API, {
-        proxyReqPathResolver: req => {
-          const username = parentParams.username;
-          return FILE_UPLOAD_ROUTES.FINALIZE_MULTIPART({
-            username,
-            objectId: req.params.objectId,
-            fileId: req.params.fileId,
-            uploadId: req.params.uploadId,
-          });
-        },
-      }),
-    ).delete(
-      proxy(FILE_UPLOAD_API, {
-        proxyReqPathResolver: req => {
-          const username = parentParams.username;
-          return FILE_UPLOAD_ROUTES.ABORT_MULTIPART({
-            username,
-            objectId: req.params.objectId,
-            fileId: req.params.fileId,
-            uploadId: req.params.uploadId,
-          });
-        },
-      }),
-    );
+    router
+      .route('/:objectId/files/:fileId/multipart/:uploadId/admin')
+      .patch(
+        proxy(FILE_UPLOAD_API, {
+          proxyReqPathResolver: req => {
+            const username = parentParams.username;
+            return FILE_UPLOAD_ROUTES.FINALIZE_MULTIPART({
+              username,
+              objectId: req.params.objectId,
+              fileId: req.params.fileId,
+              uploadId: req.params.uploadId,
+            });
+          },
+        }),
+      )
+      .delete(
+        proxy(FILE_UPLOAD_API, {
+          proxyReqPathResolver: req => {
+            const username = parentParams.username;
+            return FILE_UPLOAD_ROUTES.ABORT_MULTIPART({
+              username,
+              objectId: req.params.objectId,
+              fileId: req.params.fileId,
+              uploadId: req.params.uploadId,
+            });
+          },
+        }),
+      );
     return router(_req, res, next);
   }
 
