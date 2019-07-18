@@ -64,8 +64,8 @@ export const LEARNING_OBJECT_ROUTES = {
   GET_RECENT_CHANGELOG(userId: string, learningObjectId: string) {
     return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
-  GET_ALL_CHANGELOGS(userId: string, learningObjectId: string) {
-    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelogs`;
+  GET_ALL_CHANGELOGS(userId: string, learningObjectId: string, query: any) {
+    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelogs?${querystring.stringify(query)}`;
   },
   DOWNLOAD_FILE(params: {
     username: string;
