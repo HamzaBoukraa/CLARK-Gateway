@@ -423,6 +423,7 @@ export default class ExpressRouteDriver {
           return LEARNING_OBJECT_ROUTES.GET_ALL_CHANGELOGS(
             req.params.userId,
             req.params.learningObjectId,
+            req.query,
           );
         },
       }),
