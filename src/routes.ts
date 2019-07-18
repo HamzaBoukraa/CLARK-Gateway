@@ -1,8 +1,10 @@
 import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
-  CREATE_LEARNING_OBJECT: '/learning-objects',
-  UPDATE_LEARNING_OBJECT(id: string) {
-    return '/learning-objects/' + encodeURIComponent(id);
+  CREATE_LEARNING_OBJECT(authorUsername: string) {
+    return `/users/${encodeURIComponent(authorUsername)}/learning-objects`;
+  },
+  UPDATE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
+    return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
   },
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
@@ -20,8 +22,11 @@ export const LEARNING_OBJECT_ROUTES = {
       username,
     )}/${encodeURIComponent(learningObjectName)}/id`;
   },
-  DELETE_LEARNING_OBJECT(learningObjectName: string) {
+  DELETE_LEARNING_OBJECT_BY_NAME(learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
+  },
+  DELETE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
+    return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
   },
   PUBLISH_LEARNING_OBJECT: `/learning-objects/publish`,
   UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
@@ -39,11 +44,11 @@ export const LEARNING_OBJECT_ROUTES = {
   },
 
   UPLOAD_MATERIALS: `/files`,
-  UPDATE_FILE(id: string, fileId: string) {
-    return `/files/${id}/${encodeURIComponent(fileId)}`;
+  UPDATE_FILE({ username, learningObjectId, fileId }: { username: string; learningObjectId: string; fileId: string; }) {
+    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(fileId)}`;
   },
-  DELETE_FILE(id: string, fileId: string) {
-    return `/files/${id}/${encodeURIComponent(fileId)}`;
+  DELETE_FILE({ username, learningObjectId, fileId }: { username: string; learningObjectId: string; fileId: string; }) {
+    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(fileId)}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
   ADD_LEARNING_OBJECT_TO_COLLECTION(id: string) {
@@ -72,8 +77,8 @@ export const LEARNING_OBJECT_ROUTES = {
       params.fileId
     }/download?${querystring.stringify(params.query)}`;
   },
-  GET_MATERIALS(id: string) {
-    return `/learning-objects/${id}/materials/all`;
+  GET_MATERIALS({ username, id, query }: { username: string; id: string; query?: any; }) {
+    return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials?${querystring.stringify(query)}`;
   },
   ADD_MATERIALS(username: string, id: string) {
     return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials/files`;
