@@ -795,6 +795,18 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    router.post(
+      '/:learningObjectId/revisions',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT_REVISION(
+            req.params.username,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
     // FILE OPERATIONS
     /**
      * TODO: Deprecate in favor of more RESTful `/:learningObjectId/materials/files/:fileId` when clients have updated
