@@ -807,6 +807,20 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    router.get(
+      '/:learningObjectId/revisions/:revisionId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_LEARNING_OBJECT_REVISION({
+            username: req.params.username,
+            learningObjectId: req.params.learningObjectId,
+            revisionId: req.params.revisionId,
+            query: req.query,
+          });
+        },
+      }),
+    );
     // FILE OPERATIONS
     /**
      * TODO: Deprecate in favor of more RESTful `/:learningObjectId/materials/files/:fileId` when clients have updated

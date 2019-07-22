@@ -3,6 +3,16 @@ export const LEARNING_OBJECT_ROUTES = {
   CREATE_LEARNING_OBJECT_REVISION(username: string, learningObjectId: string) {
     return `/users/${encodeURIComponent(username)}/learning-objects/${encodeURIComponent(learningObjectId)}/revisions`;
   },
+  GET_LEARNING_OBJECT_REVISION(params: {
+    username: string,
+    learningObjectId: string,
+    revisionId: string,
+    query: any;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      encodeURIComponent(params.learningObjectId)
+    }/revisions/${encodeURIComponent(params.revisionId)}?${querystring.stringify(params.query)}`;
+  },
   CREATE_LEARNING_OBJECT(authorUsername: string) {
     return `/users/${encodeURIComponent(authorUsername)}/learning-objects`;
   },
