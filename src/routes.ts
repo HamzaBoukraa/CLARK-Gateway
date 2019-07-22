@@ -10,7 +10,9 @@ export const LEARNING_OBJECT_ROUTES = {
     query: any;
   }) {
     // tslint:disable-next-line:max-line-length
-    return `/users/${encodeURIComponent(params.username)}/learning-objects/${encodeURIComponent(params.learningObjectId)}/revisions/${encodeURIComponent(params.revisionId)}?${querystring.stringify(params.query)}`;
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      encodeURIComponent(params.learningObjectId)
+    }/revisions/${encodeURIComponent(params.revisionId)}?${querystring.stringify(params.query)}`;
   },
   CREATE_LEARNING_OBJECT(authorUsername: string) {
     return `/users/${encodeURIComponent(authorUsername)}/learning-objects`;
