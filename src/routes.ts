@@ -9,7 +9,6 @@ export const LEARNING_OBJECT_ROUTES = {
     revisionId: string,
     query: any;
   }) {
-    // tslint:disable-next-line:max-line-length
     return `/users/${encodeURIComponent(params.username)}/learning-objects/${
       encodeURIComponent(params.learningObjectId)
     }/revisions/${encodeURIComponent(params.revisionId)}?${querystring.stringify(params.query)}`;
