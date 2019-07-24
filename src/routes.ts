@@ -1,5 +1,18 @@
 import * as querystring from 'querystring';
 export const LEARNING_OBJECT_ROUTES = {
+  CREATE_LEARNING_OBJECT_REVISION(username: string, learningObjectId: string) {
+    return `/users/${encodeURIComponent(username)}/learning-objects/${encodeURIComponent(learningObjectId)}/revisions`;
+  },
+  GET_LEARNING_OBJECT_REVISION(params: {
+    username: string,
+    learningObjectId: string,
+    revisionId: string,
+    query: any;
+  }) {
+    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
+      encodeURIComponent(params.learningObjectId)
+    }/revisions/${encodeURIComponent(params.revisionId)}?${querystring.stringify(params.query)}`;
+  },
   CREATE_LEARNING_OBJECT(authorUsername: string) {
     return `/users/${encodeURIComponent(authorUsername)}/learning-objects`;
   },
@@ -64,8 +77,8 @@ export const LEARNING_OBJECT_ROUTES = {
   GET_RECENT_CHANGELOG(userId: string, learningObjectId: string) {
     return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
-  GET_ALL_CHANGELOGS(userId: string, learningObjectId: string) {
-    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelogs`;
+  GET_ALL_CHANGELOGS(userId: string, learningObjectId: string, query: any) {
+    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelogs?${querystring.stringify(query)}`;
   },
   DOWNLOAD_FILE(params: {
     username: string;

@@ -423,6 +423,7 @@ export default class ExpressRouteDriver {
           return LEARNING_OBJECT_ROUTES.GET_ALL_CHANGELOGS(
             req.params.userId,
             req.params.learningObjectId,
+            req.query,
           );
         },
       }),
@@ -791,6 +792,32 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           let names = req.params.names.split(',');
           return LEARNING_OBJECT_ROUTES.DELETE_MULTIPLE_LEARNING_OBJECTS(names);
+        },
+      }),
+    );
+
+    router.post(
+      '/:learningObjectId/revisions',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.CREATE_LEARNING_OBJECT_REVISION(
+            req.params.username,
+            req.params.learningObjectId,
+          );
+        },
+      }),
+    );
+
+    router.get(
+      '/:learningObjectId/revisions/:revisionId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return LEARNING_OBJECT_ROUTES.GET_LEARNING_OBJECT_REVISION({
+            username: req.params.username,
+            learningObjectId: req.params.learningObjectId,
+            revisionId: req.params.revisionId,
+            query: req.query,
+          });
         },
       }),
     );
