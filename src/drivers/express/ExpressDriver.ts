@@ -13,6 +13,8 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+const KEEP_ALIVE_TIMEOUT = process.env.KEEP_ALIVE_TIMEOUT;
+
 /**
  * Handles serving the API through the express framework.
  */
@@ -74,6 +76,9 @@ export class ExpressDriver {
      * Create HTTP server.
      */
     const server = http.createServer(this.app);
+    server.keepAliveTimeout = KEEP_ALIVE_TIMEOUT
+      ? parseInt(KEEP_ALIVE_TIMEOUT, 10)
+      : server.keepAliveTimeout;
 
     let io = socketio(server, { pingInterval: 2000, pingTimeout: 5000 });
     let socketInteractor = SocketInteractor.init(io);
