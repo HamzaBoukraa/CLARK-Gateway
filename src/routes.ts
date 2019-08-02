@@ -1,23 +1,43 @@
 import * as querystring from 'querystring';
+
+export const USER_ROUTES = {
+  FETCH_USER(username: string) {
+    return `/users/${encodeURIComponent(username)}`;
+  },
+};
 export const LEARNING_OBJECT_ROUTES = {
   CREATE_LEARNING_OBJECT_REVISION(username: string, learningObjectId: string) {
-    return `/users/${encodeURIComponent(username)}/learning-objects/${encodeURIComponent(learningObjectId)}/revisions`;
+    return `/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${encodeURIComponent(learningObjectId)}/revisions`;
   },
   GET_LEARNING_OBJECT_REVISION(params: {
-    username: string,
-    learningObjectId: string,
-    revisionId: string,
+    username: string;
+    learningObjectId: string;
+    revisionId: string;
     query: any;
   }) {
-    return `/users/${encodeURIComponent(params.username)}/learning-objects/${
-      encodeURIComponent(params.learningObjectId)
-    }/revisions/${encodeURIComponent(params.revisionId)}?${querystring.stringify(params.query)}`;
+    return `/users/${encodeURIComponent(
+      params.username,
+    )}/learning-objects/${encodeURIComponent(
+      params.learningObjectId,
+    )}/revisions/${encodeURIComponent(
+      params.revisionId,
+    )}?${querystring.stringify(params.query)}`;
   },
   CREATE_LEARNING_OBJECT(authorUsername: string) {
     return `/users/${encodeURIComponent(authorUsername)}/learning-objects`;
   },
-  UPDATE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
-    return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
+  UPDATE_LEARNING_OBJECT({
+    authorUsername,
+    id,
+  }: {
+    authorUsername: string;
+    id: string;
+  }) {
+    return `/users/${encodeURIComponent(
+      authorUsername,
+    )}/learning-objects/${encodeURIComponent(id)}`;
   },
   LOAD_LEARNING_OBJECT(username: string, learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(
@@ -38,8 +58,16 @@ export const LEARNING_OBJECT_ROUTES = {
   DELETE_LEARNING_OBJECT_BY_NAME(learningObjectName: string) {
     return `/learning-objects/${encodeURIComponent(learningObjectName)}`;
   },
-  DELETE_LEARNING_OBJECT({ authorUsername, id }: { authorUsername: string; id: string; }) {
-    return `/users/${encodeURIComponent(authorUsername)}/learning-objects/${encodeURIComponent(id)}`;
+  DELETE_LEARNING_OBJECT({
+    authorUsername,
+    id,
+  }: {
+    authorUsername: string;
+    id: string;
+  }) {
+    return `/users/${encodeURIComponent(
+      authorUsername,
+    )}/learning-objects/${encodeURIComponent(id)}`;
   },
   PUBLISH_LEARNING_OBJECT: `/learning-objects/publish`,
   UNPUBLISH_LEARNING_OBJECT: `/learning-objects/unpublish`,
@@ -53,15 +81,39 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/users/${encodeURIComponent(username)}/learning-objects`;
   },
   SUBMIT_FOR_REVIEW(userId: string, learningObjectId: string, query: {}) {
-    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/submissions?${querystring.stringify(query)}`;
+    return `/users/${encodeURIComponent(
+      userId,
+    )}/learning-objects/${encodeURIComponent(
+      learningObjectId,
+    )}/submissions?${querystring.stringify(query)}`;
   },
 
   UPLOAD_MATERIALS: `/files`,
-  UPDATE_FILE({ username, learningObjectId, fileId }: { username: string; learningObjectId: string; fileId: string; }) {
-    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(fileId)}`;
+  UPDATE_FILE({
+    username,
+    learningObjectId,
+    fileId,
+  }: {
+    username: string;
+    learningObjectId: string;
+    fileId: string;
+  }) {
+    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(
+      fileId,
+    )}`;
   },
-  DELETE_FILE({ username, learningObjectId, fileId }: { username: string; learningObjectId: string; fileId: string; }) {
-    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(fileId)}`;
+  DELETE_FILE({
+    username,
+    learningObjectId,
+    fileId,
+  }: {
+    username: string;
+    learningObjectId: string;
+    fileId: string;
+  }) {
+    return `/users/${username}/learning-objects/${learningObjectId}/materials/files/${encodeURIComponent(
+      fileId,
+    )}`;
   },
   FETCH_MULTIPLE_LEARNING_OBJECTS: '/learning-objects/multiple',
   ADD_LEARNING_OBJECT_TO_COLLECTION(id: string) {
@@ -72,13 +124,21 @@ export const LEARNING_OBJECT_ROUTES = {
     return `/learning-objects/${id}/pdf`;
   },
   CREATE_CHANGELOG(userId: string, learningObjectId: string) {
-    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
+    return `/users/${encodeURIComponent(
+      userId,
+    )}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
   GET_RECENT_CHANGELOG(userId: string, learningObjectId: string) {
-    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
+    return `/users/${encodeURIComponent(
+      userId,
+    )}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
   GET_ALL_CHANGELOGS(userId: string, learningObjectId: string, query: any) {
-    return `/users/${encodeURIComponent(userId)}/learning-objects/${encodeURIComponent(learningObjectId)}/changelogs?${querystring.stringify(query)}`;
+    return `/users/${encodeURIComponent(
+      userId,
+    )}/learning-objects/${encodeURIComponent(
+      learningObjectId,
+    )}/changelogs?${querystring.stringify(query)}`;
   },
   DOWNLOAD_FILE(params: {
     username: string;
@@ -90,11 +150,23 @@ export const LEARNING_OBJECT_ROUTES = {
       params.fileId
     }/download?${querystring.stringify(params.query)}`;
   },
-  GET_MATERIALS({ username, id, query }: { username: string; id: string; query?: any; }) {
-    return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials?${querystring.stringify(query)}`;
+  GET_MATERIALS({
+    username,
+    id,
+    query,
+  }: {
+    username: string;
+    id: string;
+    query?: any;
+  }) {
+    return `/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${id}/materials?${querystring.stringify(query)}`;
   },
   ADD_MATERIALS(username: string, id: string) {
-    return `/users/${encodeURIComponent(username)}/learning-objects/${id}/materials/files`;
+    return `/users/${encodeURIComponent(
+      username,
+    )}/learning-objects/${id}/materials/files`;
   },
   GET_LEARNING_OBJECT_CHILDREN(learningObjectID: string) {
     return `/learning-objects/${encodeURIComponent(
@@ -179,7 +251,10 @@ export const ADMIN_LEARNING_OBJECT_ROUTES = {
       username,
     )}/learning-objects/${encodeURIComponent(learningObjectName)}`;
   },
-  DELETE_MULTIPLE_LEARNING_OBJECTS(username: string, learningObjectIDs: string) {
+  DELETE_MULTIPLE_LEARNING_OBJECTS(
+    username: string,
+    learningObjectIDs: string,
+  ) {
     return `/admin/users/${encodeURIComponent(
       username,
     )}/learning-objects/multiple/${learningObjectIDs}`;
@@ -201,19 +276,17 @@ export const ADMIN_USER_ROUTES = {
   ASSIGN_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/${encodeURIComponent(
-      memberId,
-    )}`;
+    )}/members/${encodeURIComponent(memberId)}`;
   },
   EDIT_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
     return `/collections/${encodeURIComponent(
       collectionName,
-    )}/members/${encodeURIComponent(
-      memberId,
-    )}`;
+    )}/members/${encodeURIComponent(memberId)}`;
   },
   REMOVE_COLLECTION_MEMBERSHIP(collectionName: string, memberId: string) {
-    return `/collections/${encodeURIComponent(collectionName)}/members/${encodeURIComponent(memberId)}`;
+    return `/collections/${encodeURIComponent(
+      collectionName,
+    )}/members/${encodeURIComponent(memberId)}`;
   },
   FETCH_USER_ROLES(id: string) {
     return `/users/${id}/roles`;

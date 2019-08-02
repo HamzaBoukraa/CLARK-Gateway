@@ -10,6 +10,7 @@ import {
   FILE_UPLOAD_ROUTES,
   STATS_ROUTE,
   ADMIN_USER_ROUTES,
+  USER_ROUTES,
 } from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
@@ -394,6 +395,15 @@ export default class ExpressRouteDriver {
   private buildUserRouter() {
     let router: Router = express.Router();
 
+    router.get(
+      '/:username',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return USER_ROUTES.FETCH_USER(req.params.username);
+        },
+      }),
+    );
+
     router.post(
       '/:userId/learning-objects/:learningObjectId/changelog',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -728,7 +738,9 @@ export default class ExpressRouteDriver {
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           const learningObjectName = req.params.learningObjectName;
-          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT_BY_NAME(learningObjectName);
+          return LEARNING_OBJECT_ROUTES.DELETE_LEARNING_OBJECT_BY_NAME(
+            learningObjectName,
+          );
         },
       }),
     );
