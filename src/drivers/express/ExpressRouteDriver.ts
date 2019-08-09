@@ -15,6 +15,7 @@ import {
 import * as request from 'request';
 import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
+import { ServerlessCache } from '../../cache';
 
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
@@ -325,13 +326,7 @@ export default class ExpressRouteDriver {
     );
 
     router.get('/status', async (req, res) => {
-      try {
-        request(APP_STATUS, function(error, response, body) {
-          res.send(body);
-        });
-      } catch (e) {
-        res.status(500).send(`Problem checking status. Error: ${e}.`);
-      }
+      res.send(ServerlessCache.cachedValue);
     });
 
     router.get('/clientversion/:clientVersion', async (req, res) => {
