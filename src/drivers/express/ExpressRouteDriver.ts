@@ -395,15 +395,6 @@ export default class ExpressRouteDriver {
   private buildUserRouter() {
     let router: Router = express.Router();
 
-    router.get(
-      '/:username',
-      proxy(USERS_API, {
-        proxyReqPathResolver: req => {
-          return USER_ROUTES.FETCH_USER(req.params.username);
-        },
-      }),
-    );
-
     router.post(
       '/:userId/learning-objects/:learningObjectId/changelog',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -688,6 +679,15 @@ export default class ExpressRouteDriver {
       proxy(USERS_API, {
         proxyReqPathResolver: req => {
           return ADMIN_USER_ROUTES.FETCH_USER_ROLES(req.params.id);
+        },
+      }),
+    );
+
+    router.get(
+      '/:username',
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return USER_ROUTES.FETCH_USER(req.params.username);
         },
       }),
     );
