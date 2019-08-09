@@ -12,9 +12,8 @@ ExpressDriver.start();
 
 async function fillCache() {
     try {
-        request(APP_STATUS, function(body) {
+        request(APP_STATUS, function(error, response, body) {
             ServerlessCache.cachedValue = body;
-            console.log(ServerlessCache.cachedValue);
         });
     } catch (e) {
         reportError(e);
