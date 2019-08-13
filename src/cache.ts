@@ -15,7 +15,6 @@ export class ServerlessCache {
         try {
             request(APP_STATUS, function(error, response, body) {
                 ServerlessCache.cachedValue = body;
-                console.log(body);
             });
         } catch (e) {
             reportError(e);
