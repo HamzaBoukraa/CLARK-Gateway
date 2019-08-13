@@ -19,10 +19,11 @@ export class ServerlessCache {
 
     static fillCache() {
         request(APP_STATUS, function(error, response, body) {
-            ServerlessCache.cachedValue = body;
-        });
-        emitter.on('error', (e) => {
-            reportError(e);
+            if (error) {
+                reportError(error);
+            } else {
+                ServerlessCache.cachedValue = body;
+            }
         });
     }
 }
