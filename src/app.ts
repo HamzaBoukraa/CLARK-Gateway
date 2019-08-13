@@ -14,7 +14,7 @@ async function setCacheInterval() {
     // tslint:disable-next-line: align
     }, 300000); // 5 minute interval
 }
-if (environment === 'development') {
+if (environment !== 'development') {
     ServerlessCache.fillCache();
     setCacheInterval();
 }
