@@ -1,6 +1,12 @@
 import * as request from 'request';
 import { reportError } from './shared/SentryConnector';
 const APP_STATUS = process.env.APP_STATUS_URI;
+import { EventEmitter } from 'events';
+
+class Emitter extends EventEmitter {}
+
+const emitter = new Emitter();
+
 export class ServerlessCache {
      private static _cacheValue: object;
 
@@ -12,12 +18,11 @@ export class ServerlessCache {
      }
 
     static fillCache() {
-        try {
-            request(APP_STATUS, function(error, response, body) {
-                ServerlessCache.cachedValue = body;
-            });
-        } catch (e) {
+        request(APP_STATUS, function(error, response, body) {
+            ServerlessCache.cachedValue = body;
+        });
+        emitter.on('error', (e) => {
             reportError(e);
-        }
+        });
     }
 }
