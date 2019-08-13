@@ -1,5 +1,6 @@
 import { ExpressDriver } from './drivers/drivers';
 import { ServerlessCache } from './cache';
+const environment = process.env.NODE_ENV;
 // ----------------------------------------------------------------------------------
 // Initializations
 // ----------------------------------------------------------------------------------
@@ -13,7 +14,9 @@ async function setCacheInterval() {
     // tslint:disable-next-line: align
     }, 300000); // 5 minute interval
 }
+if (environment === 'development') {
+    ServerlessCache.fillCache();
+    setCacheInterval();
+}
 
-ServerlessCache.fillCache();
-setCacheInterval();
 
