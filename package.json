@@ -1,6 +1,6 @@
 {
   "name": "clark-gateway",
-  "version": "2.13.1",
+  "version": "2.13.2",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -43,6 +43,7 @@
     "typescript": "^2.3.4"
   },
   "dependencies": {
+    "@sentry/node": "^5.6.1",
     "body-parser": "^1.17.1",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",

@@ -15,6 +15,7 @@ import {
 import * as request from 'request';
 import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
+import { ServerlessCache } from '../../cache';
 
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
@@ -23,8 +24,6 @@ const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
 const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
-
-const APP_STATUS = process.env.APP_STATUS_URI;
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -325,13 +324,7 @@ export default class ExpressRouteDriver {
     );
 
     router.get('/status', async (req, res) => {
-      try {
-        request(APP_STATUS, function(error, response, body) {
-          res.send(body);
-        });
-      } catch (e) {
-        res.status(500).send(`Problem checking status. Error: ${e}.`);
-      }
+      res.send(ServerlessCache.cachedValue);
     });
 
     router.get('/clientversion/:clientVersion', async (req, res) => {
