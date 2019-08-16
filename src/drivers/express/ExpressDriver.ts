@@ -4,7 +4,6 @@ import * as logger from 'morgan';
 import * as http from 'http';
 import { ExpressRouteDriver } from '../drivers';
 import * as cors from 'cors';
-import * as cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 import { sentryRequestHandler, sentryErrorHandler } from '../../shared/SentryConnector';
 
@@ -34,9 +33,6 @@ export class ExpressDriver {
     // configure app to use bodyParser()
     this.app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
     this.app.use(bodyParser.json({ limit: '50mb' }));
-
-    // set cookie parser
-    this.app.use(cookieParser());
 
     this.app.use(cors({ origin: true, credentials: true }));
 
