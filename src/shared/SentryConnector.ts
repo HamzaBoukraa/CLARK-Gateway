@@ -18,7 +18,7 @@ switch (environment) {
     break;
   case 'production':
     // Note: The DSN is not needed for local development since we only want to report production errors
-    Sentry.init({ dsn: process.env.SENTRY_DSN });
+    Sentry.init({ dsn: process.env.SENTRY_URI });
     _reportError = Sentry.captureException;
     break;
   default:

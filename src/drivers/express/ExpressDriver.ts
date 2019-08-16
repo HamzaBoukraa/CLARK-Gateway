@@ -5,8 +5,8 @@ import * as http from 'http';
 import { ExpressRouteDriver } from '../drivers';
 import * as cors from 'cors';
 import * as cookieParser from 'cookie-parser';
-import { config, errorHandler, requestHandler } from 'raven';
 import * as dotenv from 'dotenv';
+import { sentryRequestHandler, sentryErrorHandler } from '../../shared/SentryConnector';
 
 dotenv.config();
 
@@ -22,14 +22,10 @@ export class ExpressDriver {
   static start() {
     if (process.env.NODE_ENV === 'production') {
       // Configure error handler - MUST BE THE FIRST ERROR HANDLER IN CALL ORDER
-      config(process.env.SENTRY_URI).install();
-      this.app.use(errorHandler());
+      this.app.use(sentryErrorHandler);
 
       // Configure Sentry Route Handler - MUST BE FIRST ROUTE HANDLER
-      this.app.use(requestHandler());
-
-      // Configure Helmet Security
-      // helmetConfig.setup(this.app);
+      this.app.use(sentryRequestHandler);
     }
 
     // Configure app to log requests
