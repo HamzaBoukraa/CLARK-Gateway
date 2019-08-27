@@ -179,10 +179,10 @@ export default class ExpressRouteDriver {
 
     // Retrieves the metrics for a learning object
     router.get(
-      '/learning-objects/:id/metrics',
+      '/users/:username/learning-objects/:id/metrics',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
-          return `/learning-objects/:id/metrics`;
+          return `/users/:username/learning-objects/:id/metrics`;
         },
       }),
     );
