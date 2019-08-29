@@ -187,6 +187,18 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    // Retrieves the materials for a learning object
+    router.get(
+      '/users/:username/learning-objects/:id/materials',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/users/:username/learning-objects/${encodeURIComponent(req.params.id)}/materials?${querystring.stringify(
+            req.query,
+          )}`;
+        },
+      }),
+    );
+
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
