@@ -41,7 +41,7 @@ export default class ExpressRouteDriver {
     return router;
   }
 
-  private constructor() {}
+  private constructor() { }
 
   /**
    * Defines the active routes for the API. Routes take an async callback function that contains a request and response object.
@@ -50,7 +50,7 @@ export default class ExpressRouteDriver {
    * @param router the router being used by the webserver
    */
   setRoutes(router: Router) {
-    router.get('/', function(req, res) {
+    router.get('/', function (req, res) {
       res.json({
         message: 'Welcome to the C.L.A.R.K. Gateway API',
       });
@@ -198,6 +198,15 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+    router.get(
+      '/users/:username/learning-objects/:id/children',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/users/:username/learning-objects/${encodeURIComponent(req.params.id)}/children`;
+        },
+      }),
+    )
 
     router.use('/users', this.buildUserRouter());
     router.use(
@@ -571,7 +580,7 @@ export default class ExpressRouteDriver {
           return `/users/ota-codes?${querystring.stringify(req.query)}`;
         },
         // @ts-ignore
-        userResDecorator: function(proxyRes, proxyResData, userReq, userRes) {
+        userResDecorator: function (proxyRes, proxyResData, userReq, userRes) {
           try {
             let data = JSON.parse(proxyResData.toString('utf8'));
             if (data.username) {
@@ -598,8 +607,8 @@ export default class ExpressRouteDriver {
           proxyReqPathResolver: req => {
             return req.query.download
               ? `/users/${encodeURIComponent(
-                  req.params.username,
-                )}/cart?download=true`
+                req.params.username,
+              )}/cart?download=true`
               : `/users/${encodeURIComponent(req.params.username)}/cart`;
           },
         }),
@@ -1043,7 +1052,7 @@ export default class ExpressRouteDriver {
         proxyReqPathResolver: req => {
           let route = `${
             LEARNING_OBJECT_ROUTES.FETCH_LEARNING_OBJECTS
-          }?${querystring.stringify(req.query)}`;
+            }?${querystring.stringify(req.query)}`;
           return route;
         },
       }),
@@ -1098,6 +1107,8 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+
+
     return router;
   }
 }
