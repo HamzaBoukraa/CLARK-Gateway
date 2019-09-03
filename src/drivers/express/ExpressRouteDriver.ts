@@ -206,7 +206,7 @@ export default class ExpressRouteDriver {
           return `/users/:username/learning-objects/${encodeURIComponent(req.params.id)}/children`;
         },
       }),
-    )
+    );
 
     router.use('/users', this.buildUserRouter());
     router.use(
