@@ -649,7 +649,7 @@ export default class ExpressRouteDriver {
       );
 
     router.route('/:username/learning-objects/:learningObjectName/bundle').get(
-      proxy(CART_API, {
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(
             req.params.username,
