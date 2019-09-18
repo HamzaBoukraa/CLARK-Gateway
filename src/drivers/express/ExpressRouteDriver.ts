@@ -182,7 +182,7 @@ export default class ExpressRouteDriver {
       '/users/:username/learning-objects/:id/metrics',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
-          return `/users/:username/learning-objects/:id/metrics`;
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}/metrics`;
         },
       }),
     );
