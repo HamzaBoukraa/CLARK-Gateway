@@ -33,6 +33,7 @@ export const enforceTokenAccess = jwt({
     /\/collections\/.+\/learning-objects/i,
     /\/collections\/.+\/meta/i,
     '/status',
+    '/maintenance',
     '/collections',
     /\/users\/[0-z,.,-]+\/cards/i,
     '/library/stats',
