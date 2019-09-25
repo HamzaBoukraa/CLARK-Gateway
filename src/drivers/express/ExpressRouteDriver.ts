@@ -372,7 +372,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    // get the client version to see if there is an
+    // get the client version to see if there is an updated
     router.get(
       '/clientversion/:clientVersion',
       proxy(UTILITY_API, {
