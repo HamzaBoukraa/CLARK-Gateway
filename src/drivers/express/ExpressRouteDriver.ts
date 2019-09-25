@@ -57,12 +57,14 @@ export default class ExpressRouteDriver {
     });
 
     // GET RATINGS FOR LEARNING OBJECT
-    router.route('/learning-objects/:learningObjectId/ratings').get(
+    router.route('/learning-objects/:CUID/version/:versionID/ratings').get(
       proxy(RATING_API, {
         proxyReqPathResolver: req => {
           return `/learning-objects/${encodeURIComponent(
-            req.params.learningObjectId,
-          )}/ratings`;
+            req.params.CUID,
+          )}/version/${encodeURIComponent(
+            req.params.versionID,
+          )}ratings`;
         },
       }),
     );
@@ -76,34 +78,44 @@ export default class ExpressRouteDriver {
       }),
     );
     // EDIT RATING
-    router.route('/learning-objects/:learningObjectId/ratings/:ratingId').patch(
+    router.route('/learning-objects/:CUID/version/:versionID/ratings/:ratingID').patch(
       proxy(RATING_API, {
         proxyReqPathResolver: req => {
           return `/learning-objects/${encodeURIComponent(
-            req.params.learningObjectId,
-          )}/ratings/${encodeURIComponent(req.params.ratingId)}`;
+            req.params.CUID,
+          )}/version/${encodeURIComponent(
+            req.params.versionID,
+          )}/ratings/${encodeURIComponent(
+            req.params.ratingID,
+          )}`;
         },
       }),
     );
     // DELETE RATING
     router
-      .route('/learning-objects/:learningObjectId/ratings/:ratingId')
+      .route('/learning-objects/:CUID/version/:versionID/ratings/:ratingID')
       .delete(
         proxy(RATING_API, {
           proxyReqPathResolver: req => {
             return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}/ratings/${encodeURIComponent(req.params.ratingId)}`;
+              req.params.CUID,
+            )}/version/${encodeURIComponent(
+              req.params.versionID,
+            )}/ratings/${encodeURIComponent(
+              req.params.ratingID,
+            )}`;
           },
         }),
       );
     // CREATE RATING
-    router.route('/learning-objects/:learningObjectId/ratings').post(
+    router.route('/learning-objects/:CUID/version/:versionID/ratings').post(
       proxy(RATING_API, {
         proxyReqPathResolver: req => {
           return `/learning-objects/${encodeURIComponent(
-            req.params.learningObjectId,
-          )}/ratings`;
+            req.params.CUID,
+          )}/version/${encodeURIComponent(
+            req.params.versionID,
+          )}ratings`;
         },
       }),
     );
