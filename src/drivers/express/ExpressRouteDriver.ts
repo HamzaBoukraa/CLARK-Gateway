@@ -135,13 +135,17 @@ export default class ExpressRouteDriver {
 
     // CREATE A RESPONSE
     router
-      .route('/learning-objects/:learningObjectId/ratings/:ratingId/responses')
+      .route('/learning-objects/:CUID/version/:versionID/ratings/:ratingID/responses')
       .post(
         proxy(RATING_API, {
           proxyReqPathResolver: req => {
             return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}/ratings/${encodeURIComponent(req.params.ratingId)}/responses`;
+              req.params.CUID,
+            )}/version/${encodeURIComponent(
+              req.params.versionID,
+            )}/ratings/${encodeURIComponent(
+              req.params.ratingID,
+            )}/responses`;
           },
         }),
       );
@@ -149,16 +153,20 @@ export default class ExpressRouteDriver {
     // DELETE A RESPONSE
     router
       .route(
-        '/learning-objects/:learningObjectId/ratings/:ratingId/responses/:responseId',
+        '/learning-objects/:CUID/version/:versionID/ratings/:ratingID/responses/:responseID',
       )
       .delete(
         proxy(RATING_API, {
           proxyReqPathResolver: req => {
             return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
+              req.params.CUID,
+            )}/version/${encodeURIComponent(
+              req.params.versionID,
             )}/ratings/${encodeURIComponent(
-              req.params.ratingId,
-            )}/responses/${encodeURIComponent(req.params.responseId)}`;
+              req.params.ratingID,
+            )}/responses/${encodeURIComponent(
+              req.params.responseID,
+            )}`;
           },
         }),
       );
@@ -166,16 +174,20 @@ export default class ExpressRouteDriver {
     // EDIT A RESPONSE
     router
       .route(
-        '/learning-objects/:learningObjectId/ratings/:ratingId/responses/:responseId',
+        '/learning-objects/:CUID/version/:versionID/ratings/:ratingID/responses/:responseID',
       )
       .patch(
         proxy(RATING_API, {
           proxyReqPathResolver: req => {
             return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
+              req.params.CUID,
+            )}/version/${encodeURIComponent(
+              req.params.versionID,
             )}/ratings/${encodeURIComponent(
-              req.params.ratingId,
-            )}/responses/${encodeURIComponent(req.params.responseId)}`;
+              req.params.ratingID,
+            )}/responses/${encodeURIComponent(
+              req.params.responseID,
+            )}`;
           },
         }),
       );
