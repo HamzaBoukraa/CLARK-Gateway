@@ -122,13 +122,17 @@ export default class ExpressRouteDriver {
 
     // FLAG A RATING
     router
-      .route('/learning-objects/:learningObjectId/ratings/:ratingId/flags')
+      .route('/learning-objects/:CUID/version/:versionID/ratings/:ratingID/flags')
       .post(
         proxy(RATING_API, {
           proxyReqPathResolver: req => {
             return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}/ratings/${encodeURIComponent(req.params.ratingId)}/flags`;
+              req.params.CUID,
+            )}/version/${encodeURIComponent(
+              req.params.versionID,
+            )}/ratings/${encodeURIComponent(
+              req.params.ratingID,
+            )}/flags`;
           },
         }),
       );
