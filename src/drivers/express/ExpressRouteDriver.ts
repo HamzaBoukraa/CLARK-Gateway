@@ -11,11 +11,11 @@ import {
   STATS_ROUTE,
   ADMIN_USER_ROUTES,
   USER_ROUTES,
+  UTILITY_ROUTES,
 } from '../../routes';
 import * as request from 'request';
 import fetch from 'node-fetch';
 import { SocketInteractor } from '../../interactors/SocketInteractor';
-import { ServerlessCache } from '../../cache';
 
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const CART_API = process.env.CART_API || 'localhost:3006';
@@ -24,6 +24,7 @@ const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
 const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
+const UTILITY_API = process.env.UTILITY_URI || 'localhost:9000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -381,30 +382,33 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    router.get('/status', async (req, res) => {
-      res.send(ServerlessCache.cachedValue);
-    });
-
-    router.get('/clientversion/:clientVersion', async (req, res) => {
-      try {
-        const response = await fetch(process.env.CLIENTVERSIONURL);
-        const object = await response.json();
-        const version: string = object.version;
-        if (req.params.clientVersion === version) {
-          res.sendStatus(200);
-        } else {
-          // Http 426 - Upgrade Required
-          res
-            .status(426)
-            .send(
-              'A new version of CLARK is available! . Refresh your page to see our latest changes.',
-            );
-        }
-      } catch (e) {
-        res.status(500).send('Could not recover the client version');
-      }
-    });
+    // get the status for the banner
+    router.get(
+      '/status',
+      proxy(UTILITY_API, {
+        proxyReqPathResolver: req => {
+          return UTILITY_ROUTES.STATUS;
+        },
+      }),
+    );
+    // get the maintenace status for maintenance page
+    router.get(
+      `/maintenance`,
+      proxy(UTILITY_API, {
+        proxyReqPathResolver: req => {
+          return UTILITY_ROUTES.MAINTENANCE;
+        },
+      }),
+    );
+    // get the client version to see if there is an updated
+    router.get(
+      '/clientversion/:clientVersion',
+      proxy(UTILITY_API, {
+        proxyReqPathResolver: req => {
+          return `/clientversion/${encodeURIComponent(req.params.clientVersion)}`;
+        },
+      }),
+    );
 
     router.post(
       '/learning-objects/:username/:learningObjectName/children',

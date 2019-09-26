@@ -303,3 +303,8 @@ export const STATS_ROUTE = {
   USER_STATS: '/users/stats',
   LEARNING_OBJECT_STATS: '/learning-objects/stats',
 };
+
+export const UTILITY_ROUTES = {
+  MAINTENANCE: '/maintenance',
+  STATUS: '/status',
+};
