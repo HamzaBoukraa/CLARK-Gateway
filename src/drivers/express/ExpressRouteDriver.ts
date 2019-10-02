@@ -703,7 +703,7 @@ export default class ExpressRouteDriver {
             req.params.cuid,
           )}/versions/${encodeURIComponent(
             req.params.version,
-          )}bundle`;
+          )}/bundle`;
         },
       }),
     );
