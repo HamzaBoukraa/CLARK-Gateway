@@ -694,14 +694,16 @@ export default class ExpressRouteDriver {
         }),
       );
 
-    router.route('/:username/learning-objects/:learningObjectName/bundle').get(
+    router.route('/:username/learning-objects/:cuid/versions/:version/bundle').get(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(
             req.params.username,
           )}/learning-objects/${encodeURIComponent(
-            req.params.learningObjectName,
-          )}/bundle?${querystring.stringify(req.query)}`;
+            req.params.cuid,
+          )}/versions/${encodeURIComponent(
+            req.params.version,
+          )}bundle`;
         },
       }),
     );
