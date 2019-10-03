@@ -220,6 +220,12 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get('/users/:username/learning-objects/:id', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}`;
+      },
+    }));
+
     // Retrieves the metrics for a learning object
     router.get(
       '/users/:username/learning-objects/:id/metrics',
