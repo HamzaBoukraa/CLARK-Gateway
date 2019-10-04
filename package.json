@@ -13,7 +13,9 @@
     "pack": "npm run build && cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
     "zip": "cp ./package.json ./dist && cd ./dist && zip -r ../dist.zip  ./* & cd ..",
     "deploy": "eb deploy CLARK-Gateway-Production --label CLARK-Gateway-v$(node -p \"require('./package.json').version\")",
-    "document": "node_modules/.bin/typedoc --out ./docs/ ./src/"
+    "document": "node_modules/.bin/typedoc --out ./docs/ ./src/",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "author": "",
   "license": "ISC",
@@ -57,10 +59,12 @@
     "node-fetch": "^2.2.0",
     "raven": "^2.3.0",
     "request": "^2.85.0",
-    "socket.io": "^2.1.0"
+    "socket.io": "^2.1.0",
+    "snyk": "^1.230.5"
   },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "all"
-  }
+  },
+  "snyk": true
 }
