@@ -222,7 +222,11 @@ export default class ExpressRouteDriver {
 
     router.get('/users/:username/learning-objects/:id', proxy(LEARNING_OBJECT_SERVICE_URI, {
       proxyReqPathResolver: req => {
-        return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}`;
+        let uri = `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}`;
+        if (req.query) {
+          uri += '?' + querystring.stringify(req.query);
+        }
+        return uri;
       },
     }));
 
