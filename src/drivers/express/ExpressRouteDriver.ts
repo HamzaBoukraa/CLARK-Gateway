@@ -220,15 +220,16 @@ export default class ExpressRouteDriver {
       }),
     );
 
-    router.get('/users/:username/learning-objects/:id', proxy(LEARNING_OBJECT_SERVICE_URI, {
-      proxyReqPathResolver: req => {
-        let uri = `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}`;
-        if (req.query) {
-          uri += '?' + querystring.stringify(req.query);
-        }
-        return uri;
-      },
-    }));
+    router.route('/users/:username/learning-objects/:id')
+      .all(proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          let uri = `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}`;
+          if (req.query) {
+            uri += '?' + querystring.stringify(req.query);
+          }
+          return uri;
+        },
+      }));
 
     // Retrieves the metrics for a learning object
     router.get(
@@ -703,6 +704,16 @@ export default class ExpressRouteDriver {
           },
         }),
       );
+
+    router.post('/:username/learning-objects/:cuid/versions', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return `/users/${encodeURIComponent(
+          req.params.username,
+        )}/learning-objects/${encodeURIComponent(
+          req.params.cuid,
+        )}/versions`;
+      },
+    }));
 
     router.route('/:username/learning-objects/:cuid/versions/:version/bundle').get(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
