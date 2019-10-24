@@ -468,34 +468,23 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
 
     router.post(
-      '/:userId/learning-objects/:learningObjectId/changelog',
+      '/:userId/learning-objects/:cuid/changelog',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
             req.params.userId,
-            req.params.learningObjectId,
+            req.params.cuid,
           );
         },
       }),
     );
     router.get(
-      '/:userId/learning-objects/:learningObjectId/changelog',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
-            req.params.userId,
-            req.params.learningObjectId,
-          );
-        },
-      }),
-    );
-    router.get(
-      '/:userId/learning-objects/:learningObjectId/changelogs',
+      '/:userId/learning-objects/:cuid/changelogs',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.GET_ALL_CHANGELOGS(
             req.params.userId,
-            req.params.learningObjectId,
+            req.params.cuid,
             req.query,
           );
         },
