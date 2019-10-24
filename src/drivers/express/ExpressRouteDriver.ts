@@ -425,7 +425,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    // get the client version to see if there is an updated
+    // get the client version to see if there is an update
     router.get(
       '/clientversion/:clientVersion',
       proxy(UTILITY_API, {
