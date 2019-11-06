@@ -123,21 +123,21 @@ export const LEARNING_OBJECT_ROUTES = {
   UPDATE_PDF(id: string) {
     return `/learning-objects/${id}/pdf`;
   },
-  CREATE_CHANGELOG(userId: string, learningObjectId: string) {
+  CREATE_CHANGELOG(userId: string, cuid: string) {
     return `/users/${encodeURIComponent(
       userId,
-    )}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
+    )}/learning-objects/${encodeURIComponent(cuid)}/changelog`;
   },
   GET_RECENT_CHANGELOG(userId: string, learningObjectId: string) {
     return `/users/${encodeURIComponent(
       userId,
     )}/learning-objects/${encodeURIComponent(learningObjectId)}/changelog`;
   },
-  GET_ALL_CHANGELOGS(userId: string, learningObjectId: string, query: any) {
+  GET_ALL_CHANGELOGS(userId: string, cuid: string, query: any) {
     return `/users/${encodeURIComponent(
       userId,
     )}/learning-objects/${encodeURIComponent(
-      learningObjectId,
+      cuid,
     )}/changelogs?${querystring.stringify(query)}`;
   },
   DOWNLOAD_FILE(params: {

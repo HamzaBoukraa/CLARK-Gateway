@@ -212,20 +212,31 @@ export default class ExpressRouteDriver {
       );
 
     router.get(
-      '/library/stats',
+      '/learning-objects/metrics',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
-          return `/library/stats`;
+          return `/learning-objects/metrics`;
         },
       }),
     );
 
+    router.route('/users/:username/learning-objects/:id')
+      .all(proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          let uri = `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}`;
+          if (req.query) {
+            uri += '?' + querystring.stringify(req.query);
+          }
+          return uri;
+        },
+      }));
+
     // Retrieves the metrics for a learning object
     router.get(
-      '/users/:username/learning-objects/:id/metrics',
+      '/users/:username/learning-objects/:cuid/metrics',
       proxy(CART_API, {
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.id)}/metrics`;
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(req.params.cuid)}/metrics`;
         },
       }),
     );
@@ -387,15 +398,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    router.get(
-      '/count/:author',
-      proxy(CART_API, {
-        proxyReqPathResolver: req => {
-          return `/count/${encodeURIComponent(req.params.author)}`;
-        },
-      }),
-    );
     // get the status for the banner
     router.get(
       '/status',
@@ -414,7 +416,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    // get the client version to see if there is an updated
+    // get the client version to see if there is an update
     router.get(
       '/clientversion/:clientVersion',
       proxy(UTILITY_API, {
@@ -466,34 +468,23 @@ export default class ExpressRouteDriver {
     let router: Router = express.Router();
 
     router.post(
-      '/:userId/learning-objects/:learningObjectId/changelog',
+      '/:userId/learning-objects/:cuid/changelog',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.CREATE_CHANGELOG(
             req.params.userId,
-            req.params.learningObjectId,
+            req.params.cuid,
           );
         },
       }),
     );
     router.get(
-      '/:userId/learning-objects/:learningObjectId/changelog',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
-        proxyReqPathResolver: req => {
-          return LEARNING_OBJECT_ROUTES.GET_RECENT_CHANGELOG(
-            req.params.userId,
-            req.params.learningObjectId,
-          );
-        },
-      }),
-    );
-    router.get(
-      '/:userId/learning-objects/:learningObjectId/changelogs',
+      '/:userId/learning-objects/:cuid/changelogs',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return LEARNING_OBJECT_ROUTES.GET_ALL_CHANGELOGS(
             req.params.userId,
-            req.params.learningObjectId,
+            req.params.cuid,
             req.query,
           );
         },
@@ -645,63 +636,54 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-    router
-      .route('/:username/cart')
-      .get(
-        proxy(CART_API, {
-          // get cart
-          proxyReqPathResolver: req => {
-            return req.query.download
-              ? `/users/${encodeURIComponent(
-                req.params.username,
-              )}/cart?download=true`
-              : `/users/${encodeURIComponent(req.params.username)}/cart`;
-          },
-        }),
-      )
-      .delete(
-        proxy(CART_API, {
-          // clear cart
-          proxyReqPathResolver: req => {
-            return `/users/${encodeURIComponent(req.params.username)}/cart`;
-          },
-        }),
-      );
-    router
-      .route('/:username/cart/learning-objects/:author/:learningObjectName')
-      .post(
-        proxy(CART_API, {
-          // add learning object to cart
-          proxyReqPathResolver: req => {
-            return `/users/${encodeURIComponent(
-              req.params.username,
-            )}/cart/learning-objects/${encodeURIComponent(
-              req.params.author,
-            )}/${encodeURIComponent(req.params.learningObjectName)}`;
-          },
-        }),
-      )
-      .delete(
-        proxy(CART_API, {
-          // remove learning object from cart
-          proxyReqPathResolver: req => {
-            return `/users/${encodeURIComponent(
-              req.params.username,
-            )}/cart/learning-objects/${req.params.author}/${encodeURIComponent(
-              req.params.learningObjectName,
-            )}`;
-          },
-        }),
-      );
+    router.get(
+      '/:username/library/learning-objects',
+      proxy(CART_API, {
+        // get library
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects`;
+        },
+      }),
+    );
+    router.delete(
+      '/:username/library/learning-objects/:cuid',
+      proxy(CART_API, {
+        // Delete a learning object from the users library
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${encodeURIComponent(req.params.cuid)}`;
+        },
+      }),
+    );
+    router.post(
+      '/:username/library/learning-objects',
+      proxy(CART_API, {
+        // Add a learning object to the users library
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects`;
+        },
+      }),
+    );
 
-    router.route('/:username/learning-objects/:learningObjectName/bundle').get(
+    router.post('/:username/learning-objects/:cuid/versions', proxy(LEARNING_OBJECT_SERVICE_URI, {
+      proxyReqPathResolver: req => {
+        return `/users/${encodeURIComponent(
+          req.params.username,
+        )}/learning-objects/${encodeURIComponent(
+          req.params.cuid,
+        )}/versions`;
+      },
+    }));
+
+    router.route('/:username/learning-objects/:cuid/versions/:version/bundle').get(
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(
             req.params.username,
           )}/learning-objects/${encodeURIComponent(
-            req.params.learningObjectName,
-          )}/bundle?${querystring.stringify(req.query)}`;
+            req.params.cuid,
+          )}/versions/${encodeURIComponent(
+            req.params.version,
+          )}/bundle`;
         },
       }),
     );
