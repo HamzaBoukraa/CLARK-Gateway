@@ -641,7 +641,7 @@ export default class ExpressRouteDriver {
       proxy(CART_API, {
         // get library
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects`;
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects?${querystring.stringify(req.query)}`;
         },
       }),
     );
@@ -650,7 +650,7 @@ export default class ExpressRouteDriver {
       proxy(CART_API, {
         // Delete a learning object from the users library
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${encodeURIComponent(req.params.cuid)}`;
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${encodeURIComponent(req.params.cuid)}?${querystring.stringify(req.query)}`;
         },
       }),
     );
