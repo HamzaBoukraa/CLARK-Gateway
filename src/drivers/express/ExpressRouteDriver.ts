@@ -429,7 +429,7 @@ export default class ExpressRouteDriver {
       '/outages',
       proxy(UTILITY_API, {
         proxyReqPathResolver: req => {
-          return `/outages?pastIssues=${encodeURIComponent(req.params.pastIssues)}`
+          return `/outages?pastIssues=${encodeURIComponent(req.query.pastIssues)}`
         },
       }),
     );
