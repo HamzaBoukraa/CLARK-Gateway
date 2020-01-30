@@ -425,6 +425,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.get(
+      '/outages',
+      proxy(UTILITY_API, {
+        proxyReqPathResolver: req => {
+          return `/outages?pastIssues=${encodeURIComponent(req.query.pastIssues)}`
+        },
+      }),
+    );
 
     router.post(
       '/learning-objects/:username/:learningObjectName/children',
