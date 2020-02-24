@@ -1,6 +1,6 @@
 {
   "name": "clark-gateway",
-  "version": "2.20.1",
+  "version": "2.21.0",
   "description": "",
   "main": "app.js",
   "scripts": {
@@ -39,11 +39,11 @@
     "ts-node": "^8.0.3",
     "tslint": "^5.7.0",
     "tslint-config-airbnb": "^5.3.0",
-    "typedoc": "^0.12.0",
-    "typescript": "^2.3.4"
+    "typedoc": "^0.16.9",
+    "typescript": "^3.7.5"
   },
   "dependencies": {
-    "@sentry/node": "^5.6.1",
+    "@sentry/node": "^5.11.2",
     "body-parser": "^1.17.1",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
@@ -51,7 +51,7 @@
     "express": "^4.15.2",
     "express-http-proxy": "^1.1.0",
     "express-jwt": "^5.3.1",
-    "helmet": "^3.6.1",
+    "helmet": "^3.21.2",
     "jsonwebtoken": "^8.3.0",
     "morgan": "^1.9.0",
     "node-fetch": "^2.2.0",
