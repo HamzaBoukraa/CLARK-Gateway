@@ -23,7 +23,7 @@ const LEARNING_OBJECT_SERVICE_URI =
 const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
 const UTILITY_API = process.env.UTILITY_URI || 'localhost:9000';
-const NOTIFICATIONS_API = process.env.NOTIFICATIONS_URI || 'localhost:8000';
+const NOTIFICATION_API = process.env.NOTIFICATION_API || 'localhost:8000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -58,17 +58,19 @@ export default class ExpressRouteDriver {
 
     // NOTIFICATIONS
     router.route('/users/:username/notifications').get(
-      proxy(NOTIFICATIONS_API, {
+      proxy(NOTIFICATION_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(
             req.params.username,
-          )}/notifications`;
+          )}/notifications?${querystring.stringify(
+            req.query,
+          )}`;
         },
       }),
     );
 
     router.route('/users/:username/notifications/:id').delete(
-      proxy(NOTIFICATIONS_API, {
+      proxy(NOTIFICATION_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(
             req.params.username,
