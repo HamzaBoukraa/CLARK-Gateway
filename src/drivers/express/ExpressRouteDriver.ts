@@ -56,6 +56,31 @@ export default class ExpressRouteDriver {
       });
     });
 
+    // GUIDELINE ROLES
+    router.route('/guidelines/members').get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/guidelines/members`;
+        },
+      }),
+    );
+
+    router.route('/guidelines/members/:memberId').put(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/guidelines/members/${encodeURIComponent(req.params.memberId)}`;
+        },
+      }),
+    );
+
+    router.route('/guidelines/members/:memberId').delete(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/guidelines/members/${encodeURIComponent(req.params.memberId)}`;
+        },
+      }),
+    );
+
     // NOTIFICATIONS
     router.route('/users/:username/notifications').get(
       proxy(NOTIFICATION_API, {
