@@ -313,6 +313,15 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get(
+      '/users/:username/learning-objects/:id/parents',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/users/:username/learning-objects/${encodeURIComponent(req.params.id)}/parents`;
+        },
+      }),
+    );
+
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
