@@ -24,6 +24,7 @@ const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
 const UTILITY_API = process.env.UTILITY_URI || 'localhost:9000';
 const NOTIFICATION_API = process.env.NOTIFICATION_API || 'localhost:8000';
+const OUTCOME_API = process.env.OUTCOME_API || 'localhost:####';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -503,28 +504,65 @@ export default class ExpressRouteDriver {
       proxy(LEARNING_OBJECT_SERVICE_URI),
     );
 
+    // TODO: UPDATE ROUTE IN CLIENT
     router.post(
-      '/learning-objects/:learningObjectId/learning-outcomes',
-      proxy(LEARNING_OBJECT_SERVICE_URI, {
+      '/:username/learning-objects/:learningObjectId/outcomes',
+      proxy(OUTCOME_API, {
         proxyReqPathResolver: req => {
-          return `/learning-objects/${encodeURIComponent(
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
-          )}/learning-outcomes`;
+          )}/outcomes`;
         },
       }),
     );
 
-    router
-      .route('/learning-objects/:learningObjectId/learning-outcomes/:outcomeId')
-      .all(
-        proxy(LEARNING_OBJECT_SERVICE_URI, {
-          proxyReqPathResolver: req => {
-            return `/learning-objects/${encodeURIComponent(
-              req.params.learningObjectId,
-            )}/learning-outcomes/${encodeURIComponent(req.params.outcomeId)}`;
-          },
-        }),
-      );
+    // TODO: UPDATE ROUTE IN CLIENT
+    router.patch(
+      '/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+            req.params.learningObjectId,
+          )}/outcomes/${encodeURIComponent(req.params.outcomeId)}`;
+        },
+      }),
+    );
+
+    // TODO: UPDATE ROUTE IN CLIENT
+    router.delete(
+      '/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+            req.params.learningObjectId,
+          )}/outcomes/${encodeURIComponent(req.params.outcomeId)}`;
+        },
+      }),
+    );
+
+    // TODO: NEW ROUTE UPDATE IN CLIENT
+    router.post(
+      '/:username/learning-objects/:learningObjectId/learning-outcomes/:outcomeId/mappings',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+            req.params.learningObjectId,
+          )}/outcomes/${encodeURIComponent(req.params.outcomeId)}/mappings`;
+        },
+      }),
+    );
+
+    // TODO: NEW ROUTE UPDATE IN CLIENT
+    router.delete(
+      '/:username/learning-objects/:learningObjectId/learning-outcomes/:outcomeId/mappings/:mappingId',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+            req.params.learningObjectId,
+          )}/outcomes/${encodeURIComponent(req.params.outcomeId)}/mappings/${encodeURIComponent(req.params.mappingId)}`;
+        },
+      }),
+    );
   }
 
   /**
@@ -756,7 +794,7 @@ export default class ExpressRouteDriver {
       }),
     );
 
-    router.get('/:username/learning-objects/:learningObjectId/outcomes', proxy(LEARNING_OBJECT_SERVICE_URI, {
+    router.get('/:username/learning-objects/:learningObjectId/outcomes', proxy(OUTCOME_API, {
       proxyReqPathResolver: req => {
         return `/users/${encodeURIComponent(
           req.params.username,
