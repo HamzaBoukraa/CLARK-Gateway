@@ -23,6 +23,8 @@ const LEARNING_OBJECT_SERVICE_URI =
 const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
 const UTILITY_API = process.env.UTILITY_URI || 'localhost:9000';
+const NOTIFICATION_API = process.env.NOTIFICATION_API || 'localhost:8000';
+const FEATURED_API = process.env.FEATURED_API || 'localhost:3000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -54,6 +56,71 @@ export default class ExpressRouteDriver {
         message: 'Welcome to the C.L.A.R.K. Gateway API',
       });
     });
+    // FEATURED ROUTES
+    router.route('/featured/learning-objects').get(
+      proxy(FEATURED_API, {
+        proxyReqPathResolver: req => {
+          return `/featured/learning-objects`;
+        },
+      }),
+    );
+    router.route('/featured/learning-objects').patch(
+      proxy(FEATURED_API, {
+        proxyReqPathResolver: req => {
+          return `/featured/learning-objects`;
+        },
+      }),
+    );
+
+    // GUIDELINE ROLES
+    router.route('/guidelines/members').get(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/guidelines/members`;
+        },
+      }),
+    );
+
+    router.route('/guidelines/members/:memberId').put(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/guidelines/members/${encodeURIComponent(req.params.memberId)}`;
+        },
+      }),
+    );
+
+    router.route('/guidelines/members/:memberId').delete(
+      proxy(USERS_API, {
+        proxyReqPathResolver: req => {
+          return `/guidelines/members/${encodeURIComponent(req.params.memberId)}`;
+        },
+      }),
+    );
+
+    // NOTIFICATIONS
+    router.route('/users/:username/notifications').get(
+      proxy(NOTIFICATION_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(
+            req.params.username,
+          )}/notifications?${querystring.stringify(
+            req.query,
+          )}`;
+        },
+      }),
+    );
+
+    router.route('/users/:username/notifications/:id').delete(
+      proxy(NOTIFICATION_API, {
+        proxyReqPathResolver: req => {
+          return `/users/${encodeURIComponent(
+            req.params.username,
+          )}/notifications/${encodeURIComponent(
+            req.params.id,
+          )}`;
+        },
+      }),
+    );
 
     // GET RATINGS FOR LEARNING OBJECT
     router.route('/users/:username/learning-objects/:CUID/version/:version/ratings').get(
@@ -262,6 +329,15 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    router.get(
+      '/users/:username/learning-objects/:id/parents',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
+        proxyReqPathResolver: req => {
+          return `/users/:username/learning-objects/${encodeURIComponent(req.params.id)}/parents`;
+        },
+      }),
+    );
+
     router.use('/users', this.buildUserRouter());
     router.use(
       '/users/:username/learning-objects',
@@ -422,6 +498,14 @@ export default class ExpressRouteDriver {
       proxy(UTILITY_API, {
         proxyReqPathResolver: req => {
           return `/clientversion/${encodeURIComponent(req.params.clientVersion)}`;
+        },
+      }),
+    );
+    router.get(
+      '/outages',
+      proxy(UTILITY_API, {
+        proxyReqPathResolver: req => {
+          return `/outages?pastIssues=${encodeURIComponent(req.query.pastIssues)}`
         },
       }),
     );
@@ -641,7 +725,7 @@ export default class ExpressRouteDriver {
       proxy(CART_API, {
         // get library
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects`;
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects?${querystring.stringify(req.query)}`;
         },
       }),
     );
@@ -650,7 +734,7 @@ export default class ExpressRouteDriver {
       proxy(CART_API, {
         // Delete a learning object from the users library
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${encodeURIComponent(req.params.cuid)}`;
+          return `/users/${encodeURIComponent(req.params.username)}/library/learning-objects/${encodeURIComponent(req.params.cuid)}?${querystring.stringify(req.query)}`;
         },
       }),
     );
