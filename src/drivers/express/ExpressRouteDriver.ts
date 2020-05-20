@@ -24,7 +24,7 @@ const FILE_UPLOAD_API = process.env.FILE_UPLOAD_API || 'localhost:5100';
 const BUSINESS_CARD_API = process.env.BUSINESS_CARD_API || 'localhost:3009';
 const UTILITY_API = process.env.UTILITY_URI || 'localhost:9000';
 const NOTIFICATION_API = process.env.NOTIFICATION_API || 'localhost:8000';
-const OUTCOME_API = process.env.OUTCOME_API || 'localhost:####';
+const OUTCOME_API = process.env.OUTCOME_API || 'localhost:3000';
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -506,7 +506,7 @@ export default class ExpressRouteDriver {
 
     // TODO: UPDATE ROUTE IN CLIENT
     router.post(
-      '/:username/learning-objects/:learningObjectId/outcomes',
+      '/users/:username/learning-objects/:learningObjectId/outcomes',
       proxy(OUTCOME_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
@@ -518,7 +518,7 @@ export default class ExpressRouteDriver {
 
     // TODO: UPDATE ROUTE IN CLIENT
     router.patch(
-      '/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
+      '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
       proxy(OUTCOME_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
@@ -530,7 +530,7 @@ export default class ExpressRouteDriver {
 
     // TODO: UPDATE ROUTE IN CLIENT
     router.delete(
-      '/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
+      '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
       proxy(OUTCOME_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
@@ -542,7 +542,7 @@ export default class ExpressRouteDriver {
 
     // TODO: NEW ROUTE UPDATE IN CLIENT
     router.post(
-      '/:username/learning-objects/:learningObjectId/learning-outcomes/:outcomeId/mappings',
+      '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings',
       proxy(OUTCOME_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
@@ -554,7 +554,7 @@ export default class ExpressRouteDriver {
 
     // TODO: NEW ROUTE UPDATE IN CLIENT
     router.delete(
-      '/:username/learning-objects/:learningObjectId/learning-outcomes/:outcomeId/mappings/:mappingId',
+      '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings/:mappingId',
       proxy(OUTCOME_API, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
@@ -794,6 +794,7 @@ export default class ExpressRouteDriver {
       }),
     );
 
+    // TODO: Update route in client
     router.get('/:username/learning-objects/:learningObjectId/outcomes', proxy(OUTCOME_API, {
       proxyReqPathResolver: req => {
         return `/users/${encodeURIComponent(
