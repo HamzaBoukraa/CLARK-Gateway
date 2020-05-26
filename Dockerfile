@@ -1,5 +1,5 @@
 # Anything beyond local dev should pin this to a specific version at https://hub.docker.com/_/node/
-FROM node:8-alpine as builder
+FROM node:10-alpine as builder
 
 RUN mkdir -p /opt/app
 
@@ -19,7 +19,7 @@ COPY . /opt/app
 # Build source and clean up
 RUN npm run build
 
-FROM node:8-alpine
+FROM node:10-alpine
 # Defaults the node environment to production, however compose will override this to use development
 # when working locally
 ARG NODE_ENV=production
