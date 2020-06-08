@@ -520,7 +520,6 @@ export default class ExpressRouteDriver {
       proxy(LEARNING_OBJECT_SERVICE_URI),
     );
 
-    // TODO: UPDATE ROUTE IN CLIENT
     router.post(
       '/users/:username/learning-objects/:learningObjectId/outcomes',
       proxy(OUTCOME_API, {
@@ -531,8 +530,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    // TODO: UPDATE ROUTE IN CLIENT
     router.patch(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
       proxy(OUTCOME_API, {
@@ -543,8 +540,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    // TODO: UPDATE ROUTE IN CLIENT
     router.delete(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
       proxy(OUTCOME_API, {
@@ -555,8 +550,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    // TODO: NEW ROUTE UPDATE IN CLIENT
     router.post(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings',
       proxy(OUTCOME_API, {
@@ -567,8 +560,6 @@ export default class ExpressRouteDriver {
         },
       }),
     );
-
-    // TODO: NEW ROUTE UPDATE IN CLIENT
     router.delete(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings/:mappingId',
       proxy(OUTCOME_API, {
