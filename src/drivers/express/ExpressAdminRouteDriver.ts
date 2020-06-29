@@ -7,11 +7,23 @@ import {
   ADMIN_LEARNING_OBJECT_ROUTES,
   ADMIN_USER_ROUTES,
   ADMIN_MAILER_ROUTES,
+  ADMIN_LAMBDA_ROUTES,
 } from '../../routes';
 
 const USERS_API = process.env.USERS_API || 'localhost:4000';
 const LEARNING_OBJECT_SERVICE_URI =
   process.env.LEARNING_OBJECT_SERVICE_URI || 'localhost:5000';
+
+
+/**
+ * Lambda gateways
+ *
+ * Lambda introduces a new level of complexity since the base route
+ * changes depending on the lambda function when seperate endpoints are introduced.
+ * In the future it would be wise to group our lambda functions under one resource.
+ */
+const COA_API = process.env.COA_LAMBDA || 'localhost:4001';
+
 
 /**
  * Serves as a factory for producing a router for the express app.rt
@@ -203,5 +215,17 @@ export default class ExpressAdminRouteDriver {
           },
         }),
       );
+
+
+  // Lambda routes
+    router.post(
+      '/change-author',
+      proxy(COA_API, {
+      proxyReqPathResolver: req => {
+        const route = ADMIN_LAMBDA_ROUTES.CHANGE_AUTHOR;
+        return route;
+      },
+    }));
   }
+
 }
