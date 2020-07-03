@@ -219,7 +219,7 @@ export default class ExpressAdminRouteDriver {
 
   // Lambda routes
     router.post(
-      '/change-author',
+      '/users/:username/learning-object/:cuid/change-author',
       proxy(COA_API, {
       proxyReqPathResolver: req => {
         const route = ADMIN_LAMBDA_ROUTES.CHANGE_AUTHOR;
