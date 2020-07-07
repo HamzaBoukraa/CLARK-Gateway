@@ -301,6 +301,7 @@ export const ADMIN_MAILER_ROUTES = {
 
 export const STATS_ROUTE = {
   USER_STATS: '/users/stats',
+  OUTCOME_STATS: '/outcomes/stats',
   LEARNING_OBJECT_STATS: '/learning-objects/stats',
 };
 

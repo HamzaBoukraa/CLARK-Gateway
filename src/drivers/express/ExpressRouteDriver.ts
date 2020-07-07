@@ -72,6 +72,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.get(
+      '/outcomes/stats',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return STATS_ROUTE.OUTCOME_STATS;
+        },
+      }),
+    );
 
     // GUIDELINE ROLES
     router.route('/guidelines/members').get(
@@ -567,14 +575,6 @@ export default class ExpressRouteDriver {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
           )}/outcomes/${encodeURIComponent(req.params.outcomeId)}/mappings/${encodeURIComponent(req.params.mappingId)}`;
-        },
-      }),
-    );
-    router.get(
-      '/outcomes/stats',
-      proxy(OUTCOME_API, {
-        proxyReqPathResolver: req => {
-          return `/outcomes/stats`;
         },
       }),
     );
