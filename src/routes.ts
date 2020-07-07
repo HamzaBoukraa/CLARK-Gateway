@@ -309,3 +309,7 @@ export const UTILITY_ROUTES = {
   MAINTENANCE: '/maintenance',
   STATUS: '/status',
 };
+
+export const ADMIN_LAMBDA_ROUTES = { 
+  CHANGE_AUTHOR: '/dev/src/handler.changeObjectAuthor',
+}
