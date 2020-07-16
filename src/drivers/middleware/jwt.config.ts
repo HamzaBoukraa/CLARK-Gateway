@@ -38,6 +38,7 @@ export const enforceTokenAccess = jwt({
     '/outages',
     /\/users\/[0-z,.,-]+\/cards/i,
     '/library/stats',
+    '/outcomes/stats',
   ],
 }); // register // all ota-code routes do their own verification outsides of JWT // login
 // TODO: Whitelist user routes

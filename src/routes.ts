@@ -301,6 +301,7 @@ export const ADMIN_MAILER_ROUTES = {
 
 export const STATS_ROUTE = {
   USER_STATS: '/users/stats',
+  OUTCOME_STATS: '/outcomes/stats',
   LEARNING_OBJECT_STATS: '/learning-objects/stats',
 };
 
@@ -308,3 +309,7 @@ export const UTILITY_ROUTES = {
   MAINTENANCE: '/maintenance',
   STATUS: '/status',
 };
+
+export const ADMIN_LAMBDA_ROUTES = { 
+  CHANGE_AUTHOR: '/dev/src/handler.changeObjectAuthor',
+}

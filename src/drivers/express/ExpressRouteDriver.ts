@@ -72,6 +72,14 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    router.get(
+      '/outcomes/stats',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return STATS_ROUTE.OUTCOME_STATS;
+        },
+      }),
+    );
 
     // GUIDELINE ROLES
     router.route('/guidelines/members').get(
