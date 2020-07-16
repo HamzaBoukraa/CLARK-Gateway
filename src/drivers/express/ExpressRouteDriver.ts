@@ -550,6 +550,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    // Not in production
     router.post(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
@@ -561,6 +562,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    // Not in production
     router.delete(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings/:mappingId',
       proxy(OUTCOME_API, {
@@ -571,6 +573,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    // Not in production
     router.get(
       '/outcomes/stats',
       proxy(OUTCOME_API, {
