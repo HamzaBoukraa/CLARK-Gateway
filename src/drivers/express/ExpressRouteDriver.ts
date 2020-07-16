@@ -563,7 +563,6 @@ export default class ExpressRouteDriver {
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          console.log('oh boy')
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
           )}/outcomes/${encodeURIComponent(req.params.outcomeId)}/mappings`;
