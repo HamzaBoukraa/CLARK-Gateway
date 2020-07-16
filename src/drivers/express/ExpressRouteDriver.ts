@@ -529,38 +529,39 @@ export default class ExpressRouteDriver {
     );
 
     router.post(
-      '/users/:username/learning-objects/:learningObjectId/outcomes',
-      proxy(OUTCOME_API, {
+      '/learning-objects/:learningObjectId/learning-outcomes',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+          return `/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
-          )}/outcomes`;
+          )}/learning-outcomes`;
         },
       }),
     );
     router.patch(
-      '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
-      proxy(OUTCOME_API, {
+      '/learning-objects/:learningObjectId/learning-outcomes/:outcomeId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+          return `/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
-          )}/outcomes/${encodeURIComponent(req.params.outcomeId)}`;
+          )}/learning-outcomes/${encodeURIComponent(req.params.outcomeId)}`;
         },
       }),
     );
     router.delete(
-      '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId',
-      proxy(OUTCOME_API, {
+      '/learning-objects/:learningObjectId/outcomes/:outcomeId',
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
-          return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
+          return `/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
-          )}/outcomes/${encodeURIComponent(req.params.outcomeId)}`;
+          )}/learning-outcomes/${encodeURIComponent(req.params.outcomeId)}`;
         },
       }),
     );
+    // Not in production
     router.post(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings',
-      proxy(OUTCOME_API, {
+      proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
@@ -568,6 +569,7 @@ export default class ExpressRouteDriver {
         },
       }),
     );
+    // Not in production
     router.delete(
       '/users/:username/learning-objects/:learningObjectId/outcomes/:outcomeId/mappings/:mappingId',
       proxy(OUTCOME_API, {
@@ -575,6 +577,15 @@ export default class ExpressRouteDriver {
           return `/users/${encodeURIComponent(req.params.username)}/learning-objects/${encodeURIComponent(
             req.params.learningObjectId,
           )}/outcomes/${encodeURIComponent(req.params.outcomeId)}/mappings/${encodeURIComponent(req.params.mappingId)}`;
+        },
+      }),
+    );
+    // Not in production
+    router.get(
+      '/outcomes/stats',
+      proxy(OUTCOME_API, {
+        proxyReqPathResolver: req => {
+          return `/outcomes/stats`;
         },
       }),
     );
@@ -810,7 +821,7 @@ export default class ExpressRouteDriver {
     );
 
     // TODO: Update route in client
-    router.get('/:username/learning-objects/:learningObjectId/outcomes', proxy(OUTCOME_API, {
+    router.get('/:username/learning-objects/:learningObjectId/outcomes', proxy(LEARNING_OBJECT_SERVICE_URI, {
       proxyReqPathResolver: req => {
         return `/users/${encodeURIComponent(
           req.params.username,
