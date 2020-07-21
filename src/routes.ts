@@ -311,5 +311,5 @@ export const UTILITY_ROUTES = {
 };
 
 export const ADMIN_LAMBDA_ROUTES = { 
-  CHANGE_AUTHOR: '/dev/src/handler.changeObjectAuthor',
+  CHANGE_AUTHOR: '/dev/changeObjectAuthorHandler',
 }
