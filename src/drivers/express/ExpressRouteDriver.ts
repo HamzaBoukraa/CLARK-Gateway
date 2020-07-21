@@ -549,7 +549,7 @@ export default class ExpressRouteDriver {
       }),
     );
     router.delete(
-      '/learning-objects/:learningObjectId/outcomes/:outcomeId',
+      '/learning-objects/:learningObjectId/learning-outcomes/:outcomeId',
       proxy(LEARNING_OBJECT_SERVICE_URI, {
         proxyReqPathResolver: req => {
           return `/learning-objects/${encodeURIComponent(
